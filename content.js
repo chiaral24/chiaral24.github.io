@@ -47,7 +47,7 @@ const PROJECTS = [
     slug: "clarity-in-the-cloud",
     title: "Clarity in the Cloud",
     kind: "University · Group project",
-    year: "",
+    year: "2026",
     area: "UX & Product Design",
     result: "From user research and personas to a refined prototype, a value model and a lean canvas.",
     summary: "Are you paying for something you forgot? A transparent, ethical dashboard for digital subscriptions.",
