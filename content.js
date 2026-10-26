@@ -1106,6 +1106,250 @@ rf.fit(X_train_imputed, y_train)`,
     ],
   },
   {
+    slug: "wine-satellites-god-particle",
+    title: "Wine, Satellites & the God Particle",
+    kind: "University · Individual project",
+    year: "2026",
+    theme: "lab",
+    decor: "dots",
+    roadmapStyle: "lab",
+    cover: { title: "Data-driven Decision Making", sub: "Three experiments in KNIME" },
+    summary: "Three data mining experiments in KNIME: clustering wines, classifying satellite images and hunting the Higgs boson in CERN data.",
+    question: "Can the same tools **group wines, read satellite images and find the Higgs boson**?",
+    description: [
+      "An individual project for the course **Data-driven Decision Making** at the Free University of Bozen-Bolzano, built entirely as visual workflows in the **KNIME Analytics Platform**.",
+      "It is made of three experiments of growing difficulty: **unsupervised clustering** of wines with PCA and K-Means, a **comparison of classifiers** on satellite images, and a **data science challenge** on CERN data, where the rare signal of a Higgs boson has to be separated from ordinary collisions.",
+    ],
+    tags: ["KNIME", "PCA", "K-Means", "Classification", "Random Forest", "Gradient Boosting", "XGBoost", "Imbalanced data"],
+    image: "",
+    links: [],
+    sectionsTitle: "Experiments",
+    sectionsSub: "Five lab entries, from clustering to the God Particle",
+    sections: [
+      {
+        slug: "clustering-wines",
+        task: "Task 1.1",
+        title: "Clustering Wines",
+        dataset: "Wine · UCI Machine Learning Repository",
+        methods: ["PCA", "K-Means", "Silhouette"],
+        blocks: [
+          { t: "lead", title: "Can wines group themselves?", text: "The Wine dataset contains chemical measurements of wines grown in the same region of Italy but derived from **three different cultivars**: each record has a class label and **thirteen numerical attributes**. The label is left out of the clustering and used only afterwards, to check whether the clusters found by the algorithm match the real classes." },
+          { t: "img", src: "assets/projects/ddm/task1-workflow.svg", alt: "KNIME workflow of Task 1", caption: "Task 1 in KNIME", sub: "Both workflows in the same canvas: without normalisation on the left, with normalisation on the right", zoom: true },
+          {
+            t: "steps", items: [
+              { title: "Step 1", text: "Remove the label", action: "The class column is filtered out before clustering and kept only for the visual check." },
+              { title: "Step 2", text: "PCA", action: "Principal Component Analysis reduces the 13 attributes to 2 dimensions, so every wine becomes a point on a plane." },
+              { title: "Step 3", text: "K-Means, k = 3", action: "Three clusters, because the dataset contains three known classes." },
+              { title: "Step 4", text: "Silhouette", action: "The Silhouette Coefficient measures how well each wine fits its cluster compared to the nearest one." },
+            ],
+          },
+          { t: "h", text: "Real classes vs clusters", sub: "The same PCA projection, coloured in two different ways" },
+          {
+            t: "gallery", cols: 2, items: [
+              { src: "assets/projects/ddm/t1-pca-raw-class.jpg", caption: "Coloured by true class", sub: "The three cultivars" },
+              { src: "assets/projects/ddm/t1-pca-raw-cluster.jpg", caption: "Coloured by K-Means cluster", sub: "What the algorithm found" },
+            ],
+          },
+          { t: "h", text: "Inside each cluster", sub: "Each cluster filtered on its own, coloured by the true class" },
+          {
+            t: "gallery", cols: 3, items: [
+              { src: "assets/projects/ddm/t1-raw-c0.jpg", caption: "Cluster 0" },
+              { src: "assets/projects/ddm/t1-raw-c1.jpg", caption: "Cluster 1" },
+              { src: "assets/projects/ddm/t1-raw-c2.jpg", caption: "Cluster 2" },
+            ],
+          },
+          {
+            t: "chart", kind: "columns", title: "Silhouette Coefficient by cluster", sub: "K-Means without normalisation · from −1 (wrong cluster) to 1 (well separated)", digits: 3, labels: true,
+            xLabel: "Cluster", yLabel: "Silhouette", ticks: [0, 0.25, 0.5], ref: { value: 0.56, label: "Overall" },
+            items: [
+              { label: "Cluster 0", value: 0.429 },
+              { label: "Cluster 1", value: 0.59, hl: true },
+              { label: "Cluster 2", value: 0.615, hl: true },
+            ],
+            caption: "An overall Silhouette of **0.56** means a satisfactory clustering. Clusters 1 and 2 are well separated; cluster 0 shows a moderate separation, with some overlap with the other clusters.",
+          },
+        ],
+      },
+      {
+        slug: "normalising-wines",
+        task: "Task 1.2",
+        title: "Normalising the Wines",
+        dataset: "Wine · UCI Machine Learning Repository",
+        methods: ["Normalizer", "PCA", "K-Means", "Silhouette"],
+        blocks: [
+          { t: "lead", title: "Same experiment, one more step", text: "The analysis was repeated after a **normalisation** step, which puts all the attributes on a comparable scale so that those with larger ranges do not dominate the distance used by K-Means. Would the clusters improve?" },
+          { t: "img", src: "assets/projects/ddm/t1-workflow-norm.jpg", alt: "KNIME workflow for clustering with normalisation", caption: "Workflow with normalisation", sub: "A Normalizer node before PCA and K-Means", zoom: true },
+          {
+            t: "gallery", cols: 2, items: [
+              { src: "assets/projects/ddm/t1-pca-norm-class.jpg", caption: "Coloured by true class", sub: "After normalisation" },
+              { src: "assets/projects/ddm/t1-pca-norm-cluster.jpg", caption: "Coloured by K-Means cluster", sub: "After normalisation" },
+            ],
+          },
+          {
+            t: "gallery", cols: 3, items: [
+              { src: "assets/projects/ddm/t1-norm-c0.jpg", caption: "Cluster 0" },
+              { src: "assets/projects/ddm/t1-norm-c1.jpg", caption: "Cluster 1" },
+              { src: "assets/projects/ddm/t1-norm-c2.jpg", caption: "Cluster 2" },
+            ],
+          },
+          {
+            t: "chart", kind: "columns", title: "Silhouette Coefficient by cluster", sub: "K-Means with normalisation", digits: 3, labels: true,
+            xLabel: "Cluster", yLabel: "Silhouette", ticks: [0, 0.25, 0.5], ref: { value: 0.376, label: "Overall" },
+            items: [
+              { label: "Cluster 0", value: 0.438, hl: true },
+              { label: "Cluster 1", value: 0.276 },
+              { label: "Cluster 2", value: 0.42, hl: true },
+            ],
+            caption: "Cluster 1 drops to **0.276**, with poor separation and a lot of overlap; clusters 0 and 2 are only moderately separated.",
+          },
+          { t: "h", text: "Comparison" },
+          {
+            t: "stats", items: [
+              { value: "0.56", label: "overall Silhouette without normalisation" },
+              { value: "0.376", label: "overall Silhouette with normalisation" },
+            ],
+          },
+          { t: "closing", title: "Conclusion", text: "Clustering works **better without normalisation**: the clusters are more compact and better separated, as the PCA plots also show. In this case the original scales of the attributes **already carried meaningful information**, and normalising them made the structure less clear." },
+        ],
+      },
+      {
+        slug: "satellite-images",
+        task: "Task 2",
+        title: "Classifying Satellite Images",
+        dataset: "Statlog (Landsat Satellite) · training & test sets",
+        methods: ["Logistic Regression", "Decision Tree", "Random Forest"],
+        blocks: [
+          { t: "lead", title: "Three classifiers, one question", text: "The goal of this task was to **train and compare different classification models** on the same dataset. Before training, the data was normalised with a Normalizer node, which matters especially for models such as Logistic Regression. Each model was tuned with a **loop** over its parameters." },
+          { t: "img", src: "assets/projects/ddm/task2-workflow.svg", alt: "KNIME workflow of Task 2", caption: "Task 2 in KNIME", sub: "Three optimised sub-workflows, concatenated and compared", zoom: true },
+          {
+            t: "cards", cols: 3, items: [
+              { title: "Logistic Regression", sub: "OPTIMISED", tint: "lav", text: "A loop explores different configurations; results are scored and aggregated with GroupBy." },
+              { title: "Decision Tree", sub: "HOLD-OUT", tint: "sun", text: "Different values of the **minimum number of records per node**, keeping the most accurate." },
+              { title: "Random Forest", sub: "OPTIMISED", tint: "ink", text: "Tuning of the **number of trees** and the **maximum depth**." },
+            ],
+          },
+          {
+            t: "gallery", cols: 3, items: [
+              { src: "assets/projects/ddm/t2-logreg.jpg", caption: "Logistic Regression" },
+              { src: "assets/projects/ddm/t2-tree.jpg", caption: "Decision Tree" },
+              { src: "assets/projects/ddm/t2-forest.jpg", caption: "Random Forest" },
+            ],
+          },
+          {
+            t: "chart", kind: "hbars", title: "Mean accuracy by model", sub: "Approximate values from the comparison in KNIME", digits: 2,
+            xLabel: "Model", yLabel: "Mean accuracy",
+            items: [
+              { label: "Random Forest", value: 0.89, hl: true },
+              { label: "Decision Tree", value: 0.85 },
+              { label: "Logistic Regression", value: 0.85 },
+            ],
+            caption: "**Random Forest** is the best model: as an ensemble it combines many decision trees and reduces overfitting. A single tree is more prone to variance, and Logistic Regression may miss complex non-linear relationships.",
+          },
+        ],
+      },
+      {
+        slug: "god-particle",
+        task: "Task 3",
+        title: "The Search for the God Particle",
+        dataset: "CERN · simulated LHC collision events",
+        methods: ["Class balancing", "Random Forest", "Gradient Boosting", "XGBoost"],
+        blocks: [
+          { t: "lead", title: "Signal or background?", text: "A data science challenge: build models that distinguish collision events that produce a **Higgs boson** (signal) from normal collision events (background). The dataset, provided by CERN, contains simulated events measured by the **Large Hadron Collider**, each described by numerical properties of the collision." },
+          {
+            t: "cards", cols: 2, center: true, items: [
+              { title: "1 → signal", icon: "✦", tint: "lav", text: "A Higgs boson is produced. **Rare.**" },
+              { title: "0 → background", icon: "·", tint: "plain", text: "An ordinary collision. **The vast majority.**" },
+            ],
+          },
+          { t: "p", text: "Because the classes are **highly imbalanced**, Accuracy alone says little: a model that always answers “background” would look excellent. **Recall, Precision and F-measure** are more informative.", center: true },
+          { t: "h", text: "Preprocessing" },
+          {
+            t: "steps", items: [
+              { title: "Step 1", text: "CSV Reader", action: "Import of the training dataset." },
+              { title: "Step 2", text: "Missing values", action: "Handling of the missing values." },
+              { title: "Step 3", text: "Renaming & normalisation", action: "Columns renamed for easier management and numerical attributes normalised for stability." },
+              { title: "Step 4", text: "Class balancing", action: "Two Row Filters split signal and background, a Row Sampler reduces the background, and Concatenate merges them back." },
+            ],
+          },
+          { t: "img", src: "assets/projects/ddm/task3-workflow.svg", alt: "KNIME workflow of Task 3", caption: "Task 3 in KNIME", sub: "Preprocessing, the four models, the comparison and the test predictions", zoom: true },
+          { t: "h", text: "Four models" },
+          {
+            t: "cards", cols: 4, items: [
+              { title: "Random Forest", tint: "plain", text: "Many decision trees with a **bagging** strategy." },
+              { title: "Gradient Boosted Trees", tint: "plain", text: "**Boosting**: each tree corrects the errors of the previous ones." },
+              { title: "Optimised GBT", tint: "lav", text: "**Cross-validation** loop tuning tree depth, number of trees and boosting." },
+              { title: "Optimised XGBoost", tint: "sun", text: "Efficient gradient optimisation with **regularisation**, tuned with cross-validation." },
+            ],
+          },
+          {
+            t: "gallery", cols: 2, items: [
+              { src: "assets/projects/ddm/t3-forest.jpg", caption: "Random Forest" },
+              { src: "assets/projects/ddm/t3-gbt.jpg", caption: "Gradient Boosted Trees" },
+              { src: "assets/projects/ddm/t3-gbt-xval.jpg", caption: "Optimised GBT (X-Validation)" },
+              { src: "assets/projects/ddm/t3-xgboost.jpg", caption: "Optimised XGBoost" },
+            ],
+          },
+        ],
+      },
+      {
+        slug: "challenge-results",
+        task: "Task 3",
+        title: "Results of the Challenge",
+        dataset: "CERN · test set of 1,000 events",
+        methods: ["Precision", "Recall", "F-measure"],
+        blocks: [
+          {
+            t: "stats", items: [
+              { value: "≈ 90%", label: "accuracy for every model" },
+              { value: "0.218", label: "best F-measure, optimised XGBoost" },
+              { value: "9 / 1,000", label: "test events predicted as signal" },
+            ],
+          },
+          { t: "h", text: "Model comparison" },
+          {
+            t: "table",
+            head: ["Model", "Accuracy", "Recall", "Precision", "F-measure", "Sensitivity"],
+            rows: [
+              ["Gradient Boosted Trees", "0.906", "0.736", "0.108", "0.189", "0.736"],
+              ["Opt. X-Val Gradient Boosted Trees", "0.906", "0.130", "0.652", "0.215", "0.130"],
+              ["Random Forest", "0.905", "0.799", "0.073", "0.134", "0.799"],
+              ["Opt. X-Val XGBoost", "0.904", "0.134", "0.578", "0.218", "0.134"],
+            ],
+          },
+          {
+            t: "chart", kind: "scatter", title: "The Precision–Recall trade-off", sub: "Every model sits at a different compromise", digits: 2,
+            xLabel: "Recall", yLabel: "Precision", xDomain: [0, 1], yDomain: [0, 1], xTicks: [0, 0.5, 1], yTicks: [0, 0.5, 1],
+            items: [
+              { label: "Random Forest", x: 0.799, y: 0.073, labelPos: "left-down" },
+              { label: "Gradient Boosted Trees", x: 0.736, y: 0.108, labelPos: "left-up" },
+              { label: "Opt. GBT", x: 0.13, y: 0.652, hl: true, labelPos: "right-up" },
+              { label: "Opt. XGBoost", x: 0.134, y: 0.578, hl: true, labelPos: "right-down" },
+            ],
+            caption: "Accuracy is almost identical for all models, but the models behave very differently: the plain ensembles **find most signal events but raise many false alarms**, while the optimised boosting models are **precise but miss more signals**.",
+          },
+          {
+            t: "cards", cols: 3, items: [
+              { title: "Random Forest", sub: "HIGHEST RECALL", tint: "plain", bullet: "→", lines: ["Detects the most signal events", "…but with very low Precision"] },
+              { title: "Optimised GBT", sub: "HIGHEST PRECISION", tint: "lav", bullet: "→", lines: ["Far fewer false positives", "…but detects fewer signal events"] },
+              { title: "Optimised XGBoost", sub: "HIGHEST F-MEASURE", tint: "sun", bullet: "→", lines: ["The best balance between Precision and Recall"] },
+            ],
+          },
+          { t: "h", text: "Predicting the test set", sub: "Same preprocessing, prediction, labels converted to 0/1, CSV without headers" },
+          { t: "img", src: "assets/projects/ddm/t3-test.jpg", alt: "KNIME workflow generating predictions for the test dataset", caption: "Test prediction workflow", sub: "Gradient Boosted Trees Learner and Predictor, Rule Engine, CSV Writer", zoom: true },
+          {
+            t: "code", title: "Task3-predictions.csv — first rows", text:
+`"ID026",0
+"ID032",0
+"ID054",0
+"ID055",0
+"ID062",0`,
+          },
+          { t: "closing", title: "What the challenge taught", text: "Rare-event classification on **highly imbalanced data** is all about **trade-offs between Precision and Recall**. The Gradient Boosted Trees offered the best compromise among the tested approaches, while the Random Forest showed the highest ability to detect signal events — and the final workflow produced the prediction file in the required format." },
+        ],
+      },
+    ],
+  },
+  {
     slug: "pixel-library",
     title: "Pixel Library",
     kind: "Personal",

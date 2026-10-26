@@ -96,9 +96,16 @@ function stripes(n = 4) {
     `<span class="deco stripe ${i % 2 ? "right" : "left"}" style="top:${y}%"></span>`).join("")}</div>`;
 }
 
-// decor: "clouds" (predefinito), "stripes" oppure "none"
+// Piccoli gruppi di punti ai lati, come cluster di un grafico a dispersione
+function dots(n = 4) {
+  const tops = [8, 32, 58, 82];
+  return `<div class="clouds" aria-hidden="true">${tops.slice(0, n).map((y, i) =>
+    `<span class="deco dots ${i % 2 ? "right" : "left"} d${i % 3}" style="top:${y}%"></span>`).join("")}</div>`;
+}
+
+// decor: "clouds" (predefinito), "stripes", "dots" oppure "none"
 const decor = (p, n) =>
-  p.decor === "none" ? "" : p.decor === "stripes" ? stripes(Math.min(n, 4)) : clouds(n);
+  p.decor === "none" ? "" : p.decor === "stripes" ? stripes(Math.min(n, 4)) : p.decor === "dots" ? dots(Math.min(n, 4)) : clouds(n);
 
 // Pagina "del libro" di ogni capitolo, calcolata dal numero di blocchi dei capitoli precedenti
 const chapterPages = (p) => p.sections.reduce((acc, s, i) => [...acc, i ? acc[i - 1] + p.sections[i - 1].blocks.length * 2 : 1], []);
@@ -136,7 +143,17 @@ function chart(b) {
   const ref = b.ref ? `<div class="ref-line" style="bottom:${pct(b.ref.value)}%"></div>` : "";
   const refNote = b.ref ? `<p class="chart-ref-note"><span class="ref-swatch"></span>${esc(b.ref.label)} ${fmt(b.ref.value)}</p>` : "";
   let plot = "";
-  if (b.kind === "hbars") {
+  if (b.kind === "scatter") {
+    // Punti con etichetta diretta: x e y hanno ciascuno il proprio dominio
+    const [x0, x1] = b.xDomain, [y0, y1] = b.yDomain;
+    const px = (v) => ((v - x0) / (x1 - x0)) * 100, py = (v) => ((v - y0) / (y1 - y0)) * 100;
+    const xt = b.xTicks || [x0, (x0 + x1) / 2, x1], yt = b.yTicks || [y0, (y0 + y1) / 2, y1];
+    plot = `<div class="plot scatter-plot">
+      <div class="grid-lines" aria-hidden="true">${yt.map((t) => `<span style="bottom:${py(t)}%"><em>${fmt(t)}</em></span>`).join("")}</div>
+      <div class="grid-lines v" aria-hidden="true">${xt.map((t) => `<span style="left:${px(t)}%"><em>${fmt(t)}</em></span>`).join("")}</div>
+      ${items.map((i) => `<span class="pt${i.hl ? " hl" : ""}" tabindex="0" data-tip="${esc(`${i.label}: ${b.xLabel} ${fmt(i.x)}, ${b.yLabel} ${fmt(i.y)}`)}" style="left:${px(i.x)}%;bottom:${py(i.y)}%"><b class="pt-label ${i.labelPos || "right"}">${esc(i.label)}</b></span>`).join("")}
+    </div>`;
+  } else if (b.kind === "hbars") {
     const hmax = Math.max(...items.map((i) => i.value), b.ref ? b.ref.value : 0);
     plot = `<div class="hbars">${items.map((i) => `
       <div class="hbar-row${i.hl ? " hl" : ""}" tabindex="0" data-tip="${esc(tip(i))}">
@@ -171,8 +188,11 @@ function chart(b) {
       ${b.xLabel && b.kind !== "hbars" ? `<span class="axis-title x">${esc(b.xLabel)}</span>` : ""}
       ${b.caption ? `<p class="chart-caption">${md(b.caption)}</p>` : ""}
       <details class="chart-data"><summary>Show data</summary>
-        <table><thead><tr><th>${esc(b.xLabel || "Category")}</th><th>${esc(b.yLabel || "Value")}</th>${items.some((i) => i.extra) ? `<th>${esc(b.extraLabel || "")}</th>` : ""}</tr></thead>
-        <tbody>${items.map((i) => `<tr><td>${esc(i.tip || i.label)}</td><td>${fmt(i.value)}</td>${i.extra ? `<td>${esc(i.extra)}</td>` : ""}</tr>`).join("")}</tbody></table>
+        ${b.kind === "scatter"
+          ? `<table><thead><tr><th>Model</th><th>${esc(b.xLabel)}</th><th>${esc(b.yLabel)}</th></tr></thead>
+        <tbody>${items.map((i) => `<tr><td>${esc(i.label)}</td><td>${fmt(i.x)}</td><td>${fmt(i.y)}</td></tr>`).join("")}</tbody></table>`
+          : `<table><thead><tr><th>${esc(b.xLabel || "Category")}</th><th>${esc(b.yLabel || "Value")}</th>${items.some((i) => i.extra) ? `<th>${esc(b.extraLabel || "")}</th>` : ""}</tr></thead>
+        <tbody>${items.map((i) => `<tr><td>${esc(i.tip || i.label)}</td><td>${fmt(i.value)}</td>${i.extra ? `<td>${esc(i.extra)}</td>` : ""}</tr>`).join("")}</tbody></table>`}
       </details>
     </figure>`;
 }
@@ -245,6 +265,12 @@ const BLOCKS = {
     ${b.caption || b.sub ? `<figcaption>${b.caption ? `<strong>${esc(b.caption)}</strong>` : ""}${b.sub ? `<span>${esc(b.sub)}</span>` : ""}</figcaption>` : ""}</figure>`;
   },
   chart: (b) => chart(b),
+  // Più immagini affiancate, ognuna apribile a piena grandezza
+  gallery: (b) => `<div class="gallery cols-${b.cols || 2}">${b.items.map((g) => `
+    <figure class="figure zoom">
+      <a href="${esc(g.src)}" target="_blank" rel="noopener" title="Open full size"><img src="${esc(g.src)}" alt="${esc(g.alt || g.caption || "")}" loading="lazy"><span class="zoom-hint">Open full size ↗</span></a>
+      ${g.caption || g.sub ? `<figcaption>${g.caption ? `<strong>${esc(g.caption)}</strong>` : ""}${g.sub ? `<span>${esc(g.sub)}</span>` : ""}</figcaption>` : ""}
+    </figure>`).join("")}</div>`,
   chips: (b) => `<div class="chips">${b.items.map((c) => `<span class="chip-tag">${esc(c)}</span>`).join("")}</div>`,
   schema: (b) => `<div class="schema">${b.tables.map((tb) => `
     <div class="schema-table${tb.kind === "rel" ? " rel" : ""}">
@@ -274,7 +300,13 @@ function project(slug) {
   if (!p) return projects();
   const roadmap = p.sections
     ? `<div class="block-h"><h3>${esc(p.sectionsTitle || "Project documentation")}</h3>${p.sectionsSub ? `<p>${esc(p.sectionsSub)}</p>` : ""}</div>
-       ${p.roadmapStyle === "toc" ? `<ol class="toc">${p.sections.map((s, i) => `
+       ${p.roadmapStyle === "lab" ? `<div class="lab">${p.sections.map((s, i) => `
+         <a class="specimen" href="#/projects/${esc(p.slug)}/${esc(s.slug)}">
+           <span class="specimen-head"><span>EXP ${String(i + 1).padStart(2, "0")}</span><span>${esc(s.task || "")}</span></span>
+           <span class="specimen-title">${esc(s.title)}</span>
+           ${s.dataset ? `<span class="specimen-data"><span class="meta">Dataset</span>${esc(s.dataset)}</span>` : ""}
+           ${s.methods ? `<span class="specimen-methods">${s.methods.map((m) => `<span>${esc(m)}</span>`).join("")}</span>` : ""}
+         </a>`).join("")}</div>` : p.roadmapStyle === "toc" ? `<ol class="toc">${p.sections.map((s, i) => `
          <li><a href="#/projects/${esc(p.slug)}/${esc(s.slug)}">
            <span class="toc-num">${roman(i + 1)}</span>
            <span class="toc-title">${esc(s.title)}${s.type ? `<small>${esc(s.type)}</small>` : ""}</span>
@@ -327,7 +359,7 @@ function section(slug, sectionSlug) {
     ${back(`#/projects/${p.slug}`, p.sectionsTitle || p.title)}
     <article class="page doc${themeClass(p)}">
       ${decor(p, 8)}
-      <span class="meta">${p.roadmapStyle === "toc" ? `Chapter ${roman(i + 1)} · ${esc(p.title)}` : `${esc(p.title)} · ${i + 1}/${p.sections.length}`}</span>
+      <span class="meta">${p.roadmapStyle === "toc" ? `Chapter ${roman(i + 1)} · ${esc(p.title)}` : p.roadmapStyle === "lab" ? `EXP ${String(i + 1).padStart(2, "0")} · ${esc(s.task || p.title)}` : `${esc(p.title)} · ${i + 1}/${p.sections.length}`}</span>
       <h2 class="page-title center-title">${esc(s.pageTitle || s.title)}</h2>
       ${s.blocks.map((b) => (BLOCKS[b.t] ? BLOCKS[b.t](b) : "")).join("")}
       <nav class="pager">${link(prev, "prev")}${link(next, "next")}</nav>
@@ -374,7 +406,7 @@ function animateIn() {
   markReveal(app.querySelector(".back"), "fade");
   const page = app.querySelector(".page");
   if (page) {
-    const GROUPS = ".grid, .roadmap, .boxes, .journey, .swatches, .contact-list, .canvas, .schema, .ops, .chips, .toc";
+    const GROUPS = ".grid, .roadmap, .boxes, .journey, .swatches, .contact-list, .canvas, .schema, .ops, .chips, .toc, .lab, .gallery";
     for (const child of page.children) {
       if (child.classList.contains("clouds")) continue;
       if (child.classList.contains("page-title")) { markReveal(child, "down"); continue; }
