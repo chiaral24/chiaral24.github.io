@@ -276,6 +276,29 @@ const BLOCKS = {
   },
   chart: (b) => chart(b),
   diagram: (b) => diagram(b),
+  // Anelli di avanzamento (percentuali), come gli anelli di affinità dell'interfaccia di Inspora
+  rings: (b) => `<div class="rings">${b.items.map((r) => {
+    const c = 2 * Math.PI * 42;
+    return `<div class="ring-item" tabindex="0" data-tip="${esc(`${r.label}: ${r.value}${r.unit ?? "%"}`)}">
+      <svg viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="42" class="ring-bg"/><circle cx="50" cy="50" r="42" class="ring-fg" style="stroke-dasharray:${(c * Math.min(r.value, 100)) / 100} ${c}"/></svg>
+      <span class="ring-value">${esc(r.display || `${r.value}${r.unit ?? "%"}`)}</span>
+      <strong>${esc(r.label)}</strong>${r.sub ? `<span class="ring-sub">${esc(r.sub)}</span>` : ""}
+    </div>`;
+  }).join("")}</div>`,
+  // Architettura a livelli impilati, dall'alto verso il basso
+  layers: (b) => `<div class="layers">${b.items.map((l, k) => `
+    <div class="layer">
+      <span class="layer-n">L${k + 1}</span>
+      <span class="layer-icon" aria-hidden="true">${esc(l.icon || "▤")}</span>
+      <span class="layer-name">${esc(l.name)}</span>
+      <span class="layer-tech">${l.tech.map((t) => `<span>${esc(t)}</span>`).join("")}</span>
+    </div>${k < b.items.length - 1 ? '<span class="layer-arrow" aria-hidden="true">↓</span>' : ""}`).join("")}</div>`,
+  // Carosello di slide (scroll-snap) con frecce
+  slides: (b) => `<figure class="slides">
+    <div class="slides-track" tabindex="0" aria-label="${esc(b.title || "Slides")}">${b.items.map((s, k) => `
+      <a class="slide" href="${esc(s)}" target="_blank" rel="noopener"><img src="${esc(s)}" alt="Slide ${k + 1}" loading="lazy"><span class="slide-n">${String(k + 1).padStart(2, "0")} / ${String(b.items.length).padStart(2, "0")}</span></a>`).join("")}</div>
+    <figcaption><button class="btn slide-btn" data-slide="-1" aria-label="Previous slide">←</button><span>${esc(b.caption || "")}</span><button class="btn slide-btn" data-slide="1" aria-label="Next slide">→</button></figcaption>
+  </figure>`,
   // Due insiemi che si sovrappongono: cosa copre ciascuno e cosa hanno in comune
   venn: (b) => `<div class="venn">
     <div class="venn-art" aria-hidden="true"><span class="venn-c a"></span><span class="venn-c b"></span></div>
@@ -359,7 +382,15 @@ function project(slug) {
   if (!p) return projects();
   const roadmap = p.sections
     ? `<div class="block-h"><h3>${esc(p.sectionsTitle || "Project documentation")}</h3>${p.sectionsSub ? `<p>${esc(p.sectionsSub)}</p>` : ""}</div>
-       ${p.roadmapStyle === "articles" ? `<div class="articles">${p.sections.map((s, i) => `
+       ${p.roadmapStyle === "board" ? `<div class="board">${(p.boardColumns || ["To do"]).map((col) => `
+         <div class="board-col"><span class="board-col-title">${esc(col)}<span>${p.sections.filter((s) => s.column === col).length}</span></span>
+         ${p.sections.map((s, i) => s.column !== col ? "" : `
+           <a class="ticket" href="#/projects/${esc(p.slug)}/${esc(s.slug)}">
+             <span class="ticket-top"><span class="ticket-id">${esc(p.ticketPrefix || "T")}-${i + 1}</span><span class="ticket-kind kind-${esc((s.kind || "story").toLowerCase())}">${esc(s.kind || "Story")}</span></span>
+             <span class="ticket-title">${esc(s.title)}</span>
+             ${s.type ? `<span class="ticket-sub">${esc(s.type)}</span>` : ""}
+             <span class="ticket-done" aria-hidden="true">✓ Done</span>
+           </a>`).join("")}</div>`).join("")}</div>` : p.roadmapStyle === "articles" ? `<div class="articles">${p.sections.map((s, i) => `
          <a class="article-card" href="#/projects/${esc(p.slug)}/${esc(s.slug)}">
            <span class="article-num"><span>Art.</span>${i + 1}</span>
            <span class="article-text"><span class="article-title">${esc(s.title)}</span>${s.type ? `<span class="article-type">${esc(s.type)}</span>` : ""}</span>
@@ -412,6 +443,7 @@ function project(slug) {
       ${p.links.length ? `<div class="links">${p.links.map((l) => `<a class="btn" href="${esc(l.href)}" target="_blank" rel="noopener">${esc(l.label)} ↗</a>`).join("")}</div>` : ""}
       ${roadmap}
       ${gallery}
+      ${(p.extra || []).map((b) => (BLOCKS[b.t] ? BLOCKS[b.t](b) : "")).join("")}
     </article>`;
 }
 
@@ -429,7 +461,7 @@ function section(slug, sectionSlug) {
     ${back(`#/projects/${p.slug}`, p.sectionsTitle || p.title)}
     <article class="page doc${themeClass(p)}">
       ${decor(p, 8)}
-      <span class="meta">${p.roadmapStyle === "toc" ? `Chapter ${roman(i + 1)} · ${esc(p.title)}` : p.roadmapStyle === "lab" ? `EXP ${String(i + 1).padStart(2, "0")} · ${esc(s.task || p.title)}` : p.roadmapStyle === "film" ? `Scene ${String(i + 1).padStart(2, "0")} · ${esc(p.title)}` : p.roadmapStyle === "articles" ? `Article ${i + 1} · ${esc(p.title)}` : `${esc(p.title)} · ${i + 1}/${p.sections.length}`}</span>
+      <span class="meta">${p.roadmapStyle === "toc" ? `Chapter ${roman(i + 1)} · ${esc(p.title)}` : p.roadmapStyle === "lab" ? `EXP ${String(i + 1).padStart(2, "0")} · ${esc(s.task || p.title)}` : p.roadmapStyle === "film" ? `Scene ${String(i + 1).padStart(2, "0")} · ${esc(p.title)}` : p.roadmapStyle === "articles" ? `Article ${i + 1} · ${esc(p.title)}` : p.roadmapStyle === "board" ? `${esc(p.ticketPrefix || "T")}-${i + 1} · ${esc(s.kind || "Story")} · ${esc(p.title)}` : `${esc(p.title)} · ${i + 1}/${p.sections.length}`}</span>
       <h2 class="page-title center-title">${esc(s.pageTitle || s.title)}</h2>
       ${s.blocks.map((b) => (BLOCKS[b.t] ? BLOCKS[b.t](b) : "")).join("")}
       <nav class="pager">${link(prev, "prev")}${link(next, "next")}</nav>
@@ -476,7 +508,7 @@ function animateIn() {
   markReveal(app.querySelector(".back"), "fade");
   const page = app.querySelector(".page");
   if (page) {
-    const GROUPS = ".grid, .roadmap, .boxes, .journey, .swatches, .contact-list, .canvas, .schema, .ops, .chips, .toc, .lab, .gallery, .film-frames, .articles";
+    const GROUPS = ".grid, .roadmap, .boxes, .journey, .swatches, .contact-list, .canvas, .schema, .ops, .chips, .toc, .lab, .gallery, .film-frames, .articles, .rings, .layers";
     for (const child of page.children) {
       if (child.classList.contains("clouds")) continue;
       if (child.classList.contains("page-title")) { markReveal(child, "down"); continue; }
@@ -537,6 +569,14 @@ function render() {
 }
 
 window.addEventListener("hashchange", render);
+
+// Frecce dei caroselli di slide
+document.addEventListener("click", (e) => {
+  const btn = e.target.closest("[data-slide]");
+  if (!btn) return;
+  const track = btn.closest(".slides").querySelector(".slides-track");
+  track.scrollBy({ left: track.clientWidth * Number(btn.dataset.slide), behavior: reduceMotion ? "auto" : "smooth" });
+});
 render();
 
 // Tema chiaro/scuro

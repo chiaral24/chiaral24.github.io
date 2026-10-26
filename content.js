@@ -1821,6 +1821,219 @@ rf.fit(X_train_imputed, y_train)`,
     ],
   },
   {
+    slug: "inspora",
+    title: "Inspora",
+    kind: "University · Group project",
+    year: "2026",
+    theme: "glass",
+    decor: "none",
+    roadmapStyle: "board",
+    boardColumns: ["Discovery", "Iterations", "Delivery"],
+    ticketPrefix: "INS",
+    cover: { title: "Inspora", sub: "Think it. Share it. Grow it." },
+    summary: "The Protected Social Lab: a platform where academic research meets community, protected by design. Planned and pitched as team Cubexia.",
+    question: "What if unfinished research could be shared **without the fear of losing it**?",
+    description: [
+      "**Inspora** is “the Protected Social Lab”: a platform where students, researchers and companies share academic projects while they are still in progress, get interdisciplinary feedback and keep their **authorship protected** through tracking, certified sharing and plagiarism detection.",
+      "Built as team **Cubexia** for the course **Software Project Management**, the project goes from the problem and the product vision to a four-layer architecture, two development iterations, a plagiarism-detection milestone, a “Liquid Glass” design language and a testing and quality report — all told in the team's pitch deck.",
+    ],
+    team: ["Demyan Menok", "Antonio Lastella", "Chiara Luongo", "Simone Tufi"],
+    tags: ["Software project management", "Iterative development", "Next.js", "Microservices", "Elasticsearch", "UI design", "Pitch deck"],
+    image: "",
+    links: [],
+    sectionsTitle: "Project Board",
+    sectionsSub: "Eight tickets, from discovery to delivery",
+    extra: [
+      { t: "h", text: "The pitch deck", sub: "Eleven slides presented by team Cubexia — scroll or use the arrows" },
+      { t: "slides", title: "Inspora pitch deck", caption: "Inspora by Cubexia · 2026", items: ["assets/projects/inspora/slide-01.jpg", "assets/projects/inspora/slide-02.jpg", "assets/projects/inspora/slide-03.jpg", "assets/projects/inspora/slide-04.jpg", "assets/projects/inspora/slide-05.jpg", "assets/projects/inspora/slide-06.jpg", "assets/projects/inspora/slide-07.jpg", "assets/projects/inspora/slide-08.jpg", "assets/projects/inspora/slide-09.jpg", "assets/projects/inspora/slide-10.jpg", "assets/projects/inspora/slide-11.jpg"] },
+    ],
+    sections: [
+      {
+        slug: "the-why",
+        column: "Discovery",
+        kind: "Epic",
+        type: "Problem, vision, audiences",
+        title: "Why Inspora?",
+        blocks: [
+          { t: "lead", title: "Academic research is fractured", text: "Tools are scattered, ideas go unprotected, and unfinished work stays invisible." },
+          {
+            t: "cards", cols: 3, items: [
+              { title: "Fragmentation", icon: "◇", tint: "lav", text: "No single platform for the **full research lifecycle**." },
+              { title: "IP risk", icon: "!", tint: "sun", text: "Fear of idea theft **discourages early sharing**." },
+              { title: "Invisible work", icon: "○", tint: "ink", text: "Unfinished research never surfaces and **never gets feedback**." },
+            ],
+          },
+          { t: "quote", text: "A platform where research meets community, protected by design.", sub: "The Protected Social Lab" },
+          { t: "h", text: "Three pillars" },
+          {
+            t: "cards", cols: 3, center: true, items: [
+              { title: "Storytelling", sub: "THE PROCESS", tint: "lav", text: "Focus on the process, not just the result. Every project tells a story." },
+              { title: "Collaboration", sub: "THE COMMUNITY", tint: "lav", text: "Interdisciplinary feedback across departments and research domains." },
+              { title: "Protection", sub: "THE IDEA", tint: "lav", text: "Authorship tracking and certified sharing with full IP integrity." },
+            ],
+          },
+          { t: "h", text: "Three audiences, one platform" },
+          {
+            t: "cards", cols: 3, items: [
+              { title: "University students", icon: "◔", tint: "plain", text: "Aged 19–26, seeking **visibility** for their academic projects and building a portfolio." },
+              { title: "Academic researchers", icon: "◑", tint: "plain", text: "Looking for **interdisciplinary collaboration** across faculties and institutions." },
+              { title: "Corporate innovation hubs", icon: "◕", tint: "plain", text: "Seeking **academic partnerships** and early access to emerging research talent." },
+            ],
+          },
+        ],
+      },
+      {
+        slug: "architecture",
+        column: "Discovery",
+        kind: "Spike",
+        type: "System design",
+        title: "Four-Layer Architecture",
+        blocks: [
+          { t: "p", text: "Requests flow from the Next.js frontend through an authenticated gateway to the microservices and the data layer.", center: true },
+          {
+            t: "layers", items: [
+              { name: "Frontend", icon: "▭", tech: ["Next.js", "React", "Tailwind", "Lucide"] },
+              { name: "API Gateway", icon: "⇄", tech: ["JWT Auth", "Socket.io", "Rate limiting"] },
+              { name: "Microservices", icon: "▤", tech: ["Node.js", "Express", "Python workers"] },
+              { name: "Data Layer", icon: "⛁", tech: ["PostgreSQL", "Elasticsearch", "Redis cache"] },
+            ],
+          },
+          { t: "closing", title: "Why four layers", text: "Each layer can evolve on its own: the gateway centralises **authentication, real-time sockets and rate limiting**, the services split the work between Node.js and Python, and the data layer pairs a relational store with **full-text search** and a cache." },
+        ],
+      },
+      {
+        slug: "iteration-1",
+        column: "Iterations",
+        kind: "Sprint",
+        type: "Building the foundation",
+        title: "Iteration I — Foundation",
+        blocks: [
+          { t: "p", text: "The first iteration delivered the **core infrastructure** for secure academic sharing.", center: true },
+          {
+            t: "cards", cols: 3, items: [
+              { title: "Secure authentication", icon: "⚿", tint: "lav", text: "**MFA** and role-based access." },
+              { title: "Project upload system", icon: "⇪", tint: "lav", text: "Submissions of up to **500 MB** each." },
+              { title: "Project snapshots", icon: "◷", tint: "lav", text: "**Versioning** and change history for every project." },
+            ],
+          },
+          { t: "img", src: "assets/projects/inspora/mockup-feed.png", alt: "Inspora home feed on a laptop", caption: "The home feed", sub: "Collaborations in progress, faculties and project cards with affinity scores", narrow: false, zoom: true },
+        ],
+      },
+      {
+        slug: "iteration-2",
+        column: "Iterations",
+        kind: "Sprint",
+        type: "Search & interaction",
+        title: "Iteration II — Search & Interaction",
+        blocks: [
+          { t: "p", text: "Connecting researchers through **powerful discovery** and real-time communication.", center: true },
+          {
+            t: "cards", cols: 3, items: [
+              { title: "Full-text search", icon: "⌕", tint: "sun", text: "Powered by **Elasticsearch**, with typo tolerance." },
+              { title: "Advanced filters", icon: "⚲", tint: "sun", text: "By **SSD disciplines**, skills and faculty." },
+              { title: "Notifications", icon: "◉", tint: "sun", text: "Part of the interaction features of this iteration." },
+            ],
+          },
+          { t: "img", src: "assets/projects/inspora/mockup-search.png", alt: "Inspora search results on a laptop", caption: "Search results", sub: "Researchers and posts & papers in a single query", zoom: true },
+        ],
+      },
+      {
+        slug: "plagiarism-detection",
+        column: "Iterations",
+        kind: "Milestone",
+        type: "Objective achieved",
+        title: "Plagiarism Detection",
+        blocks: [
+          { t: "lead", title: "Protecting ideas before they go public", text: "Automated similarity analysis checks every project against the platform corpus, so that **authorship integrity is verified before public listing**." },
+          {
+            t: "rings", items: [
+              { value: 97, label: "Plagiarism detected", sub: "Milestone objective achieved" },
+            ],
+          },
+          {
+            t: "cards", cols: 3, items: [
+              { title: "Cross-document scanning", tint: "plain", text: "Similarity against the whole platform corpus." },
+              { title: "Real-time percentage", tint: "plain", text: "A live plagiarism score for each project." },
+              { title: "Integrity before listing", tint: "plain", text: "Authorship verified before a project is published." },
+            ],
+          },
+        ],
+      },
+      {
+        slug: "liquid-glass",
+        column: "Delivery",
+        kind: "Design",
+        type: "Clarity · consistency · aesthetics",
+        title: "Liquid Glass",
+        blocks: [
+          { t: "p", text: "Every surface is designed to **reduce cognitive load** and keep the attention on academic content.", center: true },
+          {
+            t: "cards", cols: 3, items: [
+              { title: "Liquid Glass", icon: "◌", tint: "lav", text: "Translucent layers with a subtle blur create depth without distraction; a single accent colour guides the eye." },
+              { title: "Inter", icon: "Aa", tint: "lav", text: "One typeface across all weights — clean and legible at every size, with a monospace only for metadata." },
+              { title: "Scientific Deep", icon: "◐", tint: "lav", text: "Navy, sky blue, lavender and silver, matching the glass effect on buttons and panels." },
+            ],
+          },
+          { t: "h", text: "The palette", sub: "From the team's brand specification" },
+          {
+            t: "swatches", items: [
+              { name: "Ink", hex: "#0D1117" },
+              { name: "Paper", hex: "#F1F3F6" },
+              { name: "Sky accent", hex: "#38BDF8" },
+              { name: "Coral", hex: "#F94C46" },
+            ],
+          },
+          { t: "h", text: "The glass recipe" },
+          {
+            t: "cards", cols: 2, items: [
+              { title: "Surfaces", tint: "plain", bullet: "•", lines: ["24px backdrop blur on translucent white (5%)", "Inner highlights instead of drop shadows", "Large radii: pills, 35px cards, 27px image areas"] },
+              { title: "Patterns", tint: "plain", bullet: "•", lines: ["Full-width frosted feed cards", "Circular progress rings for affinity scores", "Scrollable pill filters and glass action bars"] },
+            ],
+          },
+        ],
+      },
+      {
+        slug: "testing-quality",
+        column: "Delivery",
+        kind: "QA",
+        type: "Built to last",
+        title: "Testing & Quality",
+        blocks: [
+          {
+            t: "rings", items: [
+              { value: 72, label: "Unit test coverage", sub: "Across all microservices" },
+              { value: 100, label: "Acceptance criteria met", sub: "All user stories verified" },
+            ],
+          },
+          {
+            t: "stats", items: [
+              { value: "2", label: "core APIs integrated — REST + WebSocket" },
+              { value: "<500 ms", label: "search response time, Elasticsearch p99 latency" },
+            ],
+          },
+        ],
+      },
+      {
+        slug: "whats-next",
+        column: "Delivery",
+        kind: "Roadmap",
+        type: "The vision continues",
+        title: "What's Next",
+        blocks: [
+          { t: "img", src: "assets/projects/inspora/mascot.png", alt: "The Inspora mascot holding a glass cube with the logo", narrow: true },
+          {
+            t: "cards", cols: 3, items: [
+              { title: "Collaboration system", icon: "⇆", tint: "lav", text: "Working on projects together, inside the platform." },
+              { title: "AI similarity matching", icon: "✦", tint: "lav", text: "Advanced, AI-powered matching of related research." },
+              { title: "Mobile app", icon: "▯", tint: "lav", text: "Native applications for iOS and Android." },
+            ],
+          },
+          { t: "closing", title: "Think it. Share it. Grow it.", text: "A roadmap ahead for a platform where research meets community — **protected by design**." },
+        ],
+      },
+    ],
+  },
+  {
     slug: "pixel-library",
     title: "Pixel Library",
     kind: "Personal",
