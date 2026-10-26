@@ -25,6 +25,8 @@ const PROFILE = {
   name: "Chiara",
   fullName: "Chiara Luongo",
   tagline: "Between logic & imagination",
+  photo: "assets/photo.jpg",
+  photoAlt: "Chiara sitting in the grass next to a dog",
   about: [
     "I'm Chiara, a designer and developer exploring the intersection between logic and imagination.",
     "My work reflects a balance between creative expression and technical precision — a duality that shapes both my academic path and personal projects.",

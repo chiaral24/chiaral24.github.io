@@ -1,7 +1,7 @@
 // Piccolo router basato sull'hash: #/, #/about, #/projects, #/projects/<slug>, #/contact
 const app = document.getElementById("app");
 const ILLUSTRATION = "assets/illustration.png";
-const ILLUSTRATION_ABOUT = "assets/illustration-about.png";
+const ILLUSTRATION_CONTACT = "assets/illustration-contact.png";
 
 const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 
@@ -40,7 +40,7 @@ function about() {
       <h2 class="page-title">About Me</h2>
       <div style="height:16px"></div>
       ${PROFILE.about.map((p) => `<p>${esc(p)}</p>`).join("")}
-      <div class="portrait">${illustration(ILLUSTRATION_ABOUT)}</div>
+      ${PROFILE.photo ? `<div class="portrait"><img src="${esc(PROFILE.photo)}" alt="${esc(PROFILE.photoAlt || PROFILE.fullName)}"></div>` : ""}
     </section>`;
 }
 
@@ -192,16 +192,84 @@ function section(slug, sectionSlug) {
 function contact() {
   return `
     ${back()}
-    <section class="page">
+    <section class="page contact">
       <h2 class="page-title" style="margin-bottom:32px">Get in Touch</h2>
-      <ul class="contact-list">
-        ${PROFILE.contacts.map((c) => `
-          <li><a href="${esc(c.href)}" ${c.href.startsWith("http") ? 'target="_blank" rel="noopener"' : ""}>
-            <span class="ico">${ICONS[c.type] || ICONS.link}</span>
-            <span><span class="label">${esc(c.label)}</span><span class="value">${esc(c.value)}</span></span>
-          </a></li>`).join("")}
-      </ul>
+      <div class="contact-layout">
+        <ul class="contact-list">
+          ${PROFILE.contacts.map((c) => `
+            <li><a href="${esc(c.href)}" ${c.href.startsWith("http") ? 'target="_blank" rel="noopener"' : ""}>
+              <span class="ico">${ICONS[c.type] || ICONS.link}</span>
+              <span><span class="label">${esc(c.label)}</span><span class="value">${esc(c.value)}</span></span>
+            </a></li>`).join("")}
+        </ul>
+        ${illustration(ILLUSTRATION_CONTACT)}
+      </div>
     </section>`;
+}
+
+// Animazioni d'entrata, come nel sito Figma: gli elementi compaiono in sequenza
+// con una dissolvenza e uno scorrimento di 20px, quando entrano nello schermo.
+const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
+let revealObserver;
+
+function markReveal(el, dir = "up") {
+  if (el) { el.classList.add("reveal"); el.dataset.reveal = dir; }
+}
+
+function animateIn() {
+  if (revealObserver) revealObserver.disconnect();
+  if (reduceMotion || !("IntersectionObserver" in window)) return;
+
+  const home = app.querySelector(".home");
+  if (home) {
+    markReveal(home.querySelector(".illustration"), "scale");
+    home.querySelectorAll(".name, .tagline").forEach((el) => markReveal(el, "fade"));
+    home.querySelectorAll(".nav .btn").forEach((el) => markReveal(el, "up"));
+  }
+  markReveal(app.querySelector(".back"), "fade");
+  const page = app.querySelector(".page");
+  if (page) {
+    const GROUPS = ".grid, .roadmap, .boxes, .journey, .swatches, .contact-list, .canvas";
+    for (const child of page.children) {
+      if (child.classList.contains("clouds")) continue;
+      if (child.classList.contains("page-title")) { markReveal(child, "down"); continue; }
+      if (child.matches(GROUPS)) { [...child.children].forEach((el) => markReveal(el, "up")); continue; }
+      if (child.classList.contains("mindmap")) {
+        markReveal(child.querySelector(".mind-center"), "scale");
+        child.querySelectorAll(".boxes > *").forEach((el) => markReveal(el, "up"));
+        continue;
+      }
+      if (child.classList.contains("contact-layout")) {
+        child.querySelectorAll(".contact-list > li").forEach((el) => markReveal(el, "left"));
+        markReveal(child.querySelector(".illustration"), "scale");
+        continue;
+      }
+      markReveal(child, "up");
+    }
+    // Le nuvolette arrivano dai lati
+    page.querySelectorAll(".deco").forEach((el) => markReveal(el, el.classList.contains("left") ? "left-far" : "right-far"));
+  }
+
+  revealObserver = new IntersectionObserver((entries) => {
+    let i = 0;
+    for (const e of entries) {
+      if (!e.isIntersecting) continue;
+      const el = e.target;
+      revealObserver.unobserve(el);
+      const delay = Math.min(i++, 8) * 90;
+      el.style.animationDelay = `${delay}ms`;
+      el.classList.add("in");
+      // A fine animazione togliamo le classi, così tornano a funzionare gli effetti hover.
+      // Il timeout è una rete di sicurezza: se l'animazione non parte, il contenuto compare comunque.
+      const done = () => {
+        el.classList.remove("reveal", "in");
+        el.style.animationDelay = "";
+      };
+      el.addEventListener("animationend", done, { once: true });
+      setTimeout(done, delay + 1500);
+    }
+  }, { rootMargin: "0px 0px -40px 0px" });
+  app.querySelectorAll(".reveal").forEach((el) => revealObserver.observe(el));
 }
 
 function render() {
@@ -213,6 +281,7 @@ function render() {
     home();
   app.innerHTML = view;
   window.scrollTo(0, 0);
+  animateIn();
   const p = slug && PROJECTS.find((x) => x.slug === slug);
   const s = p && sub && p.sections && p.sections.find((x) => x.slug === sub);
   document.title = s ? `${s.title} · ${p.title}` : p ? `${p.title} · ${PROFILE.fullName}` : `${PROFILE.fullName} · Portfolio`;

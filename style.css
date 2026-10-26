@@ -6,6 +6,7 @@
   --accent: #a99ad6;
   --card: #f9f8f4;
   --tag: #efede6;
+  --hover-tint: rgba(195, 180, 224, .12);
   --display: "Space Grotesk", sans-serif;
   --body: "Inter", sans-serif;
 }
@@ -42,7 +43,7 @@ body {
   font-family: var(--body);
   font-size: 15px;
   line-height: 1.6;
-  transition: background .25s, color .25s;
+  transition: background .5s, color .5s;
 }
 
 a { color: inherit; }
@@ -71,9 +72,9 @@ img { max-width: 100%; display: block; }
   display: grid;
   place-items: center;
   cursor: pointer;
-  transition: transform .2s;
+  transition: transform .3s, background .5s, color .5s, border-color .5s;
 }
-.theme-toggle:hover { transform: rotate(20deg); }
+.theme-toggle:hover { transform: scale(1.1); }
 .theme-toggle svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; }
 .theme-toggle .icon-moon { display: none; }
 :root[data-theme="dark"] .theme-toggle .icon-sun { display: none; }
@@ -88,9 +89,7 @@ img { max-width: 100%; display: block; }
   max-width: 920px;
   margin: 0 auto;
   padding: 96px 24px 80px;
-  animation: fade .35s ease;
 }
-@keyframes fade { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
 
 .back {
   position: fixed;
@@ -118,7 +117,6 @@ h1, h2, h3 { font-family: var(--display); font-weight: 500; margin: 0; }
   justify-content: center;
   text-align: center;
   padding: 80px 16px;
-  animation: fade .35s ease;
 }
 .home .illustration { width: 150px; height: auto; margin-bottom: 56px; }
 .home .name { font-family: var(--display); font-size: 15px; margin: 0 0 12px; }
@@ -134,22 +132,22 @@ h1, h2, h3 { font-family: var(--display); font-weight: 500; margin: 0; }
   color: var(--fg);
   text-decoration: none;
   font: 500 14px var(--body);
-  transition: background .15s, color .15s;
+  transition: transform .3s, background .3s, color .5s, border-color .5s;
 }
-.btn:hover { background: var(--fg); color: var(--bg); }
+.btn:hover { transform: scale(1.05); background: var(--hover-tint); }
 
 /* ---------- About ---------- */
 .about p { margin: 0 0 14px; max-width: 680px; }
 .about .portrait {
-  width: 220px;
-  height: 220px;
+  width: 240px;
+  height: 240px;
   margin: 48px auto 0;
   border-radius: 50%;
   display: grid;
   place-items: center;
   box-shadow: 0 6px 30px rgba(0, 0, 0, .08);
 }
-.about .portrait img { width: 120px; }
+.about .portrait img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
 
 /* ---------- Progetti ---------- */
 .grid {
@@ -165,9 +163,9 @@ h1, h2, h3 { font-family: var(--display); font-weight: 500; margin: 0; }
   color: inherit;
   display: flex;
   flex-direction: column;
-  transition: transform .2s, box-shadow .2s;
+  transition: transform .3s, background .3s, box-shadow .3s;
 }
-.card:hover { transform: translate(-3px, -3px); box-shadow: 6px 6px 0 var(--line); }
+.card:hover { transform: translateY(-4px); background: var(--hover-tint); box-shadow: 0 10px 24px rgba(0, 0, 0, .06); }
 
 .card .thumb {
   aspect-ratio: 16 / 9;
@@ -200,6 +198,9 @@ h1, h2, h3 { font-family: var(--display); font-weight: 500; margin: 0; }
 .detail .links { display: flex; gap: 14px; flex-wrap: wrap; margin-top: 28px; }
 
 /* ---------- Contatti ---------- */
+.contact-layout { display: flex; align-items: center; justify-content: space-between; gap: 40px; flex-wrap: wrap; }
+.contact-layout .illustration { width: 190px; height: auto; margin: 0 auto; }
+@media (min-width: 700px) { .contact-layout .illustration { margin: 0 6% 0 0; } }
 .contact-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 20px; }
 .contact-list a { display: flex; align-items: center; gap: 14px; text-decoration: none; }
 .contact-list .ico {
@@ -209,9 +210,9 @@ h1, h2, h3 { font-family: var(--display); font-weight: 500; margin: 0; }
   display: grid;
   place-items: center;
   flex-shrink: 0;
-  transition: background .15s, color .15s;
+  transition: transform .3s, background .3s;
 }
-.contact-list a:hover .ico { background: var(--fg); color: var(--bg); }
+.contact-list a:hover .ico { transform: scale(1.1); background: var(--hover-tint); }
 .contact-list svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
 .contact-list .label { display: block; font-size: 12px; color: var(--muted); }
 .contact-list .value { display: block; overflow-wrap: anywhere; }
@@ -259,15 +260,15 @@ h1, h2, h3 { font-family: var(--display); font-weight: 500; margin: 0; }
 .question strong { font-weight: 500; text-decoration: underline; text-decoration-color: var(--accent); text-underline-offset: 4px; }
 .muted { color: var(--muted); }
 
-/* Nuvolette decorative: hanno lo sfondo bianco, che sparisce con multiply */
+/* Nuvolette decorative */
 .clouds { position: absolute; inset: 0; pointer-events: none; z-index: 0; }
-.deco { position: absolute; height: auto; opacity: .55; mix-blend-mode: multiply; }
+.deco { position: absolute; height: auto; opacity: .3; }
 .deco.left { left: -120px; }
 .deco.right { right: -120px; }
 body { overflow-x: hidden; }
-:root[data-theme="dark"] .deco { filter: invert(1); mix-blend-mode: screen; opacity: .35; }
+:root[data-theme="dark"] .deco { filter: invert(1); }
 @media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) .deco { filter: invert(1); mix-blend-mode: screen; opacity: .35; }
+  :root:not([data-theme="light"]) .deco { filter: invert(1); }
 }
 @media (max-width: 1200px) { .clouds { display: none; } }
 
@@ -394,9 +395,11 @@ th { font-weight: 600; border-bottom: 1.5px solid var(--line); }
   justify-content: space-between;
   text-decoration: none;
   font-family: var(--display);
-  transition: transform .2s, box-shadow .2s;
+  transition: transform .3s, background .3s;
 }
-.road-card:hover { transform: translate(-3px, -3px); box-shadow: 6px 6px 0 var(--line); }
+.road-card:hover { transform: translateY(-4px); background: var(--hover-tint); }
+.road-icon { transition: transform .3s; }
+.road-card:hover .road-icon { transform: scale(1.15) rotate(-8deg); }
 .road-icon { font-size: 22px; }
 .detail .figure { margin-bottom: 8px; }
 
@@ -415,4 +418,50 @@ th { font-weight: 600; border-bottom: 1.5px solid var(--line); }
   .bar-row { grid-template-columns: 96px 1fr 34px; }
   .quote blockquote { font-size: 18px; }
   .pager .btn { flex: 1; text-align: center; }
+}
+
+/* ---------- Animazioni ---------- */
+.reveal:not(.in) { opacity: 0; }
+.reveal.in { animation: reveal .7s cubic-bezier(.2, .7, .2, 1) both; }
+[data-reveal="up"] { --rx: 0; --ry: 20px; --rs: 1; }
+[data-reveal="down"] { --rx: 0; --ry: -20px; --rs: 1; }
+[data-reveal="left"] { --rx: -20px; --ry: 0; --rs: 1; }
+[data-reveal="fade"] { --rx: 0; --ry: 0; --rs: 1; }
+[data-reveal="scale"] { --rx: 0; --ry: 0; --rs: .9; }
+[data-reveal="left-far"] { --rx: -100px; --ry: 0; --rs: 1; }
+[data-reveal="right-far"] { --rx: 100px; --ry: 0; --rs: 1; }
+.deco.reveal.in { animation-duration: 1.2s; }
+@keyframes reveal {
+  from { opacity: 0; transform: translate(var(--rx), var(--ry)) scale(var(--rs)); }
+}
+
+/* Le nuvolette fluttuano piano */
+.clouds .deco:not(.reveal) { animation: float 7s ease-in-out infinite; }
+.clouds .deco:nth-child(2n):not(.reveal) { animation-duration: 9s; animation-delay: -3s; }
+@keyframes float {
+  0%, 100% { transform: translate(0, 0); }
+  50% { transform: translate(8px, -6px); }
+}
+
+/* Nuvolette agli angoli dei riquadri introduttivi e finali */
+.lead, .closing { position: relative; }
+.lead::after, .closing::before {
+  content: "";
+  position: absolute;
+  width: 72px;
+  height: 52px;
+  background: url("assets/deco/cloud-1.png") center / contain no-repeat;
+  opacity: .4;
+  pointer-events: none;
+  animation: float 8s ease-in-out infinite;
+}
+.lead::after { top: -24px; right: -20px; }
+.closing::before { bottom: -18px; left: -18px; background-image: url("assets/deco/cloud-2.png"); width: 90px; }
+:root[data-theme="dark"] .lead::after, :root[data-theme="dark"] .closing::before { filter: invert(1); }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .lead::after, :root:not([data-theme="light"]) .closing::before { filter: invert(1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
 }
