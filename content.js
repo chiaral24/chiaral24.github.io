@@ -852,7 +852,7 @@ CREATE TABLE MadeOf (
     kind: "University · Individual project",
     year: "2026",
     theme: "book",
-    decor: "bookmarks",
+    decor: "none",
     roadmapStyle: "toc",
     cover: { title: "Just read a book", sub: "In search of the perfect bestseller" },
     summary: "A data mining study of 52,478 Goodreads books looking for the recipe of the perfect bestseller.",

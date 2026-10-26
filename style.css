@@ -743,36 +743,8 @@ th { font-weight: 600; border-bottom: 1.5px solid var(--line); }
   margin: 6px 10px 0 0;
 }
 
-/* Segnalibri a nastro */
-.deco.ribbon {
-  width: 22px;
-  background: var(--accent);
-  clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 82%, 0 100%);
-  opacity: .75;
-  transform-origin: top center;
-}
-.deco.ribbon.gold { background: var(--gold); }
-.deco.ribbon.left { left: -70px; }
-.deco.ribbon.right { right: -70px; }
-.theme-book .deco { filter: none !important; }
-.clouds .deco.ribbon:not(.reveal) { animation: sway 6s ease-in-out infinite; }
-.clouds .deco.ribbon:nth-child(2n):not(.reveal) { animation-duration: 7.5s; animation-delay: -2s; }
-@keyframes sway { 0%, 100% { transform: rotate(0); } 50% { transform: rotate(3deg); } }
-.theme-book .lead::after, .theme-book .closing::before {
-  background: var(--accent) !important;
-  clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 80%, 0 100%);
-  filter: none !important;
-  opacity: .8;
-  width: 18px;
-  height: 46px;
-  top: -2px;
-  right: 34px;
-  bottom: auto;
-  left: auto;
-  animation: sway 6s ease-in-out infinite;
-  transform-origin: top center;
-}
-.theme-book .closing::before { background: var(--gold) !important; }
+/* Niente decorazioni agli angoli dei riquadri */
+.theme-book .lead::after, .theme-book .closing::before { content: none; }
 .theme-book .closing { border-color: var(--lav-line); background: var(--lav-bg); }
 
 /* L'indice */

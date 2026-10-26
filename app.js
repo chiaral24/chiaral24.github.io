@@ -96,15 +96,9 @@ function stripes(n = 4) {
     `<span class="deco stripe ${i % 2 ? "right" : "left"}" style="top:${y}%"></span>`).join("")}</div>`;
 }
 
-// Segnalibri a nastro ai lati, per i progetti sui libri
-function bookmarks(n = 4) {
-  const spots = [[8, 54], [26, 80], [52, 64], [78, 90]];
-  return `<div class="clouds" aria-hidden="true">${spots.slice(0, n).map(([y, h], i) =>
-    `<span class="deco ribbon ${i % 2 ? "right" : "left"}${i % 3 === 1 ? " gold" : ""}" style="top:${y}%;height:${h}px"></span>`).join("")}</div>`;
-}
-
+// decor: "clouds" (predefinito), "stripes" oppure "none"
 const decor = (p, n) =>
-  p.decor === "stripes" ? stripes(Math.min(n, 4)) : p.decor === "bookmarks" ? bookmarks(Math.min(n, 4)) : clouds(n);
+  p.decor === "none" ? "" : p.decor === "stripes" ? stripes(Math.min(n, 4)) : clouds(n);
 
 // Pagina "del libro" di ogni capitolo, calcolata dal numero di blocchi dei capitoli precedenti
 const chapterPages = (p) => p.sections.reduce((acc, s, i) => [...acc, i ? acc[i - 1] + p.sections[i - 1].blocks.length * 2 : 1], []);
