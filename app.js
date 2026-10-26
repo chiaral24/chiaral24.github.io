@@ -276,6 +276,45 @@ const BLOCKS = {
   },
   chart: (b) => chart(b),
   diagram: (b) => diagram(b),
+  // Due insiemi che si sovrappongono: cosa copre ciascuno e cosa hanno in comune
+  venn: (b) => `<div class="venn">
+    <div class="venn-art" aria-hidden="true"><span class="venn-c a"></span><span class="venn-c b"></span></div>
+    <div class="venn-part a"><span class="meta">${esc(b.a.label)}</span><h4>${esc(b.a.title)}</h4>${b.a.lines.map((l) => `<p>${md(l)}</p>`).join("")}</div>
+    <div class="venn-part both"><span class="meta">${esc(b.both.label)}</span><h4>${esc(b.both.title)}</h4><p>${md(b.both.text)}</p></div>
+    <div class="venn-part b"><span class="meta">${esc(b.b.label)}</span><h4>${esc(b.b.title)}</h4>${b.b.lines.map((l) => `<p>${md(l)}</p>`).join("")}</div>
+  </div>${b.outside ? `<div class="venn-outside"><span class="meta">${esc(b.outside.label)}</span>${b.outside.items.map((i) => `<span class="chip-tag">${esc(i)}</span>`).join("")}</div>` : ""}`,
+  // Conversazione illustrativa, con note a margine
+  chat: (b) => `<figure class="chat">
+    <figcaption><span class="chat-dot"></span>${esc(b.title)}<span class="meta">${esc(b.badge || "")}</span></figcaption>
+    <div class="chat-body">${b.messages.map((m) => `
+      <div class="msg ${m.from}">
+        <p class="bubble">${md(m.text)}</p>
+        ${m.note ? `<p class="msg-note"><span>${esc(m.noteLabel || "Note")}</span>${md(m.note)}</p>` : ""}
+      </div>`).join("")}</div>
+  </figure>`,
+  // Ciclo in più fasi: si sceglie una fase sul cerchio e si legge il dettaglio accanto
+  cycle: (b) => {
+    const id = `cy${++toggleCount}`;
+    const n = b.stages.length;
+    return `<div class="cycle n${n}">
+      ${b.stages.map((_, k) => `<input type="radio" name="${id}" id="${id}-${k}"${k ? "" : " checked"}>`).join("")}
+      <div class="cycle-ring">
+        <span class="cycle-center">${esc(b.center || "")}</span>
+        ${b.stages.map((s, k) => {
+          const a = (-90 + (360 / n) * k) * Math.PI / 180;
+          return `<label for="${id}-${k}" style="left:${50 + 40 * Math.cos(a)}%;top:${50 + 40 * Math.sin(a)}%"><b>${k + 1}</b><span>${esc(s.short || s.title)}</span></label>`;
+        }).join("")}
+      </div>
+      <div class="cycle-panels">${b.stages.map((s, k) => `
+        <div class="cycle-panel"><span class="meta">Stage ${k + 1} of ${n}</span><h4>${esc(s.title)}</h4><p>${md(s.text)}</p>
+        ${s.safeguards ? `<ul class="lines">${s.safeguards.map((l) => `<li><span class="bullet">✓</span><span>${md(l)}</span></li>`).join("")}</ul>` : ""}</div>`).join("")}</div>
+    </div>`;
+  },
+  // Matrice principio → aggancio normativo → tutele pratiche
+  matrix: (b) => `<div class="matrix">
+    <div class="matrix-head">${b.head.map((h) => `<span>${esc(h)}</span>`).join("")}</div>
+    ${b.rows.map((r) => `<div class="matrix-row">${r.map((c, k) => `<div class="matrix-cell c${k}"><span class="matrix-label">${esc(b.head[k])}</span>${md(c)}</div>`).join("")}</div>`).join("")}
+  </div>`,
   // Interruttore fra due diagrammi (es. As-Is / To-Be), solo HTML e CSS
   toggle: (b) => {
     const id = `tg${++toggleCount}`;
@@ -320,7 +359,12 @@ function project(slug) {
   if (!p) return projects();
   const roadmap = p.sections
     ? `<div class="block-h"><h3>${esc(p.sectionsTitle || "Project documentation")}</h3>${p.sectionsSub ? `<p>${esc(p.sectionsSub)}</p>` : ""}</div>
-       ${p.roadmapStyle === "film" ? `<div class="filmstrip"><div class="film-frames">${p.sections.map((s, i) => `
+       ${p.roadmapStyle === "articles" ? `<div class="articles">${p.sections.map((s, i) => `
+         <a class="article-card" href="#/projects/${esc(p.slug)}/${esc(s.slug)}">
+           <span class="article-num"><span>Art.</span>${i + 1}</span>
+           <span class="article-text"><span class="article-title">${esc(s.title)}</span>${s.type ? `<span class="article-type">${esc(s.type)}</span>` : ""}</span>
+           <span class="article-arrow" aria-hidden="true">§</span>
+         </a>`).join("")}</div>` : p.roadmapStyle === "film" ? `<div class="filmstrip"><div class="film-frames">${p.sections.map((s, i) => `
          <a class="film-frame" href="#/projects/${esc(p.slug)}/${esc(s.slug)}">
            <span class="film-scene">SCENE ${String(i + 1).padStart(2, "0")}</span>
            <span class="film-icon" aria-hidden="true">${esc(s.icon || "▶")}</span>
@@ -385,7 +429,7 @@ function section(slug, sectionSlug) {
     ${back(`#/projects/${p.slug}`, p.sectionsTitle || p.title)}
     <article class="page doc${themeClass(p)}">
       ${decor(p, 8)}
-      <span class="meta">${p.roadmapStyle === "toc" ? `Chapter ${roman(i + 1)} · ${esc(p.title)}` : p.roadmapStyle === "lab" ? `EXP ${String(i + 1).padStart(2, "0")} · ${esc(s.task || p.title)}` : p.roadmapStyle === "film" ? `Scene ${String(i + 1).padStart(2, "0")} · ${esc(p.title)}` : `${esc(p.title)} · ${i + 1}/${p.sections.length}`}</span>
+      <span class="meta">${p.roadmapStyle === "toc" ? `Chapter ${roman(i + 1)} · ${esc(p.title)}` : p.roadmapStyle === "lab" ? `EXP ${String(i + 1).padStart(2, "0")} · ${esc(s.task || p.title)}` : p.roadmapStyle === "film" ? `Scene ${String(i + 1).padStart(2, "0")} · ${esc(p.title)}` : p.roadmapStyle === "articles" ? `Article ${i + 1} · ${esc(p.title)}` : `${esc(p.title)} · ${i + 1}/${p.sections.length}`}</span>
       <h2 class="page-title center-title">${esc(s.pageTitle || s.title)}</h2>
       ${s.blocks.map((b) => (BLOCKS[b.t] ? BLOCKS[b.t](b) : "")).join("")}
       <nav class="pager">${link(prev, "prev")}${link(next, "next")}</nav>
@@ -432,7 +476,7 @@ function animateIn() {
   markReveal(app.querySelector(".back"), "fade");
   const page = app.querySelector(".page");
   if (page) {
-    const GROUPS = ".grid, .roadmap, .boxes, .journey, .swatches, .contact-list, .canvas, .schema, .ops, .chips, .toc, .lab, .gallery, .film-frames";
+    const GROUPS = ".grid, .roadmap, .boxes, .journey, .swatches, .contact-list, .canvas, .schema, .ops, .chips, .toc, .lab, .gallery, .film-frames, .articles";
     for (const child of page.children) {
       if (child.classList.contains("clouds")) continue;
       if (child.classList.contains("page-title")) { markReveal(child, "down"); continue; }

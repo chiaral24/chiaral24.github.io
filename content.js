@@ -1623,6 +1623,204 @@ rf.fit(X_train_imputed, y_train)`,
     ],
   },
   {
+    slug: "ai-mental-health-ethics",
+    title: "Ethical and Legal Challenges of AI in Mental Health",
+    kind: "University · Group seminar paper",
+    year: "2026",
+    theme: "care",
+    decor: "none",
+    roadmapStyle: "articles",
+    cover: { title: "Ethics ∩ Law", sub: "AI in mental health under GDPR and the AI Act" },
+    summary: "A seminar paper on governing mental-health AI so that ethics and EU law protect psychological confidentiality together.",
+    question: "Who protects what we tell a **mental-health chatbot**?",
+    description: [
+      "AI systems are increasingly used in mental health — chatbots, decision-support tools, digital therapy platforms. They process highly sensitive psychological data and often talk to people in **vulnerable situations**, creating a strong tension between innovation and the duty to protect privacy, dignity and **psychological confidentiality**.",
+      "This seminar paper explores how ethical principles and EU law work together — or conflict — focusing on **GDPR Article 9** (special-category data) and **AI Act Article 10** (data governance for high-risk systems). From a systematic, literature-based analysis it builds a **conceptual governance framework** that shows where regulation protects users well, where gaps remain, and what could make deployment safer.",
+    ],
+    team: ["Delpero", "Luongo", "Rafaqat"],
+    tags: ["AI ethics", "GDPR", "AI Act", "Mental health", "Governance", "Literature review"],
+    image: "",
+    links: [],
+    sectionsTitle: "The Articles",
+    sectionsSub: "Seven articles, from the tension to the recommendations",
+    sections: [
+      {
+        slug: "the-tension",
+        type: "Why mental-health AI is special",
+        title: "The Tension",
+        blocks: [
+          { t: "lead", title: "Help that is always available — and always listening", text: "Conversational agents for emotional support, tools for diagnosis and triage, systems that monitor mood over time: they can make help easier to reach and support professionals. But mental-health information is **extremely sensitive**, and the people using these tools are often in crisis. If such data is misused, leaked or processed unfairly, the harm can be very serious." },
+          { t: "quote", text: "How can AI systems in mental health be governed so that ethical principles are effectively reflected in, and reinforced by, the EU legal framework?", sub: "The research question" },
+          { t: "h", text: "More than health data", sub: "Psychological confidentiality has a relational, trust-based dimension" },
+          { t: "p", text: "Mental-health data reveals how a person **thinks, feels, reacts and copes**. Even sleep patterns, mood ratings or the language of a chat can signal distress. In therapy, confidentiality rests on professional duties and clear roles; with a chatbot that feels like a “safe space” but runs on a provider's cloud, possibly connected to analytics, those roles become blurred.", center: true },
+          { t: "h", text: "Harms beyond privacy" },
+          {
+            t: "cards", cols: 3, items: [
+              { title: "Over-reliance", icon: "!", tint: "lav", text: "A system that sounds confident can be treated as an authority — dangerous when it is wrong or not designed for crisis." },
+              { title: "Emotional influence", icon: "~", tint: "sun", text: "Framing, timing and tone can nudge users who, in distress, are less able to evaluate advice critically." },
+              { title: "Misclassification", icon: "≠", tint: "ink", text: "Non-representative data can miss risk signals or misread cultural expressions of distress." },
+            ],
+          },
+          { t: "closing", title: "Not just “check GDPR and you are done”", text: "A responsible approach must combine **legal compliance with ethical safeguards** and a life-cycle view of how systems are built, deployed and updated." },
+        ],
+      },
+      {
+        slug: "method",
+        type: "Qualitative, literature-based",
+        title: "Method",
+        blocks: [
+          { t: "p", text: "The study interprets and connects laws, ethical frameworks and academic analyses: instead of testing a hypothesis with statistics, it builds a **structured argument and a conceptual model** from careful, transparent reading.", center: true },
+          {
+            t: "steps", items: [
+              { title: "Step 1", text: "Conceptual and legal reading", action: "Close reading of the GDPR, the AI Act and core ethics guidelines to extract duties and requirements." },
+              { title: "Step 2", text: "Systematic search", action: "Explicit keywords, inclusion and exclusion criteria, screening and classification of sources." },
+              { title: "Step 3", text: "Synthesis and framework", action: "Comparing principles, obligations and mental-health studies into a framework of overlaps, gaps and improvements." },
+            ],
+          },
+          { t: "h", text: "Primary sources" },
+          {
+            t: "cards", cols: 4, items: [
+              { title: "GDPR", sub: "REG. (EU) 2016/679", tint: "lav", text: "Focus on **Article 9**, special categories of data." },
+              { title: "AI Act", sub: "REG. (EU) 2024/1689", tint: "lav", text: "Focus on **Article 10** and high-risk requirements." },
+              { title: "Trustworthy AI", sub: "EU ETHICS GUIDELINES", tint: "sun", text: "Transparency, fairness, oversight, accountability." },
+              { title: "Lee's life-cycle model", sub: "AI ETHICS IN PRACTICE", tint: "sun", text: "Mapping ethical requirements to each stage of an AI system." },
+            ],
+          },
+          { t: "h", text: "Search strategy", sub: "Google Scholar, journal reputation checked on ADA · mainly 2019–2025" },
+          { t: "chips", items: ["“AI governance” AND “GDPR”", "“AI Act” AND “health” AND “risk management”", "“conversational AI” AND “mental health” AND “ethics”", "“GDPR” AND “health data” AND “Article 9”", "“mental data protection” AND GDPR", "“privacy-preserving AI” AND healthcare"] },
+          {
+            t: "cards", cols: 2, items: [
+              { title: "Four pillars for inclusion", tint: "plain", bullet: "•", lines: ["EU law and regulation", "Ethical frameworks and governance", "Mental-health AI risks and use cases", "Technical safeguards for confidentiality or fairness"] },
+              { title: "Screening", tint: "plain", bullet: "→", lines: ["Title screening", "Abstract screening", "Full-text check of methods and discussion", "Classification: legal, ethical, applied, technical"] },
+            ],
+          },
+          { t: "h", text: "Coding the sources" },
+          {
+            t: "cards", cols: 3, center: true, items: [
+              { title: "(a) Ethical principle", tint: "lav", text: "Transparency, fairness, accountability, non-maleficence, confidentiality" },
+              { title: "(b) Legal hook", tint: "sun", text: "GDPR Art. 9 conditions, AI Act Art. 10 data governance, documentation and oversight" },
+              { title: "(c) Risk type", tint: "ink", text: "Privacy harm, emotional harm, over-reliance, bias, unclear responsibility" },
+            ],
+          },
+        ],
+      },
+      {
+        slug: "the-law",
+        type: "GDPR Art. 9 · AI Act Art. 10",
+        title: "The Law and the Principles",
+        blocks: [
+          {
+            t: "cards", cols: 2, items: [
+              { title: "GDPR Article 9", sub: "SPECIAL-CATEGORY DATA", tint: "lav", text: "Health data is a special category: processing is **prohibited unless an exception applies**, such as explicit consent or healthcare necessity. But consent quality is not automatic — users in distress may accept terms quickly without understanding data flows.", extraTitle: "Principles that align with confidentiality", extraLines: ["**Data minimisation** — against the pressure to collect more to improve prediction", "**Purpose limitation** — secondary use can feel like a betrayal of trust", "**Storage limitation** and **security**"] },
+              { title: "AI Act Article 10", sub: "DATA GOVERNANCE FOR HIGH-RISK AI", tint: "sun", text: "Training, validation and test data must be **relevant, representative and as free as possible from errors and biases** — directly supporting fairness. Documentation and traceability make providers accountable for their choices.", extraTitle: "What it covers less directly", extraLines: ["Emotional and relational harm", "Communication limits and crisis protocols", "Clear role boundaries in conversation"] },
+            ],
+          },
+          { t: "h", text: "The operationalisation problem", sub: "Principles are clear; their implementation is not" },
+          { t: "p", text: "Guidelines converge on transparency, fairness, accountability and human oversight, but stay abstract. Developers still have to decide **what counts as transparency**, how a chatbot should communicate uncertainty, and how much explanation is realistic for someone in distress. Connecting ethics to the **AI life cycle** forces these questions to be asked early — at data collection and consent design — and later, during monitoring and updates.", center: true },
+          { t: "quote", text: "Existing work is strong in each single dimension, but few contributions integrate ethics, law and technical safeguards into one governance model.", sub: "The gap this paper addresses" },
+        ],
+      },
+      {
+        slug: "mapping-matrix",
+        type: "Principles → legal hooks → safeguards",
+        title: "The Mapping Matrix",
+        blocks: [
+          { t: "p", text: "The core of the framework connects each ethical principle to its legal hook in EU law and to concrete safeguards. It is not a legal substitute, but a structured view to support governance decisions.", center: true },
+          {
+            t: "matrix", head: ["Principle", "Legal hook (EU)", "Practical safeguards"],
+            rows: [
+              ["**Psychological confidentiality**", "GDPR Art. 9 lawful basis; minimisation; purpose limitation; security", "Minimise sensitive fields; explain data flows; restrict secondary uses; strong access controls; retention limits; privacy-preserving training"],
+              ["**Transparency**", "GDPR transparency duties; user information; fairness debates", "Disclose the AI's role; communicate limits and uncertainty; no therapeutic “overclaim”; plain language; crisis disclaimers"],
+              ["**Fairness / justice**", "GDPR fairness discussions; non-discrimination", "Bias checks on training data; subgroup testing; representative datasets; monitoring drift and unequal outcomes"],
+              ["**Accountability**", "GDPR controller/processor duties; AI Act high-risk governance, documentation, oversight", "Clear responsibilities; audit trails; incident response; provider/deployer/clinician roles; escalation protocols"],
+              ["**Non-maleficence**", "Only indirectly supported via risk controls — not fully covered", "Safety-by-design: guardrails, crisis routing, no manipulative nudges, human oversight, evaluation in real contexts"],
+            ],
+          },
+          { t: "h", text: "Two laws, two layers", sub: "Confidentiality is both a data problem and a system problem" },
+          {
+            t: "venn",
+            a: { label: "GDPR", title: "The data layer", lines: ["Lawful basis for sensitive data", "Minimisation and purpose limitation", "Individual rights and security"] },
+            both: { label: "Together", title: "A stronger baseline", text: "Lawful data **and** a robust, unbiased, monitored system — neither law alone covers both." },
+            b: { label: "AI Act", title: "The system layer", lines: ["Data governance and quality", "Documentation and traceability", "Oversight and monitoring"] },
+            outside: { label: "Still outside", items: ["Emotional harm", "Real user understanding", "Responsibility between actors"] },
+          },
+        ],
+      },
+      {
+        slug: "chatbot-scenario",
+        type: "The framework in practice",
+        title: "A Triage Chatbot",
+        blocks: [
+          { t: "p", text: "Consider a chatbot for initial mental-health support: it asks about mood, stress and anxiety, then suggests self-help resources, a clinician or crisis services. It scales and is always available — but it works exactly where users may be distressed and may see it as an authority.", center: true },
+          {
+            t: "chat", title: "Triage assistant", badge: "Illustrative scenario",
+            messages: [
+              { from: "bot", text: "Hi, I'm an automated assistant, not a therapist. What you share is used only to suggest the right support, and you can stop at any time.", noteLabel: "Transparency · GDPR Art. 9", note: "Disclose the AI's role and ask for consent the user can actually understand." },
+              { from: "user", text: "I've been feeling really anxious and I can't sleep." },
+              { from: "bot", text: "Thank you for telling me. How often has this happened in the last two weeks?", noteLabel: "Data minimisation", note: "Ask only what triage needs — no extra text, behaviour or metadata “to improve the model”." },
+              { from: "user", text: "Almost every night. Sometimes it feels like there's no way out." },
+              { from: "bot", text: "That sounds really hard, and you deserve support from a person. I can connect you with a trained counsellor now, or show you crisis services available 24/7.", noteLabel: "Non-maleficence", note: "Crisis signals trigger escalation to human support instead of confident automated advice." },
+            ],
+          },
+          {
+            t: "cards", cols: 3, items: [
+              { title: "GDPR perspective", tint: "lav", text: "Special-category data needs an Art. 9 basis. Consent must be **understood**, minimisation strict, and hidden secondary uses — like profiling for advertising — prevented." },
+              { title: "AI Act perspective", tint: "sun", text: "If it influences health decisions it may be **high-risk**: training data must represent how distress is expressed across groups, with documentation and monitoring." },
+              { title: "Ethical perspective", tint: "ink", text: "Transparency means explaining **what the system can and cannot do**. A confident tone breeds over-trust; even lawful use can betray trust if intimate disclosures become a data commodity." },
+            ],
+          },
+        ],
+      },
+      {
+        slug: "life-cycle",
+        type: "An operational framework",
+        title: "Governance Across the Life Cycle",
+        blocks: [
+          { t: "p", text: "Building on life-cycle thinking, the framework lists concrete governance questions and safeguards for each stage. It is intentionally simple, so that small teams and large organisations alike can use it. **Choose a stage** to read it.", center: true },
+          {
+            t: "cycle", center: "Mental-health AI",
+            stages: [
+              { short: "Design", title: "Design and scoping", text: "Define the intended purpose and the boundaries of the system: **support, triage or therapy-like** interaction. Overclaim is a major risk, so boundaries must be explicit.", safeguards: ["Explicit role and limits", "Actor structure identified early: provider, deployer, clinicians, processors"] },
+              { short: "Data & consent", title: "Data collection and consent design", text: "Apply GDPR principles: lawful basis under Art. 9, minimisation, purpose limitation and clear transparency. In vulnerable contexts, make sure the user is **not pressured**.", safeguards: ["Consent not hidden in long documents", "Defined retention periods", "No unnecessary metadata"] },
+              { short: "Development", title: "Model development and validation", text: "Apply AI Act data governance: **representative data**, bias checks, error analysis and documentation.", safeguards: ["Subgroup performance testing", "Privacy-preserving techniques such as federated learning", "Recorded dataset decisions and mitigations"] },
+              { short: "Deployment", title: "Deployment and user interaction", text: "Transparency that fits mental-health users, **human oversight** and a safe interaction design.", safeguards: ["Disclose the AI, communicate limits", "No manipulative patterns", "Crisis escalation and “do no harm” defaults"] },
+              { short: "Monitoring", title: "Monitoring and incident response", text: "Monitor outcomes, feedback and drift; handle incidents such as reports of harmful advice. If the system learns from users, **constrain the updates**.", safeguards: ["Incident procedures", "Audit logs and documentation", "Risk checks on every new version"] },
+              { short: "Review", title: "Review and improvement", text: "Periodically check whether the system still fits its purpose, whether the law has changed and whether new ethical risks are emerging — evaluating **trust and dependency**, not only accuracy.", safeguards: ["Purpose and legal review", "User trust and dependency patterns"] },
+            ],
+          },
+        ],
+      },
+      {
+        slug: "recommendations",
+        type: "Gaps, recommendations, conclusion",
+        title: "Gaps and Recommendations",
+        blocks: [
+          { t: "h", text: "Remaining grey areas" },
+          {
+            t: "cards", cols: 2, items: [
+              { title: "Emotional harm and trust", tint: "lav", text: "A system can be compliant in data processing and still encourage dependency or give misleading reassurance. In law, transparency means **information provision**; in mental health it must mean **user understanding**." },
+              { title: "Responsibility distribution", tint: "sun", text: "Developers, platforms and health organisations share the system. When harm happens, accountability must not be **“dropped” between actors**." },
+            ],
+          },
+          { t: "h", text: "Six recommendations" },
+          {
+            t: "cards", cols: 3, items: [
+              { title: "1 · Confidentiality by design", tint: "plain", text: "Treat psychological confidentiality as a **design goal**, not only a legal requirement." },
+              { title: "2 · Mental-health transparency", tint: "plain", text: "Clear limits, no “therapist-like” claims, uncertainty in **simple, repeated** language." },
+              { title: "3 · Fairness through data governance", tint: "plain", text: "Subgroup testing, drift monitoring, documented dataset limits." },
+              { title: "4 · Crisis and escalation", tint: "plain", text: "Safe routes to **human support** and conservative behaviour when uncertain." },
+              { title: "5 · Clear accountability", tint: "plain", text: "Who monitors, who responds to incidents, who updates — with usable audit trails." },
+              { title: "6 · Privacy tech, not alone", tint: "plain", text: "Privacy-preserving techniques help, but governance and interaction design still matter." },
+            ],
+          },
+          { t: "h", text: "Limitations" },
+          { t: "chips", items: ["EU legal context only", "Conceptual, not empirically validated", "Fast-changing regulation and practice"] },
+          { t: "closing", title: "Conclusion", text: "The GDPR constrains data processing and the AI Act constrains system-level risk; ethics highlights the harm and trust that compliance alone can miss. The proposed **ethical–legal governance framework** connects principles, legal hooks and safeguards across the AI life cycle — and shows where gaps remain, especially around **emotional harm, user understanding and responsibility**." },
+        ],
+      },
+    ],
+  },
+  {
     slug: "pixel-library",
     title: "Pixel Library",
     kind: "Personal",
