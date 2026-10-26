@@ -1992,3 +1992,37 @@ body.theme-glass { isolation: isolate; }
   .chip-name small, .theme-clarity .cover.big .chip-name small { font-size: 8px; }
   .chip-price, .theme-clarity .cover.big .chip-price { font-size: 10px; }
 }
+
+/* Filtri per area nella pagina Projects */
+.filters { display: flex; flex-wrap: wrap; gap: 8px; margin: 22px 0 6px; }
+.filter {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 14px;
+  border: 1.5px solid var(--line);
+  background: transparent;
+  color: var(--fg);
+  font: 500 14px var(--body);
+  cursor: pointer;
+  transition: background .2s, color .2s;
+}
+.filter span { font: 600 11px ui-monospace, SFMono-Regular, Menlo, monospace; color: var(--muted); }
+.filter:hover { background: var(--tag); }
+.filter[aria-pressed="true"] { background: var(--fg); color: var(--bg); }
+.filter[aria-pressed="true"] span { color: var(--bg); opacity: .7; }
+.filter:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.filter-status { min-height: 1.2em; margin: 0 0 16px; font-size: 13px; color: var(--muted); }
+.card[hidden] { display: none !important; }
+
+/* Competenze nella pagina About */
+.skills { margin-top: 56px; }
+.skill-groups { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
+.skill-group { border: 1.5px solid var(--line); background: var(--card); padding: 18px 20px; }
+.skill-group h4 { font: 600 12px var(--body); letter-spacing: .08em; text-transform: uppercase; color: var(--accent); margin: 0 0 10px; }
+.skill-group ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
+.skill-group li { display: flex; flex-direction: column; gap: 4px; }
+.skill-name { font: 500 15px var(--display); }
+.skill-links { display: flex; flex-wrap: wrap; gap: 6px; }
+.skill-links a { font-size: 12px; padding: 1px 9px; border-radius: 999px; background: var(--tag); color: var(--fg); text-decoration: none; transition: background .2s, color .2s; }
+.skill-links a:hover, .skill-links a:focus-visible { background: var(--fg); color: var(--bg); }

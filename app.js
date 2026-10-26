@@ -39,6 +39,21 @@ function home() {
     </section>`;
 }
 
+// Competenze raggruppate, ognuna con i link ai progetti in cui è stata usata
+const skillsBlock = () => PROFILE.skills ? `
+  <div class="skills">
+    <div class="block-h"><h3>Skills</h3><p>Each one links to the projects where I used it</p></div>
+    <div class="skill-groups">${PROFILE.skills.map((g) => `
+      <div class="skill-group">
+        <h4>${esc(g.group)}</h4>
+        <ul>${g.items.map((s) => `
+          <li><span class="skill-name">${esc(s.name)}</span><span class="skill-links">${s.projects.map((slug) => {
+            const p = PROJECTS.find((x) => x.slug === slug);
+            return p ? `<a href="#/projects/${esc(p.slug)}">${esc(p.short || p.title)}</a>` : "";
+          }).join("")}</span></li>`).join("")}</ul>
+      </div>`).join("")}</div>
+  </div>` : "";
+
 function about() {
   return `
     ${back()}
@@ -47,6 +62,7 @@ function about() {
       <div style="height:16px"></div>
       ${PROFILE.about.map((p) => `<p>${esc(p)}</p>`).join("")}
       ${PROFILE.photo ? `<div class="portrait"><img src="${esc(PROFILE.photo)}" alt="${esc(PROFILE.photoAlt || PROFILE.fullName)}"></div>` : ""}
+      ${skillsBlock()}
     </section>`;
 }
 
@@ -66,7 +82,7 @@ function card(p) {
     ? `<img src="${esc(p.image)}" alt="" loading="lazy">`
     : `<span class="star" aria-hidden="true">★</span>`;
   return `
-    <a class="card${themeClass(p)}" href="#/projects/${esc(p.slug)}">
+    <a class="card${themeClass(p)}" href="#/projects/${esc(p.slug)}" data-filters="${esc((p.filters || []).join("|"))}">
       <div class="thumb">${thumb}</div>
       <div class="body">
         <div class="card-labels">
@@ -82,12 +98,42 @@ function card(p) {
     </a>`;
 }
 
+// Filtri per area: l'ordine è fisso, i conteggi vengono dai progetti
+const FILTERS = ["Software", "Data", "Design & UX", "Business", "Research"];
+let currentFilter = "all";
+const countFor = (f) => (f === "all" ? PROJECTS.length : PROJECTS.filter((p) => (p.filters || []).includes(f)).length);
+const filterBar = () => `<div class="filters" role="group" aria-label="Filter projects by area">${["all", ...FILTERS].filter((f) => countFor(f)).map((f) =>
+  `<button type="button" class="filter" data-filter="${esc(f)}" aria-pressed="${f === currentFilter}">${f === "all" ? "All" : esc(f)}<span>${countFor(f)}</span></button>`).join("")}</div>
+  <p class="filter-status" aria-live="polite"></p>`;
+
+function applyFilter() {
+  const grid = app.querySelector(".grid");
+  if (!grid || !app.querySelector(".filters")) return;
+  let shown = 0;
+  grid.querySelectorAll(".card").forEach((c) => {
+    const match = currentFilter === "all" || c.dataset.filters.split("|").includes(currentFilter);
+    c.hidden = !match;
+    if (match) shown++;
+  });
+  app.querySelectorAll(".filter").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.filter === currentFilter)));
+  const status = app.querySelector(".filter-status");
+  if (status) status.textContent = currentFilter === "all" ? "" : `Showing ${shown} ${shown === 1 ? "project" : "projects"} in ${currentFilter}`;
+}
+
+document.addEventListener("click", (e) => {
+  const btn = e.target.closest(".filter");
+  if (!btn) return;
+  currentFilter = btn.dataset.filter;
+  applyFilter();
+});
+
 function projects() {
   return `
     ${back()}
     <section class="page">
       <h2 class="page-title">Projects</h2>
       <p class="page-sub">Select a project to explore its development process and key learnings.</p>
+      ${filterBar()}
       <div class="grid">${PROJECTS.map(card).join("")}</div>
     </section>`;
 }
@@ -638,6 +684,7 @@ function render() {
     page === "contact" ? contact() :
     home();
   app.innerHTML = view;
+  applyFilter();
   // Se un'illustrazione manca, la togliamo (al posto di un onerror inline, bloccato dalla CSP)
   app.querySelectorAll("img.illustration").forEach((img) => img.addEventListener("error", () => img.remove(), { once: true }));
   window.scrollTo(0, 0);
