@@ -96,10 +96,21 @@ function stripes(n = 4) {
     `<span class="deco stripe ${i % 2 ? "right" : "left"}" style="top:${y}%"></span>`).join("")}</div>`;
 }
 
-const decor = (p, n) => (p.decor === "stripes" ? stripes(Math.min(n, 4)) : clouds(n));
+// Segnalibri a nastro ai lati, per i progetti sui libri
+function bookmarks(n = 4) {
+  const spots = [[8, 54], [26, 80], [52, 64], [78, 90]];
+  return `<div class="clouds" aria-hidden="true">${spots.slice(0, n).map(([y, h], i) =>
+    `<span class="deco ribbon ${i % 2 ? "right" : "left"}${i % 3 === 1 ? " gold" : ""}" style="top:${y}%;height:${h}px"></span>`).join("")}</div>`;
+}
+
+const decor = (p, n) =>
+  p.decor === "stripes" ? stripes(Math.min(n, 4)) : p.decor === "bookmarks" ? bookmarks(Math.min(n, 4)) : clouds(n);
+
+// Pagina "del libro" di ogni capitolo, calcolata dal numero di blocchi dei capitoli precedenti
+const chapterPages = (p) => p.sections.reduce((acc, s, i) => [...acc, i ? acc[i - 1] + p.sections[i - 1].blocks.length * 2 : 1], []);
 
 // Evidenziazione minima per SQL e Java: commenti, stringhe, parole chiave, numeri
-const SQL_KW = /\b(CREATE|TABLE|PRIMARY|KEY|FOREIGN|REFERENCES|INSERT|INTO|VALUES|SELECT|FROM|WHERE|JOIN|ON|GROUP|BY|UPDATE|SET|DELETE|AS|COUNT|AVG|NOT|NULL|INT|VARCHAR|TEXT|DATE|DATETIME|BOOLEAN|DECIMAL|TRUE|FALSE|CURRENT_DATE|CURRENT_TIMESTAMP|AND|private|static|void|public|try|catch|new|return|throw|String|byte|for|if)\b/g;
+const SQL_KW = /\b(CREATE|TABLE|PRIMARY|KEY|FOREIGN|REFERENCES|INSERT|INTO|VALUES|SELECT|FROM|WHERE|JOIN|ON|GROUP|BY|UPDATE|SET|DELETE|AS|COUNT|AVG|NOT|NULL|INT|VARCHAR|TEXT|DATE|DATETIME|BOOLEAN|DECIMAL|TRUE|FALSE|CURRENT_DATE|CURRENT_TIMESTAMP|AND|import|from|def|True|False|None|private|static|void|public|try|catch|new|return|throw|String|byte|for|if)\b/g;
 function highlight(code) {
   return code.split("\n").map((line) => {
     const cut = line.search(/--|\/\//);
@@ -112,6 +123,68 @@ function highlight(code) {
     ).join("") + comment;
   }).join("\n");
 }
+
+// Grafici a una serie (colonne, linea, barre orizzontali) disegnati in HTML/SVG,
+// con tooltip al passaggio del mouse e la tabella dei dati sempre consultabile.
+//   { t: "chart", kind, title, sub, unit, digits, items: [{label, value, tip, tick}],
+//     domain: [min, max] (solo linea), ref: {value, label}, xLabel, yLabel, caption }
+function chart(b) {
+  const digits = b.digits ?? 0;
+  const fmt = (v) => `${Number(v).toLocaleString("en-US", { minimumFractionDigits: digits, maximumFractionDigits: digits })}${b.unit || ""}`;
+  const items = b.items;
+  // Con le etichette sopra le colonne lasciamo un po' di spazio in alto
+  const max = b.domain ? b.domain[1] : Math.max(...items.map((i) => i.value), b.ref ? b.ref.value : 0) * (b.labels ? 1.15 : 1.04);
+  const min = b.domain ? b.domain[0] : 0;
+  const pct = (v) => ((v - min) / (max - min)) * 100;
+  const tip = (i) => `${i.tip || i.label}: ${fmt(i.value)}`;
+  const ticks = b.ticks || [min, min + (max - min) / 2, max];
+  const grid = `<div class="grid-lines" aria-hidden="true">${ticks.map((t) => `<span style="bottom:${pct(t)}%"><em>${fmt(t)}</em></span>`).join("")}</div>`;
+  const ref = b.ref ? `<div class="ref-line" style="bottom:${pct(b.ref.value)}%"></div>` : "";
+  const refNote = b.ref ? `<p class="chart-ref-note"><span class="ref-swatch"></span>${esc(b.ref.label)} ${fmt(b.ref.value)}</p>` : "";
+  let plot = "";
+  if (b.kind === "hbars") {
+    const hmax = Math.max(...items.map((i) => i.value), b.ref ? b.ref.value : 0);
+    plot = `<div class="hbars">${items.map((i) => `
+      <div class="hbar-row${i.hl ? " hl" : ""}" tabindex="0" data-tip="${esc(tip(i))}">
+        <span class="hbar-label">${esc(i.label)}</span>
+        <span class="hbar-track"><span class="hbar" style="width:${(i.value / hmax) * 100}%"></span>${b.ref ? `<span class="hbar-ref" style="left:${(b.ref.value / hmax) * 100}%"></span>` : ""}</span>
+        <span class="hbar-value">${fmt(i.value)}</span>
+      </div>`).join("")}</div>
+      ${refNote}`;
+  } else if (b.kind === "line") {
+    const n = items.length;
+    const x = (k) => ((k + 0.5) / n) * 100;
+    plot = `<div class="plot line-plot">${grid}
+      <svg viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><polyline points="${items.map((i, k) => `${x(k)},${100 - pct(i.value)}`).join(" ")}" /></svg>
+      ${items.map((i, k) => `<span class="pt" tabindex="0" data-tip="${esc(tip(i))}" style="left:${x(k)}%;bottom:${pct(i.value)}%"></span>`).join("")}
+      <div class="x-labels">${items.map((i) => `<span>${esc(i.label)}</span>`).join("")}</div>
+    </div>`;
+  } else {
+    plot = `<div class="plot col-plot">${grid}${ref}
+      <div class="cols">${items.map((i) => `
+        <div class="col${i.hl ? " hl" : ""}" tabindex="0" data-tip="${esc(tip(i))}">
+          <span class="col-bar" style="height:${Math.max(pct(i.value), i.value > 0 ? 0.6 : 0)}%">${b.labels ? `<em>${fmt(i.value)}</em>` : ""}</span>
+        </div>`).join("")}</div>
+      <div class="x-labels">${items.map((i) => `<span>${i.tick === false ? "" : esc(i.tickLabel ?? i.label)}</span>`).join("")}</div>
+    </div>`;
+    plot += refNote;
+  }
+  return `
+    <figure class="chart chart-${b.kind || "columns"}">
+      <figcaption><strong>${esc(b.title)}</strong>${b.sub ? `<span>${esc(b.sub)}</span>` : ""}</figcaption>
+      ${b.yLabel && b.kind !== "hbars" ? `<span class="axis-title">${esc(b.yLabel)}</span>` : ""}
+      ${plot}
+      ${b.xLabel && b.kind !== "hbars" ? `<span class="axis-title x">${esc(b.xLabel)}</span>` : ""}
+      ${b.caption ? `<p class="chart-caption">${md(b.caption)}</p>` : ""}
+      <details class="chart-data"><summary>Show data</summary>
+        <table><thead><tr><th>${esc(b.xLabel || "Category")}</th><th>${esc(b.yLabel || "Value")}</th>${items.some((i) => i.extra) ? `<th>${esc(b.extraLabel || "")}</th>` : ""}</tr></thead>
+        <tbody>${items.map((i) => `<tr><td>${esc(i.tip || i.label)}</td><td>${fmt(i.value)}</td>${i.extra ? `<td>${esc(i.extra)}</td>` : ""}</tr>`).join("")}</tbody></table>
+      </details>
+    </figure>`;
+}
+
+// Numeri romani per i capitoli
+const roman = (n) => ["I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI", "XII"][n - 1] || String(n);
 
 // Colonne dello schema: "Nome TIPO", con * per la chiave primaria e >Tabella per la chiave esterna
 function schemaCol(c) {
@@ -145,7 +218,7 @@ function cardBlock(it) {
 const BLOCKS = {
   lead: (b) => `<div class="box lead">${b.title ? `<h3>${md(b.title)}</h3>` : ""}${paras(b.text)}</div>`,
   h: (b) => `<div class="block-h${b.small ? " small" : ""}"><h3>${md(b.text)}</h3>${b.sub ? `<p>${md(b.sub)}</p>` : ""}</div>`,
-  p: (b) => `<div class="prose${b.center ? " center" : ""}">${paras(b.text)}</div>`,
+  p: (b) => `<div class="prose${b.center ? " center" : ""}${b.dropcap ? " dropcap" : ""}">${paras(b.text)}</div>`,
   cards: (b) => `<div class="boxes cols-${b.cols || 2}${b.center ? " center" : ""}">${b.items.map(cardBlock).join("")}</div>`,
   stats: (b) => `<div class="boxes cols-${b.items.length}">${b.items.map((s) => `
     <div class="box stat"><span class="stat-value">${esc(s.value)}</span><p>${md(s.label)}</p>${s.source ? `<span class="meta">(${esc(s.source)})</span>` : ""}</div>`).join("")}</div>`,
@@ -177,6 +250,7 @@ const BLOCKS = {
     ${b.zoom ? `<a href="${esc(b.src)}" target="_blank" rel="noopener" title="Open full size">${img}<span class="zoom-hint">Open full size ↗</span></a>` : img}
     ${b.caption || b.sub ? `<figcaption>${b.caption ? `<strong>${esc(b.caption)}</strong>` : ""}${b.sub ? `<span>${esc(b.sub)}</span>` : ""}</figcaption>` : ""}</figure>`;
   },
+  chart: (b) => chart(b),
   chips: (b) => `<div class="chips">${b.items.map((c) => `<span class="chip-tag">${esc(c)}</span>`).join("")}</div>`,
   schema: (b) => `<div class="schema">${b.tables.map((tb) => `
     <div class="schema-table${tb.kind === "rel" ? " rel" : ""}">
@@ -206,6 +280,13 @@ function project(slug) {
   if (!p) return projects();
   const roadmap = p.sections
     ? `<div class="block-h"><h3>${esc(p.sectionsTitle || "Project documentation")}</h3>${p.sectionsSub ? `<p>${esc(p.sectionsSub)}</p>` : ""}</div>
+       ${p.roadmapStyle === "toc" ? `<ol class="toc">${p.sections.map((s, i) => `
+         <li><a href="#/projects/${esc(p.slug)}/${esc(s.slug)}">
+           <span class="toc-num">${roman(i + 1)}</span>
+           <span class="toc-title">${esc(s.title)}${s.type ? `<small>${esc(s.type)}</small>` : ""}</span>
+           <span class="toc-dots" aria-hidden="true"></span>
+           <span class="toc-page">${chapterPages(p)[i]}</span>
+         </a></li>`).join("")}</ol>` : `
        <div class="roadmap${p.roadmapStyle === "cards" ? " deck" : ""}">${p.sections.map((s, i) => p.roadmapStyle === "cards" ? `
          <a class="road-card tcg" href="#/projects/${esc(p.slug)}/${esc(s.slug)}">
            <span class="tcg-top"><span>No. ${String(i + 1).padStart(2, "0")}</span><span class="tcg-rarity">${"★".repeat(s.rarity || 1)}</span></span>
@@ -216,7 +297,7 @@ function project(slug) {
          <a class="road-card" href="#/projects/${esc(p.slug)}/${esc(s.slug)}">
            <span class="road-icon" aria-hidden="true">${esc(s.icon || "★")}</span>
            <span>${esc(s.title)}</span>
-         </a>`).join("")}</div>`
+         </a>`).join("")}</div>`}`
     : "";
   const gallery = p.gallery
     ? `<div class="block-h"><h3>Prototype Gallery</h3></div>${p.gallery.map((g) => BLOCKS.img({ ...g })).join("")}`
@@ -252,7 +333,7 @@ function section(slug, sectionSlug) {
     ${back(`#/projects/${p.slug}`, p.sectionsTitle || p.title)}
     <article class="page doc${themeClass(p)}">
       ${decor(p, 8)}
-      <span class="meta">${esc(p.title)} · ${i + 1}/${p.sections.length}</span>
+      <span class="meta">${p.roadmapStyle === "toc" ? `Chapter ${roman(i + 1)} · ${esc(p.title)}` : `${esc(p.title)} · ${i + 1}/${p.sections.length}`}</span>
       <h2 class="page-title center-title">${esc(s.pageTitle || s.title)}</h2>
       ${s.blocks.map((b) => (BLOCKS[b.t] ? BLOCKS[b.t](b) : "")).join("")}
       <nav class="pager">${link(prev, "prev")}${link(next, "next")}</nav>
@@ -299,7 +380,7 @@ function animateIn() {
   markReveal(app.querySelector(".back"), "fade");
   const page = app.querySelector(".page");
   if (page) {
-    const GROUPS = ".grid, .roadmap, .boxes, .journey, .swatches, .contact-list, .canvas, .schema, .ops, .chips";
+    const GROUPS = ".grid, .roadmap, .boxes, .journey, .swatches, .contact-list, .canvas, .schema, .ops, .chips, .toc";
     for (const child of page.children) {
       if (child.classList.contains("clouds")) continue;
       if (child.classList.contains("page-title")) { markReveal(child, "down"); continue; }

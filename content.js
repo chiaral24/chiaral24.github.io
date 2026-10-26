@@ -847,6 +847,265 @@ CREATE TABLE MadeOf (
     ],
   },
   {
+    slug: "just-read-a-book",
+    title: "Just read a book",
+    kind: "University · Individual project",
+    year: "2026",
+    theme: "book",
+    decor: "bookmarks",
+    roadmapStyle: "toc",
+    cover: { title: "Just read a book", sub: "In search of the perfect bestseller" },
+    summary: "A data mining study of 52,478 Goodreads books looking for the recipe of the perfect bestseller.",
+    question: "What makes a **great book**?",
+    description: [
+      "Every reader has their own idea of a great book. In this project I tried to understand what leads a book to success, looking for the recipe of the **“perfect bestseller”** in a dataset of more than **52,000 books** with their titles, authors, genres, formats and ratings.",
+      "Using **data mining** techniques — data quality checks, exploratory analysis, pattern discovery and predictive modelling with **logistic regression** and a **random forest** — the project moves from simple questions about ratings to the probability that a book becomes highly rated.",
+    ],
+    tags: ["Python", "pandas", "scikit-learn", "Exploratory analysis", "Logistic regression", "Random forest"],
+    image: "",
+    links: [],
+    sectionsTitle: "Contents",
+    sectionsSub: "Six chapters, from a first look at the data to the verdict",
+    sections: [
+      {
+        slug: "the-question",
+        type: "Introduction & dataset",
+        title: "The Question",
+        blocks: [
+          { t: "p", dropcap: true, text: "Have you ever asked yourself what makes a great book? Every reader has their own answer, so I decided to look at the question through data: which elements can help identify **patterns of literary success**, and is there such a thing as a recipe for the perfect bestseller?" },
+          {
+            t: "stats", items: [
+              { value: "52,478", label: "books, one per row" },
+              { value: "25", label: "attributes per book" },
+              { value: "18.4%", label: "of the books rated 4.3 or higher" },
+            ],
+          },
+          { t: "h", text: "The dataset", sub: "“Databook” from Kaggle, with book data from Goodreads" },
+          { t: "p", text: "Each row is a single book; the columns describe it with both **categorical** variables, such as genres, author and format, and **numerical** ones, such as the average rating, the number of ratings and the page count — a good mix for a data mining case study.", center: true },
+          { t: "chips", items: ["bookId", "title", "series", "author", "rating", "description", "language", "isbn", "genres", "characters", "bookFormat", "edition", "pages", "publisher", "publishDate", "firstPublishDate", "awards", "numRatings", "ratingsByStars", "likedPercent", "setting", "coverImg", "bbeScore", "bbeVotes", "price"] },
+          { t: "h", text: "Quality check", sub: "Before any analysis: missing values and duplicates" },
+          {
+            t: "chart", kind: "hbars", title: "Missing values by column", sub: "Share of books with no value, columns with at least one gap", unit: "%", digits: 1,
+            xLabel: "Column", yLabel: "Missing",
+            items: [
+              { label: "edition", value: 90.6, hl: true },
+              { label: "series", value: 55.3, hl: true },
+              { label: "firstPublishDate", value: 40.6, hl: true },
+              { label: "price", value: 27.4 },
+              { label: "language", value: 7.3 },
+              { label: "publisher", value: 7.0 },
+              { label: "pages", value: 4.5 },
+              { label: "bookFormat", value: 2.8 },
+              { label: "description", value: 2.5 },
+              { label: "publishDate", value: 1.7 },
+              { label: "likedPercent", value: 1.2 },
+              { label: "coverImg", value: 1.2 },
+            ],
+            caption: "Columns with a high share of missing data were left out of the analysis. The check also found **50 duplicated rows**, about 0.1% of the dataset.",
+          },
+          { t: "h", text: "Tools" },
+          { t: "chips", items: ["Python", "pandas", "NumPy", "Matplotlib", "seaborn", "scikit-learn", "Jupyter"] },
+        ],
+      },
+      {
+        slug: "reading-the-ratings",
+        type: "Exploratory analysis",
+        title: "Reading the Ratings",
+        blocks: [
+          { t: "p", text: "The first goal was to look for patterns, trends and relationships among the variables, starting from the most obvious one: **how do readers rate books?**", center: true },
+          {
+            t: "chart", kind: "columns", title: "Distribution of ratings", sub: "Number of books in each 0.25-star interval", digits: 0,
+            xLabel: "Average rating", yLabel: "Books", ticks: [0, 5000, 10000, 15000],
+            items: [
+              ["0.00", "0.25", 71], ["0.25", "0.50", 0], ["0.50", "0.75", 0], ["0.75", "1.00", 0],
+              ["1.00", "1.25", 4], ["1.25", "1.50", 0], ["1.50", "1.75", 1], ["1.75", "2.00", 3],
+              ["2.00", "2.25", 5], ["2.25", "2.50", 10], ["2.50", "2.75", 41], ["2.75", "3.00", 115],
+              ["3.00", "3.25", 540], ["3.25", "3.50", 1959], ["3.50", "3.75", 6666], ["3.75", "4.00", 14368],
+              ["4.00", "4.25", 16478], ["4.25", "4.50", 8554], ["4.50", "4.75", 2327], ["4.75", "5.00", 1336],
+            ].map(([a, z, n], i) => ({ label: `${a}–${z}`, tip: `${a}–${z} stars`, value: n, tickLabel: i % 4 === 0 ? a.slice(0, 1) : "", hl: i === 16 })),
+            caption: "Most books are rated between 3.5 and 4.5 stars — the mean is **4.02** and the median **4.03**. Extreme values are rare: readers show a general tendency to **review books positively**.",
+          },
+          { t: "h", text: "Defining popularity", sub: "Popularity = number of ratings received, split into five equal-sized levels" },
+          {
+            t: "table",
+            head: ["Popularity level", "Number of ratings", "Books", "Median rating", "Mean rating"],
+            rows: [
+              ["Very Low", "0 – 189", "10,509", "4.13", "4.11"],
+              ["Low", "190 – 1,243", "10,486", "4.00", "3.99"],
+              ["Medium", "1,244 – 4,033", "10,494", "4.00", "3.99"],
+              ["High", "4,034 – 12,905", "10,493", "4.01", "4.00"],
+              ["Very High", "12,906 – 7,048,471", "10,496", "4.04", "4.03"],
+            ],
+          },
+          {
+            t: "chart", kind: "line", title: "Median rating by popularity level", sub: "Axis starts at 3.9 to show the small differences", digits: 2,
+            domain: [3.9, 4.2], ticks: [3.9, 4.0, 4.1, 4.2], xLabel: "Popularity level", yLabel: "Median rating",
+            items: [
+              { label: "Very Low", value: 4.13 },
+              { label: "Low", value: 4.0 },
+              { label: "Medium", value: 4.0 },
+              { label: "High", value: 4.01 },
+              { label: "Very High", value: 4.04 },
+            ],
+            caption: "The median rating varies only slightly across popularity levels: popularity **is not always connected to higher perceived quality**.",
+          },
+        ],
+      },
+      {
+        slug: "peculiar-patterns",
+        type: "Pattern discovery",
+        title: "Peculiar Patterns",
+        blocks: [
+          { t: "lead", title: "From averages to probabilities", text: "Beyond the standard exploratory analysis I looked for more peculiar patterns. Instead of comparing average ratings, I focused on the **probability of achieving a high rating**, defined as an average of **4.3 stars or more** — reached by 18.4% of all books." },
+          { t: "h", text: "Keyword influence inside genres", sub: "Is a keyword in the genres associated with higher ratings?" },
+          {
+            t: "chart", kind: "columns", title: "Impact of the keyword “historical”", sub: "Probability of a high rating (≥ 4.3)", unit: "%", digits: 1, labels: true,
+            xLabel: "Genres", yLabel: "Probability of a high rating", ticks: [0, 10, 20], ref: { value: 18.4, label: "All books" },
+            items: [
+              { label: "Without keyword", value: 19.9, extra: "43,524 books" },
+              { label: "With keyword", value: 11.1, extra: "8,954 books", hl: true },
+            ],
+            extraLabel: "Books",
+            caption: "Every genre list contains specific thematic words, and a single keyword can shift the odds: books tagged **historical** reach a high rating less often than the others.",
+          },
+          { t: "h", text: "Book length", sub: "Are longer books more likely to be well received?" },
+          {
+            t: "chart", kind: "columns", title: "Book length vs probability of a high rating", sub: "Books split into four groups of equal size by page count", unit: "%", digits: 1, labels: true,
+            xLabel: "Book length", yLabel: "Probability of a high rating", ticks: [0, 10, 20], ref: { value: 18.4, label: "All books" },
+            items: [
+              { label: "Short", tip: "Short (up to 210 pages)", value: 22.0, extra: "12,548 books", hl: true },
+              { label: "Medium", tip: "Medium (211–304 pages)", value: 13.4, extra: "12,784 books" },
+              { label: "Long", tip: "Long (305–392 pages)", value: 12.6, extra: "12,311 books" },
+              { label: "Very Long", tip: "Very Long (over 392 pages)", value: 21.7, extra: "12,465 books", hl: true },
+            ],
+            extraLabel: "Books",
+            caption: "The length of a book may influence how it is perceived: the **shortest and the longest books** are the most likely to be highly rated.",
+          },
+          { t: "h", text: "Book format", sub: "Does the format influence the likelihood of a high rating?" },
+          {
+            t: "chart", kind: "hbars", title: "Book format vs probability of success", sub: "Formats with more than 100 books", unit: "%", digits: 1,
+            xLabel: "Format", yLabel: "Probability of a high rating", ref: { value: 18.4, label: "All books" },
+            items: [
+              { label: "Kindle Edition", value: 30.9, extra: "5,834 books", hl: true },
+              { label: "Audiobook", value: 30.2, extra: "106 books", hl: true },
+              { label: "ebook", value: 27.5, extra: "2,547 books", hl: true },
+              { label: "Paperback", value: 16.1, extra: "26,773 books" },
+              { label: "Hardcover", value: 16.0, extra: "12,268 books" },
+              { label: "Nook", value: 15.2, extra: "138 books" },
+              { label: "Audio CD", value: 14.5, extra: "145 books" },
+              { label: "Mass Market Paperback", value: 8.9, extra: "2,567 books" },
+            ],
+            extraLabel: "Books",
+            caption: "**Certain formats are more frequently associated with highly rated books**: the physical or digital form of a book influences how readers perceive and appreciate it.",
+          },
+        ],
+      },
+      {
+        slug: "predicting-success",
+        type: "Feature engineering & baseline",
+        title: "Predicting Success",
+        blocks: [
+          { t: "p", text: "The next step was to turn the patterns into a model that **foresees the potential success of a book**. Success became a binary target: a book is a success when its average rating is **4.3 or higher**.", center: true },
+          { t: "h", text: "The features" },
+          {
+            t: "cards", cols: 4, items: [
+              { title: "Pages", sub: "STRUCTURE", tint: "lav", text: "The structural complexity of the book" },
+              { title: "bbeScore", sub: "QUALITY", tint: "sun", text: "The perceived quality" },
+              { title: "bbeVotes", sub: "RELIABILITY", tint: "lav", text: "How reliable the score is" },
+              { title: "bookFormat", sub: "ACCESSIBILITY", tint: "sun", text: "How accessible the content is" },
+            ],
+          },
+          { t: "h", text: "The pipeline" },
+          {
+            t: "steps", items: [
+              { title: "Step 1", text: "Page count binning", action: "Four groups of similar length reduce the weight of outliers, capture non-linear effects and are easier to read." },
+              { title: "Step 2", text: "Categorical encoding", action: "One-hot encoding of the book format, since the model cannot read strings directly." },
+              { title: "Step 3", text: "Train–test split", action: "70% training, 30% test, stratified on the target, to simulate performance on unseen books." },
+              { title: "Step 4", text: "Median imputation", action: "Missing values are replaced by the median, because logistic regression cannot accept empty values." },
+            ],
+          },
+          {
+            t: "code", title: "Project.ipynb — preparing the data", text:
+`df["is_top_rated"] = (df["rating"] >= 4.3).astype(int)
+df["page_bin"] = pd.qcut(df["pages"], q=4, labels=False)
+
+X = pd.get_dummies(df[["page_bin", "bbeScore", "bbeVotes", "bookFormat"]], drop_first=True)
+y = df["is_top_rated"]
+
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.3, random_state=42, stratify=y
+)
+
+imputer = SimpleImputer(strategy="median")
+X_train_imputed = imputer.fit_transform(X_train)
+X_test_imputed = imputer.transform(X_test)`,
+          },
+          { t: "h", text: "Baseline: logistic regression", sub: "Simple, highly interpretable and a strong first benchmark" },
+          {
+            t: "chart", kind: "columns", title: "Predicted probability of success", sub: "The first ten books of the test set", unit: "%", digits: 1, labels: true,
+            xLabel: "Test book", yLabel: "Predicted probability", ticks: [0, 15, 30], ref: { value: 18.4, label: "All books" },
+            items: [16.3, 16.0, 24.3, 24.3, 16.0, 30.7, 16.0, 16.3, 28.7, 16.3].map((v, i) => ({ label: `#${i + 1}`, tip: `Book #${i + 1}`, value: v })),
+            caption: "The model gives a first probabilistic estimate and catches some **general patterns**, but its linear assumptions limit it: the predictions stay **conservative**, never far from the average.",
+          },
+        ],
+      },
+      {
+        slug: "random-forest",
+        type: "Enhanced model",
+        title: "The Random Forest",
+        blocks: [
+          { t: "lead", title: "A non-linear model", text: "Because of the limits of the baseline, I introduced a **random forest classifier**: it models non-linear relationships, captures the interaction between engagement, quality and structure, and can be read directly through **feature importance**." },
+          {
+            t: "code", title: "Project.ipynb — the enhanced model", text:
+`rf = RandomForestClassifier(
+    n_estimators=300,
+    max_depth=8,
+    random_state=42,
+    class_weight="balanced"
+)
+rf.fit(X_train_imputed, y_train)`,
+          },
+          {
+            t: "chart", kind: "hbars", title: "Feature importance", sub: "How much each feature contributes to the forest's decisions", digits: 3,
+            xLabel: "Feature", yLabel: "Importance",
+            items: [
+              { label: "bbeScore", tip: "bbeScore (quality)", value: 0.293, hl: true },
+              { label: "page_bin", tip: "page_bin (length)", value: 0.175 },
+              { label: "bbeVotes", tip: "bbeVotes (engagement)", value: 0.118 },
+              { label: "bookFormat", tip: "bookFormat (format)", value: 0.002 },
+            ],
+          },
+          {
+            t: "cards", cols: 4, items: [
+              { title: "Quality", sub: "1ST", tint: "lav", text: "**Perceived quality** (bbeScore) is the most influential factor." },
+              { title: "Structure", sub: "2ND", tint: "sun", text: "**Book length** is the second most important variable." },
+              { title: "Engagement", sub: "3RD", tint: "lav", text: "**Reader engagement** (bbeVotes) contributes to success." },
+              { title: "Format", sub: "4TH", tint: "plain", text: "**Book format** plays only a marginal role." },
+            ],
+          },
+          { t: "quote", text: "A book's bestseller status is not driven by a single feature, but by a balanced combination of quality, structure and engagement." },
+        ],
+      },
+      {
+        slug: "the-verdict",
+        type: "Conclusion",
+        title: "The Verdict",
+        blocks: [
+          { t: "p", dropcap: true, text: "The aim of this project was to understand which characteristics contribute to the success of a book. The exploratory analysis showed a complex relationship between popularity, quality and structure: **the rating alone is not enough** to define success, because it often depends on how engaged the readers are.\n\nThis is why bestseller status was modelled as a **probabilistic outcome** rather than a fixed label. The logistic regression gave a first benchmark; the random forest revealed more consistent patterns, with **perceived quality** first and **book length** second." },
+          { t: "quote", text: "A recipe for the “perfect bestseller” does not exist." },
+          {
+            t: "cards", cols: 3, center: true, items: [
+              { title: "Quality", icon: "★", tint: "lav", text: "How good readers perceive the book to be" },
+              { title: "Accessibility", icon: "❦", tint: "sun", text: "Length and format that suit its readers" },
+              { title: "Engagement", icon: "♥", tint: "ink", text: "An audience that votes, reviews and talks about it" },
+            ],
+          },
+          { t: "closing", title: "Favourable conditions", text: "A bestseller cannot be built from a list of characteristics, but there are **favourable conditions that increase the probability of success** — and they come from combining quality, accessibility and audience engagement." },
+        ],
+      },
+    ],
+  },
+  {
     slug: "pixel-library",
     title: "Pixel Library",
     kind: "Personal",
