@@ -1,6 +1,7 @@
 // Piccolo router basato sull'hash: #/, #/about, #/projects, #/projects/<slug>, #/contact
 const app = document.getElementById("app");
 const ILLUSTRATION = "assets/illustration.png";
+const ILLUSTRATION_ABOUT = "assets/illustration-about.png";
 
 const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 
@@ -15,8 +16,8 @@ const ICONS = {
 
 const back = (href = "#/", label = "Back to Home") => `<a class="back" href="${href}">← ${label}</a>`;
 
-const illustration = (cls = "illustration") =>
-  `<img class="${cls}" src="${ILLUSTRATION}" alt="" onerror="this.remove()">`;
+const illustration = (src = ILLUSTRATION) =>
+  `<img class="illustration" src="${src}" alt="" onerror="this.remove()">`;
 
 function home() {
   return `
@@ -39,7 +40,7 @@ function about() {
       <h2 class="page-title">About Me</h2>
       <div style="height:16px"></div>
       ${PROFILE.about.map((p) => `<p>${esc(p)}</p>`).join("")}
-      <div class="portrait">${illustration()}</div>
+      <div class="portrait">${illustration(ILLUSTRATION_ABOUT)}</div>
     </section>`;
 }
 
@@ -69,18 +70,122 @@ function projects() {
     </section>`;
 }
 
+// Testo con **grassetto** e paragrafi separati da una riga vuota
+const md = (s) => esc(s).replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>");
+const paras = (s) => String(s).split(/\n\n+/).map((x) => `<p>${md(x)}</p>`).join("");
+
+// Nuvolette disegnate sparse ai lati, come nel sito Figma
+function clouds(n = 6) {
+  const tops = [4, 14, 27, 39, 52, 64, 77, 90];
+  return `<div class="clouds" aria-hidden="true">${tops.slice(0, n).map((y, i) =>
+    `<img class="deco ${i % 2 ? "right" : "left"}" src="assets/deco/cloud-${(i % 2) + 1}.png" alt="" style="top:${y}%;width:${i % 3 ? 90 : 64}px">`).join("")}</div>`;
+}
+
+function cardBlock(it) {
+  const lines = it.lines
+    ? `<ul class="lines">${it.lines.map((l) => `<li><span class="bullet">${esc(it.bullet || "•")}</span><span>${md(l)}</span></li>`).join("")}</ul>`
+    : "";
+  return `
+    <div class="box tint-${it.tint || "plain"}">
+      ${it.icon ? `<span class="box-icon">${esc(it.icon)}</span>` : ""}
+      ${it.title ? `<h4>${md(it.title)}</h4>` : ""}
+      ${it.sub ? `<span class="meta">${esc(it.sub)}</span>` : ""}
+      ${it.text ? `<p>${md(it.text)}</p>` : ""}
+      ${lines}
+      ${it.focus ? `<p><strong>Focus:</strong> ${md(it.focus)}</p>` : ""}
+      ${it.impact ? `<p class="muted">Impact: ${md(it.impact)}</p>` : ""}
+      ${it.extraTitle ? `<h4 class="extra">${esc(it.extraTitle)}</h4>` : ""}
+      ${it.extra ? `<p>${md(it.extra)}</p>` : ""}
+      ${it.extraLines ? `<ul class="lines">${it.extraLines.map((l) => `<li><span class="bullet">•</span><span>${md(l)}</span></li>`).join("")}</ul>` : ""}
+    </div>`;
+}
+
+const BLOCKS = {
+  lead: (b) => `<div class="box lead">${b.title ? `<h3>${md(b.title)}</h3>` : ""}${paras(b.text)}</div>`,
+  h: (b) => `<div class="block-h${b.small ? " small" : ""}"><h3>${md(b.text)}</h3>${b.sub ? `<p>${md(b.sub)}</p>` : ""}</div>`,
+  p: (b) => `<div class="prose${b.center ? " center" : ""}">${paras(b.text)}</div>`,
+  cards: (b) => `<div class="boxes cols-${b.cols || 2}${b.center ? " center" : ""}">${b.items.map(cardBlock).join("")}</div>`,
+  stats: (b) => `<div class="boxes cols-${b.items.length}">${b.items.map((s) => `
+    <div class="box stat"><span class="stat-value">${esc(s.value)}</span><p>${md(s.label)}</p>${s.source ? `<span class="meta">(${esc(s.source)})</span>` : ""}</div>`).join("")}</div>`,
+  quote: (b) => `<figure class="quote"><blockquote>“${md(b.text)}”</blockquote>${b.sub ? `<figcaption>${md(b.sub)}</figcaption>` : ""}</figure>`,
+  steps: (b) => `<ol class="journey">${b.items.map((s) => `
+    <li class="box tint-plain">
+      <span class="meta">${esc(s.title)}</span>
+      <h4>${md(s.text)}</h4>
+      ${s.action ? `<p><span class="muted">Action</span>${md(s.action)}</p>` : ""}
+      ${s.thinking ? `<p><span class="muted">Thinking</span><em>${md(s.thinking)}</em></p>` : ""}
+      ${s.feeling ? `<p class="feeling">${esc(s.feeling)}</p>` : ""}
+    </li>`).join("")}</ol>`,
+  table: (b) => `<div class="table-wrap"><table>
+    <thead><tr>${b.head.map((h) => `<th>${esc(h)}</th>`).join("")}</tr></thead>
+    <tbody>${b.rows.map((r) => `<tr>${r.map((c) => `<td>${esc(c)}</td>`).join("")}</tr>`).join("")}</tbody>
+  </table>${b.note ? `<p class="meta">${esc(b.note)}</p>` : ""}</div>`,
+  bars: (b) => {
+    const max = Math.max(...b.items.map((i) => i.value));
+    return `<div class="bars">${b.items.map((i) => `
+      <div class="bar-row"><span class="bar-label">${esc(i.label)}</span>
+        <span class="bar-track"><span class="bar" style="width:${(i.value / max) * 100}%"></span></span>
+        <span class="bar-value">${b.unit || ""}${i.value}</span></div>`).join("")}</div>`;
+  },
+  swatches: (b) => `<div class="swatches">${b.items.map((s) => `
+    <div class="swatch"><span class="chip" style="background:${esc(s.hex)}"></span><strong>${esc(s.name)}</strong><span class="meta">${esc(s.hex)}</span></div>`).join("")}</div>`,
+  img: (b) => `<figure class="figure${b.narrow ? " narrow" : ""}"><img src="${esc(b.src)}" alt="${esc(b.alt || "")}" loading="lazy">
+    ${b.caption || b.sub ? `<figcaption>${b.caption ? `<strong>${esc(b.caption)}</strong>` : ""}${b.sub ? `<span>${esc(b.sub)}</span>` : ""}</figcaption>` : ""}</figure>`,
+  mindmap: (b) => `<div class="mindmap">
+    <div class="mind-center">${esc(b.center)}</div>
+    <div class="boxes cols-2">${b.items.map(cardBlock).join("")}</div></div>`,
+  canvas: (b) => `<div class="canvas">${b.items.map((it) => `<div class="canvas-cell area-${it.area}">${cardBlock({ ...it, tint: "plain" })}</div>`).join("")}</div>`,
+  closing: (b) => `<div class="box closing">${b.title ? `<h3>${md(b.title)}</h3>` : ""}${paras(b.text)}</div>`,
+};
+
 function project(slug) {
   const p = PROJECTS.find((x) => x.slug === slug);
   if (!p) return projects();
+  const roadmap = p.sections
+    ? `<div class="block-h"><h3>${esc(p.sectionsTitle || "Project documentation")}</h3>${p.sectionsSub ? `<p>${esc(p.sectionsSub)}</p>` : ""}</div>
+       <div class="roadmap">${p.sections.map((s) => `
+         <a class="road-card" href="#/projects/${esc(p.slug)}/${esc(s.slug)}">
+           <span class="road-icon" aria-hidden="true">${esc(s.icon || "★")}</span>
+           <span>${esc(s.title)}</span>
+         </a>`).join("")}</div>`
+    : "";
+  const gallery = p.gallery
+    ? `<div class="block-h"><h3>Prototype Gallery</h3></div>${p.gallery.map((g) => BLOCKS.img({ ...g })).join("")}`
+    : "";
   return `
     ${back("#/projects", "All projects")}
     <article class="page detail">
+      ${p.sections ? clouds(4) : ""}
       <span class="meta">${esc([p.kind, p.year].filter(Boolean).join(" · "))}</span>
       <h2 class="page-title" style="margin-top:6px">${esc(p.title)}</h2>
-      ${p.image ? `<div class="hero"><img src="${esc(p.image)}" alt="${esc(p.title)}"></div>` : `<div style="height:20px"></div>`}
-      ${p.description.map((d) => `<p>${esc(d)}</p>`).join("")}
+      ${p.question ? `<p class="question">${md(p.question)}</p>` : ""}
+      ${p.image && !p.gallery ? `<div class="hero"><img src="${esc(p.image)}" alt="${esc(p.title)}"></div>` : `<div style="height:12px"></div>`}
+      ${p.description.map((d) => `<p>${md(d)}</p>`).join("")}
       <div class="tags">${p.tags.map((t) => `<span class="tag">${esc(t)}</span>`).join("")}</div>
       ${p.links.length ? `<div class="links">${p.links.map((l) => `<a class="btn" href="${esc(l.href)}" target="_blank" rel="noopener">${esc(l.label)} ↗</a>`).join("")}</div>` : ""}
+      ${roadmap}
+      ${gallery}
+    </article>`;
+}
+
+function section(slug, sectionSlug) {
+  const p = PROJECTS.find((x) => x.slug === slug);
+  const s = p && p.sections && p.sections.find((x) => x.slug === sectionSlug);
+  if (!s) return project(slug);
+  const i = p.sections.indexOf(s);
+  const prev = p.sections[i - 1];
+  const next = p.sections[i + 1];
+  const link = (x, dir) => x
+    ? `<a class="btn" href="#/projects/${esc(p.slug)}/${esc(x.slug)}">${dir === "prev" ? "← " : ""}${esc(x.title)}${dir === "next" ? " →" : ""}</a>`
+    : "<span></span>";
+  return `
+    ${back(`#/projects/${p.slug}`, p.sectionsTitle || p.title)}
+    <article class="page doc">
+      ${clouds(8)}
+      <span class="meta">${esc(p.title)} · ${i + 1}/${p.sections.length}</span>
+      <h2 class="page-title center-title">${esc(s.pageTitle || s.title)}</h2>
+      ${s.blocks.map((b) => (BLOCKS[b.t] ? BLOCKS[b.t](b) : "")).join("")}
+      <nav class="pager">${link(prev, "prev")}${link(next, "next")}</nav>
     </article>`;
 }
 
@@ -100,16 +205,17 @@ function contact() {
 }
 
 function render() {
-  const [, section, slug] = (location.hash.replace(/^#/, "") || "/").split("/");
+  const [, page, slug, sub] = (location.hash.replace(/^#/, "") || "/").split("/");
   const view =
-    section === "about" ? about() :
-    section === "projects" ? (slug ? project(slug) : projects()) :
-    section === "contact" ? contact() :
+    page === "about" ? about() :
+    page === "projects" ? (sub ? section(slug, sub) : slug ? project(slug) : projects()) :
+    page === "contact" ? contact() :
     home();
   app.innerHTML = view;
   window.scrollTo(0, 0);
   const p = slug && PROJECTS.find((x) => x.slug === slug);
-  document.title = p ? `${p.title} · ${PROFILE.fullName}` : `${PROFILE.fullName} · Portfolio`;
+  const s = p && sub && p.sections && p.sections.find((x) => x.slug === sub);
+  document.title = s ? `${s.title} · ${p.title}` : p ? `${p.title} · ${PROFILE.fullName}` : `${PROFILE.fullName} · Portfolio`;
 }
 
 window.addEventListener("hashchange", render);
