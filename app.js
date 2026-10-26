@@ -276,6 +276,12 @@ const BLOCKS = {
   },
   chart: (b) => chart(b),
   diagram: (b) => diagram(b),
+  // Screenshot dentro una finestra del browser, con la barra dell'indirizzo
+  browser: (b) => `<figure class="browser">
+    <div class="browser-bar"><span class="dots"><i></i><i></i><i></i></span><span class="browser-url">${esc(b.url || "")}</span></div>
+    <a href="${esc(b.src)}" target="_blank" rel="noopener" title="Open full size"><img src="${esc(b.src)}" alt="${esc(b.alt || b.caption || "")}" loading="lazy"></a>
+    ${b.caption || b.sub ? `<figcaption>${b.caption ? `<strong>${esc(b.caption)}</strong>` : ""}${b.sub ? `<span>${esc(b.sub)}</span>` : ""}</figcaption>` : ""}
+  </figure>`,
   // Anelli di avanzamento (percentuali), come gli anelli di affinità dell'interfaccia di Inspora
   rings: (b) => `<div class="rings">${b.items.map((r) => {
     const c = 2 * Math.PI * 42;
@@ -382,7 +388,16 @@ function project(slug) {
   if (!p) return projects();
   const roadmap = p.sections
     ? `<div class="block-h"><h3>${esc(p.sectionsTitle || "Project documentation")}</h3>${p.sectionsSub ? `<p>${esc(p.sectionsSub)}</p>` : ""}</div>
-       ${p.roadmapStyle === "board" ? `<div class="board">${(p.boardColumns || ["To do"]).map((col) => `
+       ${p.roadmapStyle === "boarding" ? `<div class="passes">${p.sections.map((s, i) => `
+         <a class="pass" href="#/projects/${esc(p.slug)}/${esc(s.slug)}">
+           <span class="pass-main">
+             <span class="pass-head"><span>Boarding pass</span><span>Flight TN${String(i + 1).padStart(2, "0")}</span></span>
+             <span class="pass-route"><b>${esc(i ? p.sections[i - 1].code : "DEP")}</b><span class="pass-plane" aria-hidden="true">✈</span><b>${esc(s.code)}</b></span>
+             <span class="pass-title">${esc(s.title)}</span>
+             ${s.type ? `<span class="pass-sub">${esc(s.type)}</span>` : ""}
+           </span>
+           <span class="pass-stub"><span class="meta">Gate</span><b>${String(i + 1).padStart(2, "0")}</b><span class="meta">Seat</span><b>${esc(s.seat || `${i + 1}A`)}</b></span>
+         </a>`).join("")}</div>` : p.roadmapStyle === "board" ? `<div class="board">${(p.boardColumns || ["To do"]).map((col) => `
          <div class="board-col"><span class="board-col-title">${esc(col)}<span>${p.sections.filter((s) => s.column === col).length}</span></span>
          ${p.sections.map((s, i) => s.column !== col ? "" : `
            <a class="ticket" href="#/projects/${esc(p.slug)}/${esc(s.slug)}">
@@ -461,7 +476,7 @@ function section(slug, sectionSlug) {
     ${back(`#/projects/${p.slug}`, p.sectionsTitle || p.title)}
     <article class="page doc${themeClass(p)}">
       ${decor(p, 8)}
-      <span class="meta">${p.roadmapStyle === "toc" ? `Chapter ${roman(i + 1)} · ${esc(p.title)}` : p.roadmapStyle === "lab" ? `EXP ${String(i + 1).padStart(2, "0")} · ${esc(s.task || p.title)}` : p.roadmapStyle === "film" ? `Scene ${String(i + 1).padStart(2, "0")} · ${esc(p.title)}` : p.roadmapStyle === "articles" ? `Article ${i + 1} · ${esc(p.title)}` : p.roadmapStyle === "board" ? `${esc(p.ticketPrefix || "T")}-${i + 1} · ${esc(s.kind || "Story")} · ${esc(p.title)}` : `${esc(p.title)} · ${i + 1}/${p.sections.length}`}</span>
+      <span class="meta">${p.roadmapStyle === "toc" ? `Chapter ${roman(i + 1)} · ${esc(p.title)}` : p.roadmapStyle === "lab" ? `EXP ${String(i + 1).padStart(2, "0")} · ${esc(s.task || p.title)}` : p.roadmapStyle === "film" ? `Scene ${String(i + 1).padStart(2, "0")} · ${esc(p.title)}` : p.roadmapStyle === "articles" ? `Article ${i + 1} · ${esc(p.title)}` : p.roadmapStyle === "board" ? `${esc(p.ticketPrefix || "T")}-${i + 1} · ${esc(s.kind || "Story")} · ${esc(p.title)}` : p.roadmapStyle === "boarding" ? `Flight TN${String(i + 1).padStart(2, "0")} · ${esc(i ? p.sections[i - 1].code : "DEP")} → ${esc(s.code)}` : `${esc(p.title)} · ${i + 1}/${p.sections.length}`}</span>
       <h2 class="page-title center-title">${esc(s.pageTitle || s.title)}</h2>
       ${s.blocks.map((b) => (BLOCKS[b.t] ? BLOCKS[b.t](b) : "")).join("")}
       <nav class="pager">${link(prev, "prev")}${link(next, "next")}</nav>
@@ -508,7 +523,7 @@ function animateIn() {
   markReveal(app.querySelector(".back"), "fade");
   const page = app.querySelector(".page");
   if (page) {
-    const GROUPS = ".grid, .roadmap, .boxes, .journey, .swatches, .contact-list, .canvas, .schema, .ops, .chips, .toc, .lab, .gallery, .film-frames, .articles, .rings, .layers";
+    const GROUPS = ".grid, .roadmap, .boxes, .journey, .swatches, .contact-list, .canvas, .schema, .ops, .chips, .toc, .lab, .gallery, .film-frames, .articles, .rings, .layers, .passes";
     for (const child of page.children) {
       if (child.classList.contains("clouds")) continue;
       if (child.classList.contains("page-title")) { markReveal(child, "down"); continue; }

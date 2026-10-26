@@ -2034,6 +2034,159 @@ rf.fit(X_train_imputed, y_train)`,
     ],
   },
   {
+    slug: "traveler-notebook",
+    title: "The Traveler Notebook",
+    kind: "University · Web project",
+    year: "2025",
+    theme: "journey",
+    decor: "none",
+    roadmapStyle: "boarding",
+    cover: { title: "The Traveler Notebook", sub: "Your digital travel companion" },
+    summary: "A travel website with a working sign-up and login: HTML, CSS and JavaScript on the front end, Node.js, Express and MongoDB behind it.",
+    question: "Ready for your next adventure? **Let's start by exploring a destination.**",
+    description: [
+      "**The Traveler Notebook** is a travel platform where users explore destinations, share their experiences and connect with other travellers. The site focuses on **Indonesia and Bali**, with destination pages, interactive carousels, an animated search bar, a hamburger menu and a small Spotify player as a bonus.",
+      "Behind the pages there is a **working registration and login system**: a Node.js and Express server stores users in **MongoDB Atlas**, hashes passwords with **bcrypt** and keeps sessions with **JSON Web Tokens**, unlocking a personal account page.",
+    ],
+    tags: ["HTML", "CSS", "JavaScript", "Node.js", "Express", "MongoDB", "JWT", "bcrypt"],
+    image: "",
+    links: [],
+    sectionsTitle: "Your Itinerary",
+    sectionsSub: "Five flights through the site, from the homepage to the server",
+    sections: [
+      {
+        slug: "homepage",
+        code: "HOM",
+        seat: "1A",
+        type: "The concept and the first impression",
+        title: "Homepage",
+        blocks: [
+          { t: "browser", url: "thetravelernotebook / index.html", src: "assets/projects/traveler/home-hero.jpg", alt: "The Traveler Notebook homepage", caption: "Welcome to the Traveler Notebook", sub: "Five destinations as vertical photo panels, with an animated gradient title" },
+          { t: "p", text: "The homepage introduces the idea: **every journey is a story waiting to be told**. Five destination panels open the page, followed by the goal of the platform and three entry points into the site.", center: true },
+          {
+            t: "gallery", cols: 2, items: [
+              { src: "assets/projects/traveler/home-goal.jpg", caption: "Our goal", sub: "A dark card on a blue–mauve gradient, with an arched photo" },
+              { src: "assets/projects/traveler/home-cards.jpg", caption: "Why don't taking a look?", sub: "Destinations, planning and people's experiences" },
+            ],
+          },
+          {
+            t: "cards", cols: 3, items: [
+              { title: "Typography", icon: "Aa", tint: "lav", text: "A display serif for titles, **Inria Serif** for body text and **Raleway** for UI labels." },
+              { title: "Colour", icon: "◐", tint: "sun", text: "A **dusty blue to mauve** gradient with soft pink accents, echoing a sky at dusk." },
+              { title: "Shapes", icon: "◠", tint: "ink", text: "**Arched images**, rounded cards and pill buttons, like windows of a plane." },
+            ],
+          },
+        ],
+      },
+      {
+        slug: "indonesia",
+        code: "IDN",
+        seat: "2B",
+        type: "Destination page",
+        title: "Indonesia",
+        blocks: [
+          { t: "browser", url: "thetravelernotebook / indonesia.html", src: "assets/projects/traveler/indonesia-hero.jpg", alt: "Indonesia destination page", caption: "Discover the Magic of Indonesia" },
+          { t: "p", text: "A land of diverse cultures, stunning landscapes and unforgettable experiences — **from the beaches of Bali to the ancient temples of Java**.", center: true },
+          { t: "browser", url: "thetravelernotebook / indonesia.html", src: "assets/projects/traveler/indonesia-culture.jpg", alt: "Cultural experiences and natural wonders sections", caption: "Cultural experiences & natural wonders", sub: "Alternating text and image panels" },
+          { t: "browser", url: "thetravelernotebook / indonesia.html", src: "assets/projects/traveler/indonesia-destinations.jpg", alt: "Popular destinations carousel", caption: "Popular destinations", sub: "A carousel of Bali, Jakarta, Yogyakarta, Lombok and Komodo" },
+          {
+            t: "cards", cols: 3, items: [
+              { title: "Responsive carousel", tint: "plain", text: "The number of visible cards adapts to the window width." },
+              { title: "Arrows and dots", tint: "plain", text: "Navigation buttons plus clickable dots that follow the position." },
+              { title: "Touch swipe", tint: "plain", text: "Touch events let users swipe through destinations on a phone or tablet." },
+            ],
+          },
+        ],
+      },
+      {
+        slug: "bali",
+        code: "DPS",
+        seat: "3C",
+        type: "Island of the Gods",
+        title: "Bali",
+        blocks: [
+          { t: "p", text: "The Bali page goes deeper: **Denpasar** and its landmarks, the island's **Hindu cultural heritage**, and a grid of things to do.", center: true },
+          { t: "browser", url: "thetravelernotebook / bali.html", src: "assets/projects/traveler/bali-heritage.jpg", alt: "Rich cultural heritage section of the Bali page", caption: "Rich cultural heritage", sub: "Temple ceremonies, dance, markets and festivals" },
+          { t: "browser", url: "thetravelernotebook / bali.html", src: "assets/projects/traveler/bali-activities.jpg", alt: "Amazing activities grid of the Bali page", caption: "Amazing activities", sub: "Rice terraces, the monkey forest, water temples, Mount Batur and more" },
+        ],
+      },
+      {
+        slug: "login-account",
+        code: "ACC",
+        seat: "4D",
+        type: "Registration, login, personal account",
+        title: "Login & Account",
+        blocks: [
+          { t: "browser", url: "thetravelernotebook / login.html", src: "assets/projects/traveler/login.jpg", alt: "Login page", caption: "Destination: your dream trip", sub: "Login and registration forms in the same card, with show/hide password" },
+          { t: "h", text: "How a visitor becomes a traveller" },
+          {
+            t: "steps", items: [
+              { title: "Step 1", text: "Register", action: "Username, email and password are sent to the server, which checks that the user does not exist yet." },
+              { title: "Step 2", text: "Hash and store", action: "The password is hashed with bcrypt and the user is saved in MongoDB Atlas." },
+              { title: "Step 3", text: "Log in", action: "The server compares the password with the hash and returns a JWT valid for 24 hours." },
+              { title: "Step 4", text: "Personal account", action: "The token unlocks a protected route with the user's data, a profile and a photo gallery — and a log-out." },
+            ],
+          },
+        ],
+      },
+      {
+        slug: "under-the-hood",
+        code: "SRV",
+        seat: "5F",
+        type: "Front-end interactions and back-end",
+        title: "Under the Hood",
+        blocks: [
+          { t: "h", text: "Front end", sub: "Vanilla HTML, CSS (about 2,700 lines) and JavaScript" },
+          {
+            t: "cards", cols: 3, items: [
+              { title: "Hamburger menu", icon: "≡", tint: "lav", text: "A full-screen overlay menu that opens and closes with an animated button." },
+              { title: "Animated search", icon: "⌕", tint: "lav", text: "The search field expands from its icon and closes with the X or after pressing Enter." },
+              { title: "Spotify player", icon: "♫", tint: "lav", text: "A collapsible embedded playlist that moves up so it never covers the footer." },
+              { title: "FAQ accordion", icon: "?", tint: "sun", text: "Help questions that open and close on click." },
+              { title: "Login state", icon: "◉", tint: "sun", text: "The account button checks the stored token and sends users to the right page." },
+              { title: "Custom fonts", icon: "Aa", tint: "sun", text: "Local font files for the serif display, Inria Serif and Raleway." },
+            ],
+          },
+          { t: "h", text: "Back end", sub: "Node.js · Express · Mongoose · bcrypt · JSON Web Tokens" },
+          {
+            t: "code", title: "server.js — user model and registration (excerpt)", text:
+`const userSchema = new mongoose.Schema({
+    username: { type: String, required: true, unique: true },
+    email: { type: String, required: true, unique: true },
+    password: { type: String, required: true }
+});
+
+app.post('/api/register', async (req, res) => {
+    const { username, email, password } = req.body;
+
+    // Check if user already exists
+    const existingUser = await User.findOne({ $or: [{ email }, { username }] });
+    if (existingUser) {
+        return res.status(400).json({ message: 'User already exists' });
+    }
+
+    // Hash password, save the user, return a token
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const user = new User({ username, email, password: hashedPassword });
+    await user.save();
+
+    const token = jwt.sign({ userId: user._id }, JWT_SECRET, { expiresIn: '24h' });
+    res.status(201).json({ message: 'Registration successful', token });
+});`,
+          },
+          {
+            t: "cards", cols: 3, items: [
+              { title: "POST /api/register", tint: "plain", text: "Creates the user after checking duplicates." },
+              { title: "POST /api/login", tint: "plain", text: "Verifies the password and returns a token and the username." },
+              { title: "GET /api/user", tint: "plain", text: "Protected by a token-checking middleware; returns the profile without the password." },
+            ],
+          },
+          { t: "closing", title: "Bon voyage", text: "A complete small web application: a designed, multi-page front end and a real authentication flow with **hashed passwords, tokens and a cloud database**." },
+        ],
+      },
+    ],
+  },
+  {
     slug: "pixel-library",
     title: "Pixel Library",
     kind: "Personal",
