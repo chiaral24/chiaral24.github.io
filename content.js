@@ -2575,6 +2575,279 @@ app.post('/api/register', async (req, res) => {
     ],
   },
   {
+    slug: "greateat",
+    title: "GreatEat",
+    kind: "University · Individual project",
+    area: "Mobile Development",
+    year: "2024",
+    theme: "pantry",
+    decor: "none",
+    roadmapStyle: "labels",
+    cover: { title: "GreatEat", sub: "Your kitchen, before things go off" },
+    result: "A five-tab React Native app that flags what is open, ripe or about to expire, with barcode lookup on OpenFoodFacts.",
+    summary: "A mobile app for the kitchen: log ingredients, follow their ripeness, see what expires soon and add products by barcode.",
+    question: "Is the yogurt **already open**? Are the bananas **about to turn**? What is **missing an expiry date**?",
+    description: [
+      "**GreatEat** is a mobile app that keeps track of what is in the kitchen. Each ingredient has a category, a storage place, an expiry date and, for fruit, a **ripeness level that ages by itself** day after day. The app collects what needs to be eaten first, what is still incomplete, and lets you add packaged products by looking up their **barcode on OpenFoodFacts**.",
+      "Built with **React Native, Expo and TypeScript**, it uses React Navigation for a five-tab layout plus a scanner screen, and stores everything on the device with **AsyncStorage**.",
+    ],
+    tags: ["React Native", "Expo", "TypeScript", "React Navigation", "AsyncStorage", "REST API"],
+    image: "",
+    links: [],
+    sectionsTitle: "In the Pantry",
+    sectionsSub: "Seven labels, one for each part of the app",
+    sections: [
+      {
+        slug: "the-idea",
+        icon: "🍎",
+        type: "What the app is for",
+        title: "The Idea",
+        blocks: [
+          { t: "lead", title: "Remember what is in the kitchen", text: "Opened jars, fruit that ripens on the counter, things in the freezer for months: it is easy to lose track. GreatEat keeps a **list of every ingredient with its state**, and turns it into a few useful views." },
+          {
+            t: "cards", cols: 3, items: [
+              { title: "Add", icon: "＋", tint: "lav", text: "A form for name, brand, expiry, category, storage place, open/frozen and ripeness." },
+              { title: "Pantry", icon: "≡", tint: "lav", text: "Every ingredient as a card with its tags, and a delete button." },
+              { title: "Expiring", icon: "☹", tint: "sun", text: "What should be eaten first: open, ripe or expiring within 3 days." },
+              { title: "Missing", icon: "?", tint: "sun", text: "Ingredients without expiry date, category or storage place — tap to complete." },
+              { title: "Queries", icon: "⚲", tint: "plain", text: "Six ready-made filters, from frozen food to the last ten added." },
+              { title: "Scanner", icon: "▥", tint: "plain", text: "Enter a barcode and the product is fetched from OpenFoodFacts." },
+            ],
+          },
+          { t: "phones", items: [
+            { src: "assets/projects/greateat/add-top.jpg", caption: "Add" },
+            { src: "assets/projects/greateat/pantry.jpg", caption: "Pantry" },
+            { src: "assets/projects/greateat/expiring.jpg", caption: "Expiring" },
+          ] },
+        ],
+      },
+      {
+        slug: "adding-ingredients",
+        icon: "🥦",
+        type: "The form, its state and edit mode",
+        title: "Adding an Ingredient",
+        blocks: [
+          { t: "p", text: "The **Add** tab is a single form held in React state: text inputs, chip pickers for category and storage, two switches and four ripeness buttons. The same screen also **edits** an existing ingredient when one is passed through the navigation parameters.", center: true },
+          { t: "phones", items: [
+            { src: "assets/projects/greateat/add-top.jpg", caption: "Name, brand, expiry", sub: "Category chips: fruit, vegetable, dairy, meat, canned" },
+            { src: "assets/projects/greateat/add-bottom.jpg", caption: "Storage and state", sub: "Fridge, freezer or pantry; opened, frozen; four ripeness levels" },
+          ] },
+          { t: "h", text: "Small rules that save typing" },
+          {
+            t: "cards", cols: 3, items: [
+              { title: "Frozen = 180 days", icon: "❄", tint: "lav", text: "A frozen item without a date gets an expiry **six months** from today." },
+              { title: "Ripeness timestamp", icon: "◷", tint: "lav", text: "Choosing a ripeness level records **when** it was checked, so it can age later." },
+              { title: "Add or update", icon: "✎", tint: "lav", text: "With an ingredient in the route, saving **replaces** it instead of adding a new one." },
+            ],
+          },
+          {
+            t: "code", title: "IngredientScreen.tsx — saving (excerpt)", text:
+`let finalExpiryDate = expiryDate.trim() || undefined;
+
+if (!finalExpiryDate && isFrozen) {
+  const today = new Date();
+  today.setDate(today.getDate() + 180);
+  finalExpiryDate = today.toISOString().split("T")[0];
+}
+
+const updatedIngredient: Ingredient = {
+  ...(editingIngredient || { id: Date.now().toString() }),
+  name: name.trim(),
+  isFrozen,
+  isOpen,
+  expiryDate: finalExpiryDate,
+  ripeness: ripeness || undefined,
+  lastRipenessCheck: ripeness ? new Date().toISOString() : undefined,
+};
+
+const stored = await loadIngredients();
+const updated = editingIngredient
+  ? stored.map((ing) => (ing.id === editingIngredient.id ? updatedIngredient : ing))
+  : [...stored, updatedIngredient];
+
+await saveIngredients(updated);`,
+          },
+        ],
+      },
+      {
+        slug: "the-pantry",
+        icon: "🧺",
+        type: "The list, and fruit that ripens by itself",
+        title: "The Pantry",
+        blocks: [
+          { t: "p", text: "The **Pantry** tab loads every ingredient from storage and shows it as a card: name, brand, category, expiry date and tags for **opened**, **frozen** and **ripeness**. Each card can be deleted.", center: true },
+          { t: "phones", items: [
+            { src: "assets/projects/greateat/pantry.jpg", caption: "Your Ingredients", sub: "Cards with tags and a delete button" },
+          ] },
+          { t: "h", text: "Ripeness that ages", sub: "Every time the list opens, ripeness moves forward with the days since the last check" },
+          {
+            t: "steps", items: [
+              { title: "Level 1", text: "Unripe", action: "Set by hand when the fruit is bought." },
+              { title: "Level 2", text: "Ripe", action: "After **5 days** as ripe, it moves on automatically." },
+              { title: "Level 3", text: "Very ripe", action: "After **7 more days**, it moves on again." },
+              { title: "Level 4", text: "Too ripe", action: "The last stage. Frozen items never age." },
+            ],
+          },
+          {
+            t: "code", title: "IngredientListScreen.tsx — ripeness update (excerpt)", text:
+`const updated = stored.map((item) => {
+  if (!item.lastRipenessCheck || item.isFrozen || !item.ripeness) return item;
+
+  const lastCheck = new Date(item.lastRipenessCheck);
+  const daysPassed = Math.floor(
+    (now.getTime() - lastCheck.getTime()) / (1000 * 60 * 60 * 24)
+  );
+
+  let newRipeness = item.ripeness;
+  if (daysPassed >= 5 && item.ripeness === "ripe") newRipeness = "advanced";
+  if (daysPassed >= 7 && item.ripeness === "advanced") newRipeness = "too ripe";
+
+  return newRipeness !== item.ripeness
+    ? { ...item, ripeness: newRipeness, lastRipenessCheck: now.toISOString() }
+    : item;
+});`,
+          },
+        ],
+      },
+      {
+        slug: "expiring-soon",
+        icon: "⏰",
+        type: "What to eat first",
+        title: "Expiring Soon",
+        blocks: [
+          { t: "lead", title: "One list for the next meals", text: "The **Expiring** tab gathers what should not wait: ingredients that are **opened**, **ripe**, or that **expire within three days**. Frozen food only appears when its date is really close." },
+          { t: "phones", items: [
+            { src: "assets/projects/greateat/expiring.jpg", caption: "Expiring Soon", sub: "Ripe bananas, an opened yogurt and mozzarella expiring in two days" },
+          ] },
+          {
+            t: "code", title: "ExpiringSoonScreen.tsx — the filter", text:
+`const soon = new Date();
+soon.setDate(now.getDate() + 3);
+
+const filtered = all.filter((item) => {
+  if (!item.expiryDate) return false;
+  const exp = new Date(item.expiryDate);
+  const isSoon = exp <= soon;
+  return (
+    (item.isOpen || item.ripeness === "ripe" || isSoon) &&
+    (!item.isFrozen || isSoon)
+  );
+});`,
+          },
+        ],
+      },
+      {
+        slug: "missing-and-queries",
+        icon: "🔎",
+        type: "Completing data and filtering it",
+        title: "Missing Info & Queries",
+        blocks: [
+          { t: "p", text: "Products added by barcode, or in a hurry, often lack details. The **Missing** tab lists them with what is missing, and **tapping a card opens the form in edit mode** with the fields already filled in.", center: true },
+          { t: "phones", items: [
+            { src: "assets/projects/greateat/missing.jpg", caption: "Incomplete Ingredients", sub: "Missing expiry date, category or storage place" },
+            { src: "assets/projects/greateat/queries.jpg", caption: "Queries", sub: "Six filters over the same list" },
+          ] },
+          {
+            t: "table", head: ["Query", "What it returns"], rows: [
+              ["No Expiry", "Ingredients without an expiry date"],
+              ["Opened", "Everything that has been opened"],
+              ["Frozen", "Everything in the freezer"],
+              ["Fruits / Vegetables", "Ingredients of that category"],
+              ["Recently Added", "The last ten ingredients, newest first"],
+            ],
+          },
+        ],
+      },
+      {
+        slug: "barcode-scanner",
+        icon: "📷",
+        type: "Products from OpenFoodFacts",
+        title: "Barcode Scanner",
+        blocks: [
+          { t: "p", text: "From the **Scan** button in the header, a barcode can be entered and looked up on the public **OpenFoodFacts** database. The app shows the product name, brand and photo, and adds it to the pantry with one tap.", center: true },
+          { t: "phones", items: [
+            { src: "assets/projects/greateat/scanner.jpg", caption: "Scan Product", sub: "A barcode lookup returning name, brand and photo" },
+          ] },
+          {
+            t: "code", title: "BarcodeScreen.tsx — lookup and add (excerpt)", text:
+`const res = await axios.get(
+  \`https://world.openfoodfacts.org/api/v0/product/\${barcode}.json\`
+);
+if (res.data.status === 1) {
+  setProduct(res.data.product);
+} else {
+  setError("Product not found");
+}
+
+// ...then, on "Add to pantry"
+const newIngredient: Ingredient = {
+  id: Date.now().toString(),
+  name: product.product_name ?? "Unnamed product",
+  brand: product.brands ?? undefined,
+  isFrozen: false,
+  isOpen: false,
+  barcode: barcode,
+};
+await saveIngredients([...(await loadIngredients()), newIngredient]);`,
+          },
+          { t: "closing", title: "And then?", text: "A scanned product has no expiry date or storage place yet — so it shows up in **Missing**, ready to be completed." },
+        ],
+      },
+      {
+        slug: "under-the-hood",
+        icon: "⚙️",
+        type: "Navigation, data model, storage, palette",
+        title: "Under the Hood",
+        blocks: [
+          {
+            t: "layers", items: [
+              { name: "Navigation", icon: "⇄", tech: ["Native stack", "Bottom tabs (5)", "Scanner screen"] },
+              { name: "Screens", icon: "▭", tech: ["React Native", "TypeScript", "Hooks"] },
+              { name: "Storage helpers", icon: "⚙", tech: ["loadIngredients()", "saveIngredients()"] },
+              { name: "Device storage", icon: "⛁", tech: ["AsyncStorage", "JSON"] },
+            ],
+          },
+          { t: "h", text: "The data model" },
+          {
+            t: "code", title: "types.ts", text:
+`export type Ripeness = "green" | "ripe" | "advanced" | "too ripe";
+
+export interface Ingredient {
+  id: string;
+  name: string;
+  brand?: string;
+  isFrozen: boolean;
+  isOpen: boolean;
+  ripeness?: Ripeness;
+  lastRipenessCheck?: string;
+  expiryDate?: string;
+  barcode?: string;
+}`,
+          },
+          { t: "h", text: "Control flow", sub: "Documented component by component: what each part receives, updates and triggers" },
+          {
+            t: "cards", cols: 2, items: [
+              { title: "Callbacks up", tint: "lav", bullet: "→", lines: ["Ripeness buttons call back into the form state", "Switches toggle open / frozen", "A card's delete button updates the parent list"] },
+              { title: "Storage in the middle", tint: "sun", bullet: "→", lines: ["Every screen loads from AsyncStorage when it mounts", "Saving writes the whole list as JSON", "Filters run on the loaded list, not on a server"] },
+            ],
+          },
+          { t: "h", text: "The palette", sub: "Mauve and cream, with pastel colours for ingredient states" },
+          {
+            t: "swatches", items: [
+              { name: "Mauve", hex: "#B784A7" },
+              { name: "Peach", hex: "#D4B2A7" },
+              { name: "Cream", hex: "#FAF3F0" },
+              { name: "Frozen", hex: "#B6C9D4" },
+              { name: "Opened", hex: "#C9D4B6" },
+              { name: "Too ripe", hex: "#E6B3B3" },
+            ],
+          },
+          { t: "closing", title: "Bon appétit", text: "A small, complete mobile app: **typed data, five connected views, automatic ripeness and an external API** — all running on the phone, with no server needed." },
+        ],
+      },
+    ],
+  },
+  {
     slug: "taco-bell-italy",
     title: "Can Taco Bell Make a Splash in Italy?",
     kind: "University · Individual project",

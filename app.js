@@ -392,6 +392,12 @@ const BLOCKS = {
       <div class="toggle-panels">${b.items.map((it) => `<div class="toggle-panel">${diagram(it)}</div>`).join("")}</div>
     </div>`;
   },
+  // Screenshot di un'app dentro cornici da telefono, affiancate
+  phones: (b) => `<div class="phones n${b.items.length}">${b.items.map((ph) => `
+    <figure class="phone">
+      <a class="phone-frame" href="${esc(ph.src)}" target="_blank" rel="noopener" title="Open full size"><img src="${esc(ph.src)}" alt="${esc(ph.alt || ph.caption || "")}" loading="lazy"></a>
+      ${ph.caption || ph.sub ? `<figcaption>${ph.caption ? `<strong>${esc(ph.caption)}</strong>` : ""}${ph.sub ? `<span>${esc(ph.sub)}</span>` : ""}</figcaption>` : ""}
+    </figure>`).join("")}</div>`,
   // Più immagini affiancate, ognuna apribile a piena grandezza
   gallery: (b) => `<div class="gallery cols-${b.cols || 2}">${b.items.map((g) => `
     <figure class="figure zoom">
@@ -433,7 +439,14 @@ function project(slug) {
            <span class="statement-title">${esc(s.title)}${s.type ? `<small>${esc(s.type)}</small>` : ""}</span>
            <span class="toc-dots" aria-hidden="true"></span>
            <span class="statement-figure">${esc(s.figure || "")}</span>
-         </a>`).join("")}${p.statementTotal ? `<div class="statement-total"><span>${esc(p.statementTotal.label)}</span><span>${esc(p.statementTotal.value)}</span></div>` : ""}</div>` : p.roadmapStyle === "register" ? `<div class="register"><div class="register-head"><span>Attendance register</span><span>${esc(p.registerTitle || "")}</span></div><div class="register-cols" aria-hidden="true"><span>No.</span><span>Entry</span><span>Present</span></div>${p.sections.map((s, i) => `
+         </a>`).join("")}${p.statementTotal ? `<div class="statement-total"><span>${esc(p.statementTotal.label)}</span><span>${esc(p.statementTotal.value)}</span></div>` : ""}</div>` : p.roadmapStyle === "labels" ? `<div class="labels">${p.sections.map((s, i) => `
+         <a class="food-label" href="#/projects/${esc(p.slug)}/${esc(s.slug)}">
+           <span class="food-hole" aria-hidden="true"></span>
+           <span class="food-icon" aria-hidden="true">${esc(s.icon || "🍎")}</span>
+           <span class="food-title">${esc(s.title)}</span>
+           ${s.type ? `<span class="food-type">${esc(s.type)}</span>` : ""}
+           <span class="food-foot"><span>No. ${String(i + 1).padStart(2, "0")}</span><span>Fresh ✓</span></span>
+         </a>`).join("")}</div>` : p.roadmapStyle === "register" ? `<div class="register"><div class="register-head"><span>Attendance register</span><span>${esc(p.registerTitle || "")}</span></div><div class="register-cols" aria-hidden="true"><span>No.</span><span>Entry</span><span>Present</span></div>${p.sections.map((s, i) => `
          <a class="register-row" href="#/projects/${esc(p.slug)}/${esc(s.slug)}">
            <span class="register-n">${String(i + 1).padStart(2, "0")}</span>
            <span class="register-title">${esc(s.title)}${s.type ? `<small>${esc(s.type)}</small>` : ""}</span>
@@ -526,7 +539,7 @@ function section(slug, sectionSlug) {
     ${back(`#/projects/${p.slug}`, p.sectionsTitle || p.title)}
     <article class="page doc${themeClass(p)}">
       ${decor(p, 8)}
-      <span class="meta">${p.roadmapStyle === "toc" ? `Chapter ${roman(i + 1)} · ${esc(p.title)}` : p.roadmapStyle === "lab" ? `EXP ${String(i + 1).padStart(2, "0")} · ${esc(s.task || p.title)}` : p.roadmapStyle === "film" ? `Scene ${String(i + 1).padStart(2, "0")} · ${esc(p.title)}` : p.roadmapStyle === "articles" ? `Article ${i + 1} · ${esc(p.title)}` : p.roadmapStyle === "board" ? `${esc(p.ticketPrefix || "T")}-${i + 1} · ${esc(s.kind || "Story")} · ${esc(p.title)}` : p.roadmapStyle === "register" ? `Entry ${String(i + 1).padStart(2, "0")} · ${esc(p.title)}` : p.roadmapStyle === "statement" ? `Note ${i + 1} · ${esc(p.title)}` : p.roadmapStyle === "boarding" ? `Flight TN${String(i + 1).padStart(2, "0")} · ${esc(i ? p.sections[i - 1].code : "DEP")} → ${esc(s.code)}` : `${esc(p.title)} · ${i + 1}/${p.sections.length}`}</span>
+      <span class="meta">${p.roadmapStyle === "toc" ? `Chapter ${roman(i + 1)} · ${esc(p.title)}` : p.roadmapStyle === "lab" ? `EXP ${String(i + 1).padStart(2, "0")} · ${esc(s.task || p.title)}` : p.roadmapStyle === "film" ? `Scene ${String(i + 1).padStart(2, "0")} · ${esc(p.title)}` : p.roadmapStyle === "articles" ? `Article ${i + 1} · ${esc(p.title)}` : p.roadmapStyle === "board" ? `${esc(p.ticketPrefix || "T")}-${i + 1} · ${esc(s.kind || "Story")} · ${esc(p.title)}` : p.roadmapStyle === "labels" ? `Label ${String(i + 1).padStart(2, "0")} · ${esc(p.title)}` : p.roadmapStyle === "register" ? `Entry ${String(i + 1).padStart(2, "0")} · ${esc(p.title)}` : p.roadmapStyle === "statement" ? `Note ${i + 1} · ${esc(p.title)}` : p.roadmapStyle === "boarding" ? `Flight TN${String(i + 1).padStart(2, "0")} · ${esc(i ? p.sections[i - 1].code : "DEP")} → ${esc(s.code)}` : `${esc(p.title)} · ${i + 1}/${p.sections.length}`}</span>
       <h2 class="page-title center-title">${esc(s.pageTitle || s.title)}</h2>
       ${s.blocks.map((b) => (BLOCKS[b.t] ? BLOCKS[b.t](b) : "")).join("")}
       <nav class="pager">${link(prev, "prev")}${link(next, "next")}</nav>

@@ -1821,3 +1821,92 @@ body.theme-glass { isolation: isolate; }
 }
 /* Diagrammi molto alti: altezza limitata, il dettaglio si apre a piena grandezza */
 .figure.tall img { width: auto; max-width: 100%; max-height: 72vh; margin: 0 auto; display: block; }
+
+/* ======================================================================
+   Tema "pantry" (GreatEat): la palette malva e panna dell'app, le tappe
+   come etichette da dispensa, gli screenshot dentro cornici da telefono
+   ====================================================================== */
+.theme-pantry {
+  --accent: #9a5f88;
+  --accent-soft: #e9d3e2;
+  --lav-line: #e2c9da;
+  --lav-bg: #faf1f6;
+  --sun-line: #ebd2c3;
+  --sun-bg: #fcf3ee;
+  --hover-tint: rgba(154, 95, 136, .06);
+  --mauve: #b784a7;
+  --peach: #d4b2a7;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .theme-pantry { --accent: #d39cc4; --accent-soft: #4e3247; --lav-line: #4a3344; --lav-bg: #21171e; --sun-line: #4d3a30; --sun-bg: #211915; --hover-tint: rgba(211, 156, 196, .08); }
+}
+:root[data-theme="dark"] .theme-pantry { --accent: #d39cc4; --accent-soft: #4e3247; --lav-line: #4a3344; --lav-bg: #21171e; --sun-line: #4d3a30; --sun-bg: #211915; --hover-tint: rgba(211, 156, 196, .08); }
+
+.theme-pantry .question strong { text-decoration-color: var(--mauve); }
+.theme-pantry .closing { border-color: var(--lav-line); background: var(--lav-bg); }
+.theme-pantry .lead::after, .theme-pantry .closing::before { content: none; }
+.theme-pantry .box { border-radius: 16px; }
+
+/* Copertina: panna, il titolo malva come nell'app, frutta sparsa */
+.theme-pantry .cover { background: #faf3f0; color: #4a4145; justify-content: center; align-items: center; text-align: center; }
+.theme-pantry .cover::before {
+  clip-path: none;
+  content: "🍎   🥦   🥛   🍌   🥫   🥑";
+  inset: auto 0 14% 0;
+  background: none;
+  font-size: 20px;
+  letter-spacing: .1em;
+  text-align: center;
+}
+.theme-pantry .cover::after {
+  clip-path: none;
+  inset: auto 0 0 0;
+  height: 10px;
+  background: repeating-linear-gradient(90deg, #b784a7 0 22px, #faf3f0 22px 30px);
+  opacity: .55;
+}
+.card.theme-pantry:hover .cover::before { transform: translateY(-6px); }
+.card.theme-pantry:hover .cover::after { transform: none; }
+.theme-pantry .cover-title { font: 800 36px var(--display); color: #b784a7; letter-spacing: -.02em; margin-top: -24px; }
+.theme-pantry .cover-sub { color: #8e7b81; text-transform: none; letter-spacing: .02em; font-size: 12px; }
+.theme-pantry .cover.big { border: 0; border-radius: 22px; }
+.theme-pantry .cover.big .cover-title { font-size: clamp(40px, 8vw, 64px); }
+
+/* Etichette da dispensa */
+.labels { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 22px 18px; padding-top: 6px; }
+.food-label {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 30px 18px 14px;
+  text-decoration: none;
+  background: var(--card);
+  border: 1.5px dashed var(--mauve);
+  border-radius: 14px 14px 14px 14px;
+  transform: rotate(var(--tilt, -1.5deg));
+  transition: transform .45s cubic-bezier(.2, .7, .2, 1.4), box-shadow .3s;
+}
+.food-label:nth-child(2n) { --tilt: 1.2deg; }
+.food-label:nth-child(3n) { --tilt: -.6deg; }
+.food-label:hover { transform: rotate(0) translateY(-4px); box-shadow: 0 12px 24px rgba(183, 132, 167, .22); }
+.food-hole { position: absolute; top: 10px; left: 50%; width: 10px; height: 10px; margin-left: -5px; border-radius: 50%; border: 1.5px solid var(--mauve); background: var(--bg); }
+.food-hole::before { content: ""; position: absolute; bottom: 8px; left: 3px; width: 1.5px; height: 22px; background: var(--peach); transform-origin: bottom; transform: rotate(-14deg); }
+.food-icon { font-size: 30px; line-height: 1.1; }
+.food-title { font: 600 18px var(--display); }
+.food-type { font-size: 13px; color: var(--muted); }
+.food-foot { display: flex; justify-content: space-between; margin-top: auto; padding-top: 10px; border-top: 1px solid var(--plain-line); font: 600 10px ui-monospace, SFMono-Regular, Menlo, monospace; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.food-foot span:last-child { color: var(--accent); }
+
+/* Cornici da telefono */
+.phones { display: flex; flex-wrap: wrap; justify-content: center; gap: 26px; }
+.phone { margin: 0; width: 230px; display: flex; flex-direction: column; align-items: center; gap: 10px; }
+.phone-frame { display: block; width: 100%; padding: 9px; background: #2b2528; border-radius: 34px; box-shadow: 0 14px 30px rgba(74, 65, 69, .18); transition: transform .4s cubic-bezier(.2, .7, .2, 1.4); }
+.phone-frame:hover { transform: translateY(-5px); }
+.phone-frame img { display: block; width: 100%; border-radius: 26px; }
+.phone figcaption { text-align: center; display: flex; flex-direction: column; gap: 2px; font-size: 13px; }
+.phone figcaption span { color: var(--muted); }
+.phones.n1 .phone { width: 260px; }
+@media (max-width: 560px) {
+  .phone, .phones.n1 .phone { width: min(260px, 80vw); }
+}
