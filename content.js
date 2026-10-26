@@ -2188,6 +2188,210 @@ app.post('/api/register', async (req, res) => {
     ],
   },
   {
+    slug: "taco-bell-italy",
+    title: "Can Taco Bell Make a Splash in Italy?",
+    kind: "University · Individual project",
+    year: "2024",
+    theme: "memo",
+    decor: "none",
+    roadmapStyle: "statement",
+    statementTitle: "Investment memo",
+    statementTotal: { label: "Recommendation", value: "DO NOT INVEST" },
+    cover: { title: "Taco Bell Italy", sub: "An investment analysis case study · Yum! Brands", stamp: "Do not invest" },
+    summary: "An investment analysis of Yum! Brands converting closed restaurants into 100 Taco Bell outlets in Italy: revenue model, costs, cost of capital, sensitivity and a final call.",
+    question: "Should the world's largest fast-food group bring **Taco Bell to Italy**?",
+    description: [
+      "Yum! Brands — the group behind KFC, Pizza Hut and Taco Bell, with over 55,000 restaurants worldwide — is considering buying closed **Rossopomodoro** restaurants and converting them into Taco Bell outlets: 40 immediately, then 15 a year until there are 100.",
+      "As the analyst in charge, I built the **15-year operating model** — revenues, renovation, fixed and variable costs, marketing, parking, cross-selling and working capital — estimated the **cost of capital with CAPM and WACC**, tested the key assumptions and delivered a recommendation: **do not invest**.",
+    ],
+    tags: ["Corporate finance", "Capital budgeting", "NPV", "WACC", "CAPM", "Sensitivity analysis", "Excel"],
+    image: "",
+    links: [],
+    sectionsTitle: "The Memo",
+    sectionsSub: "Six notes, from the case to the recommendation",
+    sections: [
+      {
+        slug: "the-case",
+        title: "The Case",
+        type: "Setting and idea",
+        figure: "0 → 100 restaurants",
+        blocks: [
+          { t: "lead", title: "A gap in the Italian market", text: "Yum! Brands runs about **150 KFC** and **60 Pizza Hut** restaurants in Italy, but Taco Bell — over 8,000 outlets worldwide — has no presence. American chains such as Five Guys are growing, yet Italy's food culture remains a tough competitor. The closure of several Rossopomodoro restaurants offers locations **at a good price**." },
+          {
+            t: "stats", items: [
+              { value: "55,000+", label: "Yum! Brands restaurants worldwide" },
+              { value: "€7.5 M", label: "to convert each restaurant (Year 1)" },
+              { value: "€5 M", label: "yearly revenue of a restaurant at full capacity" },
+            ],
+          },
+          { t: "h", text: "The rollout" },
+          {
+            t: "chart", kind: "columns", title: "Restaurants open", sub: "40 conversions at once, then 15 a year — no expansion after year 5", digits: 0, labels: true,
+            xLabel: "Year", yLabel: "Restaurants", ticks: [0, 50, 100],
+            items: [
+              { label: "Year 1", value: 40 }, { label: "Year 2", value: 55 }, { label: "Year 3", value: 70 }, { label: "Year 4", value: 85 }, { label: "Year 5", value: 100, hl: true },
+            ],
+          },
+          {
+            t: "cards", cols: 3, items: [
+              { title: "Sunk cost", tint: "plain", text: "The €12 million already spent on market research is **left out of the cash flows**: it is spent whatever the decision." },
+              { title: "Time convention", tint: "plain", text: "Up-front spending happens now (Year 0); the first operating year is Year 1; the horizon is **15 years**." },
+              { title: "Taxes", tint: "plain", text: "Yum! Brands' effective and marginal tax rate: **21%**." },
+            ],
+          },
+        ],
+      },
+      {
+        slug: "revenue-model",
+        title: "Revenue Model",
+        type: "How fast restaurants reach capacity",
+        figure: "30% → 100%",
+        blocks: [
+          { t: "p", text: "Each restaurant can reach **€5 million** a year, but not at once. I assumed a gradual ramp-up of operating capacity, driven by three market-entry factors.", center: true },
+          {
+            t: "cards", cols: 3, items: [
+              { title: "Expansion & awareness", icon: "↗", tint: "lav", text: "Brand recognition grows with the physical presence of restaurants in city centres and travel hubs such as stations." },
+              { title: "Competition & culture", icon: "⚖", tint: "sun", text: "Italian consumers favour authentic, traditional food, and McDonald's and KFC are already established." },
+              { title: "Marketing", icon: "✦", tint: "lav", text: "Personalised menus — like McDonald's Happy Meal — and special offers to build loyalty." },
+            ],
+          },
+          {
+            t: "chart", kind: "columns", title: "Operating capacity", sub: "Share of the €5 million full-capacity revenue reached each year", unit: "%", digits: 0, labels: true,
+            xLabel: "Year", yLabel: "Capacity", ticks: [0, 50, 100],
+            items: [
+              { label: "Year 1", value: 30 }, { label: "Year 2", value: 50 }, { label: "Year 3", value: 70 }, { label: "Year 4", value: 90 }, { label: "Year 5", value: 100, hl: true },
+            ],
+          },
+          {
+            t: "chart", kind: "columns", title: "Total Taco Bell revenues", sub: "Restaurants × €5 million × operating capacity, in € millions", digits: 1, labels: true,
+            xLabel: "Year", yLabel: "€ millions", ticks: [0, 250, 500],
+            items: [
+              { label: "Year 1", value: 60, extra: "40 restaurants × 30%" },
+              { label: "Year 2", value: 137.5, extra: "55 restaurants × 50%" },
+              { label: "Year 3", value: 245, extra: "70 restaurants × 70%" },
+              { label: "Year 4", value: 382.5, extra: "85 restaurants × 90%" },
+              { label: "Year 5", value: 500, extra: "100 restaurants × 100%", hl: true },
+            ],
+            extraLabel: "Calculation",
+          },
+        ],
+      },
+      {
+        slug: "cost-structure",
+        title: "Cost Structure",
+        type: "Renovation, operations, marketing",
+        figure: "50% variable",
+        figureTone: "neg",
+        blocks: [
+          {
+            t: "cards", cols: 2, items: [
+              { title: "Renovation", sub: "ONE-OFF, PER RESTAURANT", tint: "lav", text: "**€7.5 million** to convert each Rossopomodoro and install Taco Bell kitchens and furniture, rising with inflation for later openings." },
+              { title: "Fixed costs", sub: "YEARLY, PER RESTAURANT", tint: "lav", text: "**€2.5 million** in Year 1 for staff, utilities, rent and maintenance, growing with inflation." },
+              { title: "Variable costs", sub: "SHARE OF REVENUES", tint: "sun", text: "**35%** food cost plus **15%** other variable costs (logistics): half of every euro of revenue." },
+              { title: "Marketing", sub: "GROUP BUDGET", tint: "sun", text: "From €900 million, growing **5% a year for three years** if Italy is targeted, then 2.5%. Italy's share is allocated by restaurant count (100 of 8,000)." },
+            ],
+          },
+          { t: "h", text: "The economics of one restaurant", sub: "At full capacity, as modelled" },
+          {
+            t: "chart", kind: "waterfall", title: "One restaurant at full capacity", sub: "Yearly operating result before marketing, cross-selling and taxes, in € millions (Year 5)", digits: 2,
+            items: [
+              { label: "Revenue", value: 5.0 },
+              { label: "Food cost (35%)", value: -1.75 },
+              { label: "Other variable (15%)", value: -0.75 },
+              { label: "Fixed costs", tip: "Fixed costs (€2.5 M + inflation)", value: -2.71 },
+              { label: "Operating result", value: -0.21, total: true },
+            ],
+            caption: "In the model, revenue per restaurant stays at €5 million while fixed costs grow with inflation, so **even a full restaurant does not cover its costs** — the root of the negative cash flows after the expansion phase.",
+          },
+        ],
+      },
+      {
+        slug: "other-effects",
+        title: "Side Effects",
+        type: "Parking, cross-selling, working capital",
+        figure: "+ €1.5 M / year",
+        blocks: [
+          {
+            t: "cards", cols: 3, items: [
+              { title: "The parking problem", icon: "P", tint: "lav", text: "A drive-thru takes about 10% of the parking area, pushing occupancy from **75% to about 85%**, while car traffic grows 3.5% a year. Extra parking would be needed; sharing facilities or agreements with public car parks could limit the cost and avoid losing sales at peak hours." },
+              { title: "Cross-selling", icon: "⇄", tint: "sun", text: "Joint promotions and unified advertising with KFC and Pizza Hut add **€15 million** in sales in Year 1 at a 10% operating margin — about **€1.5 million** of extra profit, assumed to grow 2% a year." },
+              { title: "Working capital", icon: "⟳", tint: "ink", text: "Receivables 2% + inventory 4% − payables 7% = **−1% of revenues**: suppliers finance the business, so working capital releases cash instead of absorbing it." },
+            ],
+          },
+          {
+            t: "chart", kind: "columns", title: "Extra profit from cross-selling", sub: "Pizza Hut and KFC sales increase × 10% operating margin, in € millions", digits: 2, labels: true,
+            xLabel: "Year", yLabel: "€ millions", ticks: [0, 1, 2],
+            items: [
+              { label: "Year 1", value: 1.5 }, { label: "Year 2", value: 1.53 }, { label: "Year 3", value: 1.56 }, { label: "Year 4", value: 1.59 }, { label: "Year 5", value: 1.62 },
+            ],
+          },
+        ],
+      },
+      {
+        slug: "cost-of-capital",
+        title: "Cost of Capital",
+        type: "CAPM and WACC",
+        figure: "WACC 7.72%",
+        blocks: [
+          { t: "p", text: "The project keeps the same equity–debt mix as the rest of the company. Because the restaurants are in Italy, the cost of equity uses the **beta against the FTSE MIB (0.91)** and the **Italian market risk premium (6.5%)**.", center: true },
+          {
+            t: "calc", title: "Cost of equity — CAPM",
+            steps: [
+              { label: "Risk-free rate", formula: "", result: "3.00%" },
+              { label: "Beta vs FTSE MIB", formula: "", result: "0.91" },
+              { label: "Italian market risk premium", formula: "", result: "6.50%" },
+              { label: "**Cost of equity**", formula: "3% + 0.91 × 6.5%", result: "8.92%", final: true },
+            ],
+          },
+          {
+            t: "calc", title: "Cost of debt and capital structure",
+            steps: [
+              { label: "Cost of debt (BB rating)", formula: "3% risk-free + 3% spread", result: "6.00%" },
+              { label: "Equity value", formula: "€84 × 300 M shares", result: "€25.2 bn" },
+              { label: "Debt", formula: "", result: "€10.13 bn" },
+              { label: "Tax rate", formula: "", result: "21%" },
+            ],
+          },
+          {
+            t: "calc", title: "Weighted average cost of capital",
+            steps: [
+              { label: "Equity weight × cost of equity", formula: "25.2 / 35.33 × 8.92%", result: "6.36%" },
+              { label: "Debt weight × after-tax cost of debt", formula: "10.13 / 35.33 × 6% × (1 − 21%)", result: "1.36%" },
+              { label: "**WACC**", formula: "", result: "7.72%", final: true },
+            ],
+          },
+          { t: "quote", text: "The minimum return the project must earn to reward both shareholders and lenders." },
+        ],
+      },
+      {
+        slug: "sensitivity-decision",
+        title: "Sensitivity & Decision",
+        type: "What moves the result, and the call",
+        figure: "Do not invest",
+        figureTone: "neg",
+        blocks: [
+          { t: "p", text: "Discounting the incremental cash flows at the WACC gives a **negative net present value**. To see what could change the answer, I tested three key assumptions.", center: true },
+          {
+            t: "cards", cols: 3, items: [
+              { title: "Renovation cost −10%", icon: "≈", tint: "plain", text: "Lowers the up-front investment, but the result **barely moves**: the problem is not the entry ticket." },
+              { title: "Revenues +10%", sub: "FIRST FIVE YEARS", icon: "↗", tint: "lav", text: "Improves the result during the ramp-up, but **not enough to turn it positive**." },
+              { title: "Total costs −10%", icon: "✓", tint: "sun", text: "The only lever that works: yearly cash flows **turn positive from Year 6**, once the expansion is complete." },
+            ],
+          },
+          { t: "quote", text: "The project only pays off if the cost structure changes — and that is not the plan on the table.", sub: "The key insight" },
+          {
+            t: "cards", cols: 3, items: [
+              { title: "Cost structure", tint: "ink", text: "Positive value depends on **lower costs**, not on more customers or cheaper conversions." },
+              { title: "Taxes", tint: "ink", text: "Italy's **higher tax burden** compared with other European countries weighs on returns." },
+              { title: "Culture", tint: "ink", text: "Italian consumers are **not used to Taco Bell's flavours**: the first years would be the hardest." },
+            ],
+          },
+          { t: "closing", title: "Recommendation: do not invest — for now", text: "With the current assumptions, entering Italy destroys value for Yum! Brands. The market could be approached later, with a **leaner cost model** and a menu adapted to local tastes, but today the risk of struggling in the first years is too high." },
+        ],
+      },
+    ],
+  },
+  {
     slug: "pixel-library",
     title: "Pixel Library",
     kind: "Personal",

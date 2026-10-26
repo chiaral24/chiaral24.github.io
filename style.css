@@ -1603,3 +1603,117 @@ body.theme-glass { isolation: isolate; }
   .browser-url { font-size: 10px; }
   .theme-journey .cover-title { font-size: 26px; }
 }
+
+/* ======================================================================
+   Tema "memo" (Taco Bell Italy): un memo d'investimento, la roadmap
+   come conto economico, il timbro della decisione
+   ====================================================================== */
+.theme-memo {
+  --accent: #8e2c8f;
+  --accent-soft: #dcb6dc;
+  --loss: #c0392b;
+  --lav-line: #e3c7e3;
+  --lav-bg: #faf2fa;
+  --sun-line: #ecd9a6;
+  --sun-bg: #fbf6e7;
+  --hover-tint: rgba(142, 44, 143, .06);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .theme-memo { --accent: #c06bbf; --accent-soft: #5a2f5a; --loss: #e0675a; --lav-line: #4d2c4d; --lav-bg: #221722; --sun-line: #5c5130; --sun-bg: #201d14; --hover-tint: rgba(192, 107, 191, .08); }
+}
+:root[data-theme="dark"] .theme-memo { --accent: #c06bbf; --accent-soft: #5a2f5a; --loss: #e0675a; --lav-line: #4d2c4d; --lav-bg: #221722; --sun-line: #5c5130; --sun-bg: #201d14; --hover-tint: rgba(192, 107, 191, .08); }
+
+.theme-memo .question strong { text-decoration-color: var(--accent); }
+.theme-memo .closing { border-color: var(--loss); background: transparent; border-width: 2px; }
+.theme-memo .closing h3 { color: var(--loss); }
+.theme-memo .lead::after, .theme-memo .closing::before { content: none; }
+.theme-memo .stat-value, .theme-memo .calc-result, .theme-memo .statement-figure { font-variant-numeric: tabular-nums; }
+
+/* Copertina: un documento con il timbro della decisione */
+.theme-memo .cover {
+  background:
+    repeating-linear-gradient(0deg, transparent 0 23px, rgba(142, 44, 143, .08) 23px 24px),
+    #fdfbf7;
+  color: #1d1320;
+  justify-content: flex-start;
+  padding-top: 22px;
+}
+.theme-memo .cover::before {
+  clip-path: none;
+  inset: 0 auto 0 34px;
+  width: 1.5px;
+  background: rgba(192, 57, 43, .35);
+}
+.theme-memo .cover::after { content: none; }
+.theme-memo .cover-title { font: 500 30px var(--display); padding-left: 24px; }
+.theme-memo .cover-sub { font: 500 11px ui-monospace, SFMono-Regular, Menlo, monospace; text-transform: none; letter-spacing: .02em; color: #6b5a6e; padding-left: 24px; }
+.cover-stamp {
+  position: absolute;
+  z-index: 2;
+  right: 8%;
+  bottom: 16%;
+  padding: 6px 16px;
+  border: 3px solid #c0392b;
+  border-radius: 6px;
+  color: #c0392b;
+  font: 700 18px ui-monospace, SFMono-Regular, Menlo, monospace;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  transform: rotate(-10deg);
+  opacity: .85;
+  mix-blend-mode: multiply;
+  transition: transform .4s cubic-bezier(.2, .7, .2, 1.4);
+}
+.card:hover .cover-stamp { transform: rotate(-4deg) scale(1.08); }
+.theme-memo .cover.big .cover-title { font-size: clamp(32px, 6vw, 48px); }
+.theme-memo .cover.big .cover-stamp { font-size: clamp(16px, 3vw, 26px); }
+
+/* La roadmap come conto economico */
+.statement { border: 1.5px solid var(--line); background: var(--card); max-width: 760px; margin: 0 auto; }
+.statement-head, .statement-total { display: flex; justify-content: space-between; padding: 10px 18px; font: 600 11px ui-monospace, SFMono-Regular, Menlo, monospace; text-transform: uppercase; letter-spacing: .08em; }
+.statement-head { border-bottom: 1.5px solid var(--line); color: var(--muted); }
+.statement-row { display: flex; align-items: baseline; gap: 14px; padding: 14px 18px; text-decoration: none; border-bottom: 1px solid var(--plain-line); transition: background .25s, padding .25s; }
+.statement-row:hover { background: var(--hover-tint); padding-left: 26px; }
+.statement-n { font: 600 12px ui-monospace, SFMono-Regular, Menlo, monospace; color: var(--muted); }
+.statement-title { font: 500 17px var(--display); display: flex; flex-direction: column; }
+.statement-title small { font: 400 12px var(--body); color: var(--muted); }
+.statement-figure { font: 600 15px ui-monospace, SFMono-Regular, Menlo, monospace; color: var(--accent); white-space: nowrap; }
+.statement-row.tone-neg .statement-figure { color: var(--loss); }
+.statement-total { border-top: 3px double var(--line); font-size: 13px; padding: 14px 18px; }
+.statement-total span:last-child { color: #fff; background: var(--loss); padding: 2px 10px; border-radius: 3px; }
+
+/* Calcolo passo per passo */
+.calc { border: 1.5px solid var(--plain-line); background: var(--card); margin: 0 0 14px; max-width: 760px; margin-left: auto; margin-right: auto; }
+.calc-title { padding: 10px 16px; font: 600 12px ui-monospace, SFMono-Regular, Menlo, monospace; text-transform: uppercase; letter-spacing: .06em; color: var(--accent); border-bottom: 1px solid var(--plain-line); background: var(--lav-bg); }
+.calc-row { display: grid; grid-template-columns: 1.2fr 1.4fr 100px; gap: 12px; align-items: baseline; padding: 9px 16px; border-bottom: 1px dashed var(--plain-line); font-size: 14px; }
+.calc-row:last-child { border-bottom: 0; }
+.calc-formula { font: 13px ui-monospace, SFMono-Regular, Menlo, monospace; color: var(--muted); }
+.calc-result { font: 600 15px ui-monospace, SFMono-Regular, Menlo, monospace; text-align: right; }
+.calc-row.final { background: var(--lav-bg); border-top: 1.5px solid var(--line); }
+.calc-row.final .calc-result { color: var(--accent); font-size: 17px; }
+
+/* Grafico a cascata */
+.waterfall { display: flex; flex-direction: column; gap: 8px; }
+.wf-row { display: grid; grid-template-columns: minmax(110px, 170px) 1fr 70px; gap: 12px; align-items: center; font-size: 13px; position: relative; outline: none; }
+.wf-label { text-align: right; }
+.wf-track { position: relative; height: 22px; }
+.wf-zero { position: absolute; top: -4px; bottom: -4px; border-left: 1.5px solid var(--muted); }
+.wf-bar { position: absolute; top: 0; height: 100%; background: var(--accent); border-radius: 3px; transition: filter .2s; }
+.wf-row.neg .wf-bar { background: var(--loss); }
+.wf-row.total .wf-label { font-weight: 600; }
+.wf-row.total { border-top: 1.5px solid var(--line); padding-top: 8px; }
+.wf-row:hover .wf-bar, .wf-row:focus-visible .wf-bar { filter: brightness(1.1); }
+.wf-value { font: 600 13px ui-monospace, SFMono-Regular, Menlo, monospace; font-variant-numeric: tabular-nums; }
+.wf-row.neg .wf-value { color: var(--loss); }
+.wf-row[data-tip]:hover::after, .wf-row[data-tip]:focus-visible::after { left: auto; right: 0; transform: none; bottom: calc(100% + 2px); }
+
+@media (max-width: 520px) {
+  .calc-row { grid-template-columns: 1fr auto; }
+  .calc-formula { grid-column: 1 / -1; grid-row: 2; font-size: 12px; }
+  .statement-row { flex-wrap: wrap; }
+  .statement-row .toc-dots { display: none; }
+  .statement-figure { width: 100%; padding-left: 26px; }
+  .wf-row { grid-template-columns: 96px 1fr 52px; gap: 8px; }
+  .theme-memo .cover-title { font-size: 24px; }
+  .cover-stamp { font-size: 13px; }
+}

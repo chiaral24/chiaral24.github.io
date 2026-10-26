@@ -46,7 +46,7 @@ function about() {
 
 // Copertina disegnata in CSS (al posto di un'immagine), personalizzata dal tema del progetto
 const cover = (p, big = false) =>
-  `<div class="cover${big ? " big" : ""}" aria-hidden="true"><span class="cover-title">${esc(p.cover.title)}</span>${p.cover.sub ? `<span class="cover-sub">${esc(p.cover.sub)}</span>` : ""}</div>`;
+  `<div class="cover${big ? " big" : ""}" aria-hidden="true"><span class="cover-title">${esc(p.cover.title)}</span>${p.cover.sub ? `<span class="cover-sub">${esc(p.cover.sub)}</span>` : ""}${p.cover.stamp ? `<span class="cover-stamp">${esc(p.cover.stamp)}</span>` : ""}</div>`;
 
 const themeClass = (p) => (p.theme ? ` theme-${p.theme}` : "");
 
@@ -143,7 +143,25 @@ function chart(b) {
   const ref = b.ref ? `<div class="ref-line" style="bottom:${pct(b.ref.value)}%"></div>` : "";
   const refNote = b.ref ? `<p class="chart-ref-note"><span class="ref-swatch"></span>${esc(b.ref.label)} ${fmt(b.ref.value)}</p>` : "";
   let plot = "";
-  if (b.kind === "scatter") {
+  if (b.kind === "waterfall") {
+    // Ogni voce parte dal totale progressivo; le righe "total" partono da zero
+    let run = 0;
+    const rows = items.map((i) => {
+      const start = i.total ? 0 : run;
+      const end = i.total ? i.value : run + i.value;
+      if (!i.total) run = end;
+      return { ...i, start, end };
+    });
+    const lo = Math.min(0, ...rows.map((r) => Math.min(r.start, r.end)));
+    const hi = Math.max(...rows.map((r) => Math.max(r.start, r.end)));
+    const x = (v) => ((v - lo) / (hi - lo)) * 100;
+    plot = `<div class="waterfall">${rows.map((r) => `
+      <div class="wf-row${r.total ? " total" : ""}${r.end < r.start || (r.total && r.value < 0) ? " neg" : ""}" tabindex="0" data-tip="${esc(`${r.tip || r.label}: ${r.value > 0 && !r.total ? "+" : ""}${fmt(r.value)}`)}">
+        <span class="wf-label">${esc(r.label)}</span>
+        <span class="wf-track"><span class="wf-zero" style="left:${x(0)}%"></span><span class="wf-bar" style="left:${x(Math.min(r.start, r.end))}%;width:${Math.max(Math.abs(x(r.end) - x(r.start)), 0.4)}%"></span></span>
+        <span class="wf-value">${r.value > 0 && !r.total ? "+" : r.value < 0 ? "−" : ""}${fmt(Math.abs(r.value))}</span>
+      </div>`).join("")}</div>`;
+  } else if (b.kind === "scatter") {
     // Punti con etichetta diretta: x e y hanno ciascuno il proprio dominio
     const [x0, x1] = b.xDomain, [y0, y1] = b.yDomain;
     const px = (v) => ((v - x0) / (x1 - x0)) * 100, py = (v) => ((v - y0) / (y1 - y0)) * 100;
@@ -183,9 +201,9 @@ function chart(b) {
   return `
     <figure class="chart chart-${b.kind || "columns"}">
       <figcaption><strong>${esc(b.title)}</strong>${b.sub ? `<span>${esc(b.sub)}</span>` : ""}</figcaption>
-      ${b.yLabel && b.kind !== "hbars" ? `<span class="axis-title">${esc(b.yLabel)}</span>` : ""}
+      ${b.yLabel && !["hbars", "waterfall"].includes(b.kind) ? `<span class="axis-title">${esc(b.yLabel)}</span>` : ""}
       ${plot}
-      ${b.xLabel && b.kind !== "hbars" ? `<span class="axis-title x">${esc(b.xLabel)}</span>` : ""}
+      ${b.xLabel && !["hbars", "waterfall"].includes(b.kind) ? `<span class="axis-title x">${esc(b.xLabel)}</span>` : ""}
       ${b.caption ? `<p class="chart-caption">${md(b.caption)}</p>` : ""}
       <details class="chart-data"><summary>Show data</summary>
         ${b.kind === "scatter"
@@ -275,6 +293,13 @@ const BLOCKS = {
     ${b.caption || b.sub ? `<figcaption>${b.caption ? `<strong>${esc(b.caption)}</strong>` : ""}${b.sub ? `<span>${esc(b.sub)}</span>` : ""}</figcaption>` : ""}</figure>`;
   },
   chart: (b) => chart(b),
+  // Calcolo passo per passo, come le righe di un foglio di lavoro
+  calc: (b) => `<div class="calc">${b.title ? `<div class="calc-title">${esc(b.title)}</div>` : ""}${b.steps.map((s) => `
+    <div class="calc-row${s.result && s.final ? " final" : ""}">
+      <span class="calc-label">${md(s.label)}</span>
+      <span class="calc-formula">${esc(s.formula || "")}</span>
+      <span class="calc-result">${esc(s.result || "")}</span>
+    </div>`).join("")}</div>`,
   diagram: (b) => diagram(b),
   // Screenshot dentro una finestra del browser, con la barra dell'indirizzo
   browser: (b) => `<figure class="browser">
@@ -388,7 +413,13 @@ function project(slug) {
   if (!p) return projects();
   const roadmap = p.sections
     ? `<div class="block-h"><h3>${esc(p.sectionsTitle || "Project documentation")}</h3>${p.sectionsSub ? `<p>${esc(p.sectionsSub)}</p>` : ""}</div>
-       ${p.roadmapStyle === "boarding" ? `<div class="passes">${p.sections.map((s, i) => `
+       ${p.roadmapStyle === "statement" ? `<div class="statement"><div class="statement-head"><span>${esc(p.statementTitle || "Statement")}</span><span>Key figure</span></div>${p.sections.map((s, i) => `
+         <a class="statement-row${s.figureTone ? ` tone-${esc(s.figureTone)}` : ""}" href="#/projects/${esc(p.slug)}/${esc(s.slug)}">
+           <span class="statement-n">${String(i + 1).padStart(2, "0")}</span>
+           <span class="statement-title">${esc(s.title)}${s.type ? `<small>${esc(s.type)}</small>` : ""}</span>
+           <span class="toc-dots" aria-hidden="true"></span>
+           <span class="statement-figure">${esc(s.figure || "")}</span>
+         </a>`).join("")}${p.statementTotal ? `<div class="statement-total"><span>${esc(p.statementTotal.label)}</span><span>${esc(p.statementTotal.value)}</span></div>` : ""}</div>` : p.roadmapStyle === "boarding" ? `<div class="passes">${p.sections.map((s, i) => `
          <a class="pass" href="#/projects/${esc(p.slug)}/${esc(s.slug)}">
            <span class="pass-main">
              <span class="pass-head"><span>Boarding pass</span><span>Flight TN${String(i + 1).padStart(2, "0")}</span></span>
@@ -476,7 +507,7 @@ function section(slug, sectionSlug) {
     ${back(`#/projects/${p.slug}`, p.sectionsTitle || p.title)}
     <article class="page doc${themeClass(p)}">
       ${decor(p, 8)}
-      <span class="meta">${p.roadmapStyle === "toc" ? `Chapter ${roman(i + 1)} · ${esc(p.title)}` : p.roadmapStyle === "lab" ? `EXP ${String(i + 1).padStart(2, "0")} · ${esc(s.task || p.title)}` : p.roadmapStyle === "film" ? `Scene ${String(i + 1).padStart(2, "0")} · ${esc(p.title)}` : p.roadmapStyle === "articles" ? `Article ${i + 1} · ${esc(p.title)}` : p.roadmapStyle === "board" ? `${esc(p.ticketPrefix || "T")}-${i + 1} · ${esc(s.kind || "Story")} · ${esc(p.title)}` : p.roadmapStyle === "boarding" ? `Flight TN${String(i + 1).padStart(2, "0")} · ${esc(i ? p.sections[i - 1].code : "DEP")} → ${esc(s.code)}` : `${esc(p.title)} · ${i + 1}/${p.sections.length}`}</span>
+      <span class="meta">${p.roadmapStyle === "toc" ? `Chapter ${roman(i + 1)} · ${esc(p.title)}` : p.roadmapStyle === "lab" ? `EXP ${String(i + 1).padStart(2, "0")} · ${esc(s.task || p.title)}` : p.roadmapStyle === "film" ? `Scene ${String(i + 1).padStart(2, "0")} · ${esc(p.title)}` : p.roadmapStyle === "articles" ? `Article ${i + 1} · ${esc(p.title)}` : p.roadmapStyle === "board" ? `${esc(p.ticketPrefix || "T")}-${i + 1} · ${esc(s.kind || "Story")} · ${esc(p.title)}` : p.roadmapStyle === "statement" ? `Note ${i + 1} · ${esc(p.title)}` : p.roadmapStyle === "boarding" ? `Flight TN${String(i + 1).padStart(2, "0")} · ${esc(i ? p.sections[i - 1].code : "DEP")} → ${esc(s.code)}` : `${esc(p.title)} · ${i + 1}/${p.sections.length}`}</span>
       <h2 class="page-title center-title">${esc(s.pageTitle || s.title)}</h2>
       ${s.blocks.map((b) => (BLOCKS[b.t] ? BLOCKS[b.t](b) : "")).join("")}
       <nav class="pager">${link(prev, "prev")}${link(next, "next")}</nav>
@@ -523,7 +554,7 @@ function animateIn() {
   markReveal(app.querySelector(".back"), "fade");
   const page = app.querySelector(".page");
   if (page) {
-    const GROUPS = ".grid, .roadmap, .boxes, .journey, .swatches, .contact-list, .canvas, .schema, .ops, .chips, .toc, .lab, .gallery, .film-frames, .articles, .rings, .layers, .passes";
+    const GROUPS = ".grid, .roadmap, .boxes, .journey, .swatches, .contact-list, .canvas, .schema, .ops, .chips, .toc, .lab, .gallery, .film-frames, .articles, .rings, .layers, .passes, .statement";
     for (const child of page.children) {
       if (child.classList.contains("clouds")) continue;
       if (child.classList.contains("page-title")) { markReveal(child, "down"); continue; }
