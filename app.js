@@ -52,7 +52,7 @@ function about() {
 
 // Copertina disegnata in CSS (al posto di un'immagine), personalizzata dal tema del progetto
 const cover = (p, big = false) =>
-  `<div class="cover${big ? " big" : ""}" aria-hidden="true"><span class="cover-title">${esc(p.cover.title)}</span>${p.cover.sub ? `<span class="cover-sub">${esc(p.cover.sub)}</span>` : ""}${p.cover.stamp ? `<span class="cover-stamp">${esc(p.cover.stamp)}</span>` : ""}</div>`;
+  `<div class="cover${big ? " big" : ""}" aria-hidden="true"><span class="cover-title">${esc(p.cover.title)}</span>${p.cover.sub ? `<span class="cover-sub">${esc(p.cover.sub)}</span>` : ""}${p.cover.stamp ? `<span class="cover-stamp">${esc(p.cover.stamp)}</span>` : ""}${p.cover.chips ? `<span class="cover-chips">${p.cover.chips.map((c) => `<span class="cover-chip${c.forgotten ? " forgotten" : ""}"><span class="chip-logo">${esc(c.icon || c.name[0])}</span><span class="chip-name">${esc(c.name)}${c.note ? `<small>${esc(c.note)}</small>` : ""}</span><span class="chip-price">${esc(c.price)}</span></span>`).join("")}</span>` : ""}</div>`;
 
 const themeClass = (p) => (p.theme ? ` theme-${p.theme}` : "");
 

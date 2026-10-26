@@ -46,6 +46,16 @@ const PROJECTS = [
   {
     slug: "clarity-in-the-cloud",
     title: "Clarity in the Cloud",
+    theme: "clarity",
+    cover: {
+      title: "Clarity in the Cloud",
+      sub: "Are you paying for something you forgot?",
+      chips: [
+        { name: "Netflix", icon: "N", price: "€15.99" },
+        { name: "Spotify", icon: "♫", price: "€10.99" },
+        { name: "Gym", icon: "◎", note: "unused 3 months", price: "€30.00", forgotten: true },
+      ],
+    },
     kind: "University · Group project",
     year: "2026",
     area: "UX & Product Design",
