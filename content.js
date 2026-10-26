@@ -410,7 +410,6 @@ const PROJECTS = [
     image: "assets/projects/pixel-library.png",
     links: [
       { label: "Live app", href: "https://pixel-library-gold.vercel.app" },
-      { label: "Code", href: "https://github.com/chiaral24/pixel-library" },
     ],
   },
 ];
