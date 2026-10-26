@@ -17,7 +17,7 @@ const ICONS = {
 const back = (href = "#/", label = "Back to Home") => `<a class="back" href="${href}">← ${label}</a>`;
 
 const illustration = (src = ILLUSTRATION) =>
-  `<img class="illustration" src="${src}" alt="" onerror="this.remove()">`;
+  `<img class="illustration" src="${src}" alt="">`;
 
 // Pulsante per scaricare il CV (il PDF esportato da Canva, senza dati privati)
 const cvButton = (extra = "") =>
@@ -638,6 +638,8 @@ function render() {
     page === "contact" ? contact() :
     home();
   app.innerHTML = view;
+  // Se un'illustrazione manca, la togliamo (al posto di un onerror inline, bloccato dalla CSP)
+  app.querySelectorAll("img.illustration").forEach((img) => img.addEventListener("error", () => img.remove(), { once: true }));
   window.scrollTo(0, 0);
   animateIn();
   const p = slug && PROJECTS.find((x) => x.slug === slug);
