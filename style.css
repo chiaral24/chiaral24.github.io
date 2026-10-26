@@ -199,7 +199,7 @@ h1, h2, h3 { font-family: var(--display); font-weight: 500; margin: 0; }
 
 /* ---------- Contatti ---------- */
 .contact-layout { display: flex; align-items: center; justify-content: space-between; gap: 40px; flex-wrap: wrap; }
-.contact-layout .illustration { width: 190px; height: auto; margin: 0 auto; }
+.contact-layout .illustration { width: min(320px, 80%); height: auto; margin: 0 auto; }
 @media (min-width: 700px) { .contact-layout .illustration { margin: 0 6% 0 0; } }
 .contact-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 20px; }
 .contact-list a { display: flex; align-items: center; gap: 14px; text-decoration: none; }
