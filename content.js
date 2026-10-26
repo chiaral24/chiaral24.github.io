@@ -1350,6 +1350,278 @@ rf.fit(X_train_imputed, y_train)`,
     ],
   },
   {
+    slug: "universal-enterprise-architecture",
+    title: "Universal Pictures: Enterprise Architecture",
+    kind: "University project",
+    year: "2025",
+    theme: "cinema",
+    decor: "none",
+    roadmapStyle: "film",
+    cover: { title: "Now showing: the Consumer Behaviour Shift", sub: "An ArchiMate 3.2 analysis" },
+    summary: "An ArchiMate model of a film studio moving from a production-centric to an audience-centric digital architecture.",
+    question: "What happens to a film studio when the audience **stops being passive**?",
+    description: [
+      "An enterprise architecture analysis of **Universal Pictures**, modelled with the **ArchiMate 3.2** framework in Archi. The project maps the current architecture of the studio and designs a **change model** driven by one strategic goal: the **Consumer Behaviour Shift** — audiences that expect personalised, on-demand, interactive content across many platforms.",
+      "The analysis covers every layer — **Motivation, Business, Application, Technology and Implementation & Migration** — and traces how a new strategic intent turns into redesigned processes, new applications and a cloud-native infrastructure.",
+    ],
+    tags: ["ArchiMate 3.2", "Archi", "Enterprise architecture", "Business process redesign", "As-Is / To-Be", "Cloud migration"],
+    image: "",
+    links: [],
+    sectionsTitle: "The Reel",
+    sectionsSub: "Six scenes, from the strategy to the go-live",
+    sections: [
+      {
+        slug: "the-plot",
+        icon: "✦",
+        type: "Summary & context",
+        title: "The Plot",
+        blocks: [
+          { t: "lead", title: "A studio at an inflection point", text: "Universal Pictures, one of the oldest and most influential film studios, has long worked with a **linear, studio-centric model** of production and theatrical distribution. Streaming, immersive media and user-driven consumption are eroding that model: audiences expect **personalised, on-demand access** and want to interact, not just watch." },
+          { t: "quote", text: "From a production-centric enterprise to an audience-centric digital media company." },
+          { t: "h", text: "Key findings" },
+          {
+            t: "cards", cols: 2, items: [
+              { title: "Strategic realignment", tint: "lav", text: "Moving from traditional content delivery to **consumer-driven experience design** requires realignment across business and technology layers." },
+              { title: "Operational transformation", tint: "sun", text: "Processes such as the **Film Production Capability** are re-engineered for modularity, agility and real-time insights." },
+              { title: "Digital enablement", tint: "sun", text: "**AI-driven applications**, behavioural analytics and platform-based distribution make the studio more responsive." },
+              { title: "Technology modernisation", tint: "lav", text: "Migration to **cloud-native infrastructure** and centralised data platforms for scalability and digital readiness." },
+            ],
+          },
+          { t: "h", text: "The ArchiMate layers", sub: "Clear traceability from strategic intent to technological implementation" },
+          {
+            t: "cards", cols: 4, items: [
+              { title: "Motivation", tint: "arch-motivation", text: "Drivers, goals and principles: from market competitiveness to **audience experience**." },
+              { title: "Business", tint: "arch-business", text: "Roles, functions and processes: from a linear pipeline to a **feedback-driven** process." },
+              { title: "Application", tint: "arch-application", text: "From production management tools to **AI-assisted editing** and content analytics." },
+              { title: "Technology", tint: "arch-technology", text: "From on-premise systems to **cloud-native** deployment, data lakes and APIs." },
+            ],
+          },
+        ],
+      },
+      {
+        slug: "motivation-layer",
+        icon: "◎",
+        type: "Why the studio must change",
+        title: "Motivation Layer",
+        blocks: [
+          { t: "p", text: "The Motivation Layer captures the strategic rationale, business objectives and stakeholder concerns behind the transformation: **why** the company works as it does today, and why it must evolve.", center: true },
+          {
+            t: "toggle", items: [
+              { label: "As-Is", src: "assets/projects/universal/current-motivational-layer.svg", caption: "Motivation Layer — current model", minWidth: 2055 },
+              { label: "To-Be", src: "assets/projects/universal/change-motivational-layer.svg", caption: "Motivation Layer — change model", minWidth: 1731 },
+            ],
+          },
+          { t: "h", text: "Today: operational stability and brand dominance" },
+          {
+            t: "cards", cols: 3, items: [
+              { title: "Brand legacy & studio leadership", tint: "plain", bullet: "→", lines: ["Consistent box office performance", "Alignment with NBCUniversal's media strategy", "Partnerships with top directors, producers and IP licensors"] },
+              { title: "Revenue & cost optimisation", tint: "plain", bullet: "→", lines: ["International expansion", "Tighter budget governance in production", "Optimised theatrical channels and release windows"] },
+              { title: "Creative excellence", tint: "plain", bullet: "→", lines: ["Creative innovation with genre balance", "Critical recognition and awards"] },
+            ],
+          },
+          { t: "h", text: "Tomorrow: embracing the Consumer Behaviour Shift", sub: "From a producer-centric to a consumer-driven operating model" },
+          {
+            t: "stats", items: [
+              { value: "2026", label: "Behavioural Insight Capability established" },
+              { value: "+30%", label: "direct-to-consumer interaction on digital platforms" },
+              { value: "−20%", label: "time-to-market for digital content" },
+            ],
+          },
+          {
+            t: "cards", cols: 3, items: [
+              { title: "Anticipate consumer behaviour", tint: "lav", text: "On-demand and personalised viewing, behavioural analytics, and a move from mass-market appeal to **segmented, experience-driven** content." },
+              { title: "Customer experience as a core value", tint: "sun", text: "Engagement across digital platforms, personalised recommendations, **AR/VR** formats and a unified cinema–streaming–mobile experience." },
+              { title: "Innovation & technology", tint: "ink", text: "**AI and machine learning** to predict content performance, cloud migration and adaptive formats such as interactive storytelling." },
+            ],
+          },
+          { t: "h", text: "Legacy vs change-oriented motivations" },
+          {
+            t: "table",
+            head: ["Aspect", "Current model", "Change model"],
+            rows: [
+              ["Strategic focus", "Studio excellence and content control", "Consumer behaviour and digital engagement"],
+              ["Primary driver", "Brand dominance and production quality", "Behavioural insight and customer experience"],
+              ["Customer role", "Passive audience", "Active participant and data source"],
+              ["Technology role", "Supportive infrastructure", "Strategic enabler and differentiator"],
+              ["Operational style", "Linear, schedule-driven", "Agile, insight-driven"],
+              ["Innovation priority", "Incremental improvements in production", "Disruptive innovation in consumption and distribution"],
+            ],
+          },
+        ],
+      },
+      {
+        slug: "business-layer",
+        icon: "⚑",
+        type: "Who does what",
+        title: "Business Layer",
+        blocks: [
+          { t: "p", text: "The Business Layer models how the studio creates value: its organisation, functions, services and processes, and how it interacts with customers, partners and suppliers.", center: true },
+          {
+            t: "toggle", items: [
+              { label: "As-Is", src: "assets/projects/universal/current-business-layer.svg", caption: "Business Layer — current model", sub: "A studio-centric organisation", minWidth: 2064 },
+              { label: "To-Be", src: "assets/projects/universal/change-business-layer.svg", caption: "Business Layer — change model", sub: "Active structure, behaviour, motivation and passive structure", minWidth: 1362 },
+            ],
+          },
+          { t: "h", text: "From studio-centric…" },
+          {
+            t: "cards", cols: 3, items: [
+              { title: "External actors", tint: "plain", bullet: "•", lines: ["**Audience**, a passive consumer", "**Distribution partners**: cinemas, TV, SVOD", "**Creative suppliers**: directors, writers, agents"] },
+              { title: "Production", tint: "plain", text: "Pre-production, shooting and post-production as **sequential, highly planned** flows under centralised governance." },
+              { title: "Marketing & distribution", tint: "plain", text: "Large pre-release campaigns on traditional media; launches through partners, with **little direct contact** with the public." },
+            ],
+          },
+          { t: "h", text: "…to consumer-centric" },
+          {
+            t: "cards", cols: 2, items: [
+              { title: "New external actors", tint: "lav", bullet: "•", lines: ["**Digital Consumer**, interacting through mobile, social and streaming", "**Insight Platform** for real-time behaviour analysis", "**Content Partners** in co-creation and cross-media storytelling"] },
+              { title: "Consumer Intelligence unit", tint: "sun", text: "A new function that runs the **Audience Analysis** service through the Behavioural Data Collection & Insight process, for dynamic profiling and personalisation." },
+              { title: "Direct-to-Consumer capability", tint: "sun", text: "The **Direct Engagement Flow** builds continuous relationships through proprietary apps, communities and social channels." },
+              { title: "Revised marketing", tint: "lav", text: "Marketing becomes **Omnichannel Experience Management**, with a Campaign Optimisation Loop driven by instant user feedback." },
+            ],
+          },
+          {
+            t: "table",
+            head: ["Element", "Current model", "Change model"],
+            rows: [
+              ["Operative structure", "Centralised, linear", "Agile, decentralised"],
+              ["Customer", "Passive spectator", "Active part of the ecosystem"],
+              ["Production", "Long, predefined cycles", "Iterative, adaptive"],
+              ["Marketing", "Traditional campaigns", "Omnichannel experiences"],
+              ["Data and insight", "Post-launch, limited", "Real-time, strategic"],
+              ["Interaction", "Through distribution partners", "Direct-to-consumer"],
+              ["Key services", "Production, Distribution, Licensing", "Behavioural Insight, Personalisation, Direct Engagement"],
+            ],
+          },
+        ],
+      },
+      {
+        slug: "film-production",
+        icon: "▶",
+        type: "The redesigned process",
+        title: "Film Production, Reimagined",
+        blocks: [
+          { t: "lead", title: "A modular, iterative, data-driven process", text: "In the new operating model the **Film Production** capability is rebuilt so that Universal can respond to the market dynamically, shorten production cycles and create content that matters to a digital audience." },
+          { t: "diagram", src: "assets/projects/universal/change-film-production-capability-process-functions.svg", caption: "Film Production Capability — processes and functions", sub: "Strategic foundation, operational execution, outputs and triggers", minWidth: 903 },
+          { t: "h", text: "Six phases" },
+          {
+            t: "steps", items: [
+              { title: "Phase 1", text: "Audience Insight Activation", action: "Behavioural data from social, apps and streaming informs creative decisions from the very start." },
+              { title: "Phase 2", text: "Concept Co-Creation", action: "Creatives, partners, fan communities and analysts validate ideas together, early." },
+              { title: "Phase 3", text: "Agile Script Development", action: "Scripts evolve in short cycles, revised on qualitative and quantitative feedback." },
+              { title: "Phase 4", text: "Modular Production", action: "Independent modules allow teasers, short-form and interactive versions to be released gradually." },
+              { title: "Phase 5", text: "Real-Time Feedback Loop", action: "Selected audiences test partial cuts (narrative A/B testing) that guide post-production." },
+              { title: "Phase 6", text: "Multi-Platform Deployment", action: "Cinema, streaming, social and immersive releases, each customised for its audience segment." },
+            ],
+          },
+          { t: "h", text: "Supporting services" },
+          {
+            t: "cards", cols: 3, items: [
+              { title: "Audience Intelligence", tint: "plain", text: "Leads insight activation." },
+              { title: "Creative Iteration Support", tint: "plain", text: "Assists agile script development." },
+              { title: "Digital Asset Management", tint: "plain", text: "Coordinates modular content." },
+              { title: "Real-Time Analytics", tint: "plain", text: "Feeds the loops and optimisation." },
+              { title: "Omnichannel Publishing", tint: "plain", text: "Deploys differently on each channel." },
+            ],
+          },
+          { t: "closing", title: "Strategic impact", text: "From a sequential, artistic-industrial logic to a **collaborative, iterative and adaptive** one: shorter time-to-market, audiences involved in the creative phase, personalised experiences at global scale and more targeted, better-performing content." },
+        ],
+      },
+      {
+        slug: "application-technology",
+        icon: "⬢",
+        type: "Systems & infrastructure",
+        title: "Application & Technology",
+        blocks: [
+          { t: "h", text: "Application Layer" },
+          {
+            t: "toggle", items: [
+              { label: "As-Is", src: "assets/projects/universal/current-application-layer.svg", caption: "Application Layer — current model", minWidth: 1866 },
+              { label: "To-Be", src: "assets/projects/universal/change-application-layer.svg", caption: "Application Layer — change model", sub: "A long chain of integrated modules", minWidth: 5081 },
+            ],
+          },
+          {
+            t: "cards", cols: 2, items: [
+              { title: "As-Is: three main applications", sub: "LINEAR AND CENTRALISED", tint: "plain", bullet: "•", lines: ["**Project Management System** (Microsoft Project, ShotGrid)", "**Script Management** (Final Draft)", "**Asset Storage** (Media Shuttle, Avid Nexis), often on-premise"] },
+              { title: "To-Be: Adaptive Film Production Service", sub: "SIX INTEGRATED MODULES", tint: "lav", bullet: "→", lines: ["**Audience Insight Platform** (Amplitude, Nielsen One, Affogata)", "**Co-Creation Platform** (Miro, Kialo, UGC tools)", "**Agile Script Management** (WriterDuet + Jira)", "**DAM Cloud** (Frame.io, Adobe Experience Manager)", "**Real-Time Feedback** (Qualtrics + AI sentiment analysis)", "**Omnichannel Publishing** (Adobe Experience Platform, Brightcove)"] },
+            ],
+          },
+          { t: "h", text: "Technology Layer" },
+          {
+            t: "toggle", items: [
+              { label: "As-Is", src: "assets/projects/universal/current-technology-layer.svg", caption: "Technology Layer — current model", minWidth: 1343 },
+              { label: "To-Be", src: "assets/projects/universal/change-technology-layer.svg", caption: "Technology Layer — change model", minWidth: 1776 },
+            ],
+          },
+          {
+            t: "cards", cols: 2, items: [
+              { title: "As-Is infrastructure", tint: "plain", bullet: "•", lines: ["**On-premise hosting** with limited scalability", "**Traditional DBMS** (Oracle, MySQL)", "**Standard web servers** (Apache, IIS) with minimal APIs"] },
+              { title: "To-Be infrastructure", tint: "sun", bullet: "→", lines: ["**Cloud-native hosting** (AWS, GCP, Azure)", "**AI & analytics engines** (BigQuery, Databricks)", "**API orchestration** (GraphQL, REST)", "**NoSQL & hybrid storage** (MongoDB + S3)", "**CDN & edge distribution** (Cloudflare, Akamai)"] },
+            ],
+          },
+          { t: "h", text: "Limits of the current architecture" },
+          { t: "chips", items: ["Poor audience orientation", "No analytics or feedback loops", "No content modularity", "Little interoperability between creative and commercial tools"] },
+          { t: "h", text: "Alignment with the strategic goal" },
+          {
+            t: "cards", cols: 4, items: [
+              { title: "Consumer-driven", icon: "✔", tint: "lav", text: "Applications listen and respond to audience signals in real time." },
+              { title: "Modular", icon: "✔", tint: "sun", text: "Production becomes iterative and testable, no longer a fixed flow." },
+              { title: "Convergent", icon: "✔", tint: "lav", text: "Creative, tech and marketing teams co-create, beyond silos." },
+              { title: "Personalised", icon: "✔", tint: "sun", text: "Every piece of content adapts by channel, language, target and behaviour." },
+            ],
+          },
+        ],
+      },
+      {
+        slug: "implementation-migration",
+        icon: "⇢",
+        type: "From plan to go-live",
+        title: "Implementation & Migration",
+        blocks: [
+          { t: "p", text: "The last layer describes the **transition** from the traditional production architecture to the new adaptive one: plateaus, gaps, work packages and deliverables.", center: true },
+          { t: "diagram", src: "assets/projects/universal/change-implementation-and-migration-layer.svg", caption: "Implementation & Migration Layer", sub: "Current state (2025) → transition state (2026) → target state (2027)", minWidth: 1371 },
+          { t: "h", text: "The legacy and its problems" },
+          {
+            t: "cards", cols: 2, items: [
+              { title: "Legacy architecture", tint: "plain", bullet: "•", lines: ["Offline software (Final Draft, standalone Premiere Pro)", "Assets on physical drives or local servers", "No link to feedback systems or user insights", "Departments talking via email and shared files"] },
+              { title: "Critical issues", tint: "ink", bullet: "•", lines: ["No way to adapt to new audience preferences", "Slow review and approval cycles", "Content designed for a single release and channel", "Analytics absent from the creative process"] },
+            ],
+          },
+          { t: "h", text: "The transformation in three phases" },
+          {
+            t: "steps", items: [
+              { title: "Phase 1", text: "Legacy flow mapping", action: "Understanding how production really works today." },
+              { title: "Phase 2", text: "Collaborative, API-based platforms", action: "Replacing offline tools with connected ones." },
+              { title: "Phase 3", text: "AI, feedback analytics and cloud DAM", action: "Integrating intelligence and personalisation." },
+            ],
+          },
+          { t: "quote", text: "Audience-Synced Content Creation", sub: "The strategic objective reached at the go-live of the Adaptive Film Production platform" },
+          {
+            t: "cards", cols: 2, items: [
+              { title: "Real-Time Consumer Feedback Loop", tint: "lav", text: "APIs bring data from social, apps and streaming straight to the creative teams." },
+              { title: "Collaborative Storybuilding", tint: "sun", text: "Shared spaces where writers, directors, marketers and even users co-create through voting and brainstorming." },
+              { title: "Modular Asset Library & Smart Rendering", tint: "sun", text: "Cloud DAM with semantic tagging, automatic versioning (e.g. personalised trailers) and distributed rendering." },
+              { title: "Multi-Platform Publishing Automation", tint: "lav", text: "Content adapted and released automatically on TikTok, Netflix, YouTube and proprietary OTT." },
+            ],
+          },
+          { t: "h", text: "Technology stack implemented" },
+          {
+            t: "table",
+            head: ["Stack component", "Technology"],
+            rows: [
+              ["Cloud hosting", "AWS (S3, EC2), GCP Compute Engine"],
+              ["Collaborative platform", "Miro, Notion AI, Jira, Slack integrations"],
+              ["AI insight & personalisation", "Amplitude, IBM Watson NLP, Affogata"],
+              ["DAM cloud & editing", "Adobe Experience Manager, Frame.io, Blackmagic Cloud"],
+              ["API layer", "GraphQL + REST API gateway"],
+              ["CDN & edge distribution", "Cloudflare, Fastly"],
+            ],
+          },
+          { t: "closing", title: "Empowered & adaptive film production", text: "Production is no longer a closed, reactive process but an **open, iterative and intelligent system**: faster time-to-market, narratives tuned by listening to the audience, personalisation at scale and a continuous cycle of testing and creative improvement." },
+        ],
+      },
+    ],
+  },
+  {
     slug: "pixel-library",
     title: "Pixel Library",
     kind: "Personal",

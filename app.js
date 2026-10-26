@@ -197,6 +197,16 @@ function chart(b) {
     </figure>`;
 }
 
+// Diagramma largo: scorre in orizzontale se più largo della pagina, e si apre a piena grandezza
+//   { src, caption, sub, minWidth }
+let toggleCount = 0;
+function diagram(b) {
+  return `<figure class="figure diagram zoom">
+    <div class="diagram-scroll"><a href="${esc(b.src)}" target="_blank" rel="noopener" title="Open full size"><img src="${esc(b.src)}" alt="${esc(b.alt || b.caption || "")}" loading="lazy" style="width:max(100%, ${b.minWidth || 0}px)"></a></div>
+    ${b.caption || b.sub ? `<figcaption>${b.caption ? `<strong>${esc(b.caption)}</strong>` : ""}${b.sub ? `<span>${esc(b.sub)}</span>` : ""}${b.minWidth ? '<span class="scroll-hint">Scroll sideways or open it full size ↗</span>' : ""}</figcaption>` : ""}
+  </figure>`;
+}
+
 // Numeri romani per i capitoli
 const roman = (n) => ["I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI", "XII"][n - 1] || String(n);
 
@@ -237,7 +247,7 @@ const BLOCKS = {
   stats: (b) => `<div class="boxes cols-${b.items.length}">${b.items.map((s) => `
     <div class="box stat"><span class="stat-value">${esc(s.value)}</span><p>${md(s.label)}</p>${s.source ? `<span class="meta">(${esc(s.source)})</span>` : ""}</div>`).join("")}</div>`,
   quote: (b) => `<figure class="quote"><blockquote>“${md(b.text)}”</blockquote>${b.sub ? `<figcaption>${md(b.sub)}</figcaption>` : ""}</figure>`,
-  steps: (b) => `<ol class="journey">${b.items.map((s) => `
+  steps: (b) => `<ol class="journey n${b.items.length}">${b.items.map((s) => `
     <li class="box tint-plain">
       <span class="meta">${esc(s.title)}</span>
       <h4>${md(s.text)}</h4>
@@ -265,6 +275,16 @@ const BLOCKS = {
     ${b.caption || b.sub ? `<figcaption>${b.caption ? `<strong>${esc(b.caption)}</strong>` : ""}${b.sub ? `<span>${esc(b.sub)}</span>` : ""}</figcaption>` : ""}</figure>`;
   },
   chart: (b) => chart(b),
+  diagram: (b) => diagram(b),
+  // Interruttore fra due diagrammi (es. As-Is / To-Be), solo HTML e CSS
+  toggle: (b) => {
+    const id = `tg${++toggleCount}`;
+    return `<div class="toggle">
+      ${b.items.map((_, k) => `<input type="radio" name="${id}" id="${id}-${k}"${k ? "" : " checked"}>`).join("")}
+      <div class="toggle-bar" role="tablist">${b.items.map((it, k) => `<label for="${id}-${k}">${esc(it.label)}</label>`).join("")}</div>
+      <div class="toggle-panels">${b.items.map((it) => `<div class="toggle-panel">${diagram(it)}</div>`).join("")}</div>
+    </div>`;
+  },
   // Più immagini affiancate, ognuna apribile a piena grandezza
   gallery: (b) => `<div class="gallery cols-${b.cols || 2}">${b.items.map((g) => `
     <figure class="figure zoom">
@@ -300,7 +320,13 @@ function project(slug) {
   if (!p) return projects();
   const roadmap = p.sections
     ? `<div class="block-h"><h3>${esc(p.sectionsTitle || "Project documentation")}</h3>${p.sectionsSub ? `<p>${esc(p.sectionsSub)}</p>` : ""}</div>
-       ${p.roadmapStyle === "lab" ? `<div class="lab">${p.sections.map((s, i) => `
+       ${p.roadmapStyle === "film" ? `<div class="filmstrip"><div class="film-frames">${p.sections.map((s, i) => `
+         <a class="film-frame" href="#/projects/${esc(p.slug)}/${esc(s.slug)}">
+           <span class="film-scene">SCENE ${String(i + 1).padStart(2, "0")}</span>
+           <span class="film-icon" aria-hidden="true">${esc(s.icon || "▶")}</span>
+           <span class="film-title">${esc(s.title)}</span>
+           ${s.type ? `<span class="film-type">${esc(s.type)}</span>` : ""}
+         </a>`).join("")}</div></div>` : p.roadmapStyle === "lab" ? `<div class="lab">${p.sections.map((s, i) => `
          <a class="specimen" href="#/projects/${esc(p.slug)}/${esc(s.slug)}">
            <span class="specimen-head"><span>EXP ${String(i + 1).padStart(2, "0")}</span><span>${esc(s.task || "")}</span></span>
            <span class="specimen-title">${esc(s.title)}</span>
@@ -359,7 +385,7 @@ function section(slug, sectionSlug) {
     ${back(`#/projects/${p.slug}`, p.sectionsTitle || p.title)}
     <article class="page doc${themeClass(p)}">
       ${decor(p, 8)}
-      <span class="meta">${p.roadmapStyle === "toc" ? `Chapter ${roman(i + 1)} · ${esc(p.title)}` : p.roadmapStyle === "lab" ? `EXP ${String(i + 1).padStart(2, "0")} · ${esc(s.task || p.title)}` : `${esc(p.title)} · ${i + 1}/${p.sections.length}`}</span>
+      <span class="meta">${p.roadmapStyle === "toc" ? `Chapter ${roman(i + 1)} · ${esc(p.title)}` : p.roadmapStyle === "lab" ? `EXP ${String(i + 1).padStart(2, "0")} · ${esc(s.task || p.title)}` : p.roadmapStyle === "film" ? `Scene ${String(i + 1).padStart(2, "0")} · ${esc(p.title)}` : `${esc(p.title)} · ${i + 1}/${p.sections.length}`}</span>
       <h2 class="page-title center-title">${esc(s.pageTitle || s.title)}</h2>
       ${s.blocks.map((b) => (BLOCKS[b.t] ? BLOCKS[b.t](b) : "")).join("")}
       <nav class="pager">${link(prev, "prev")}${link(next, "next")}</nav>
@@ -406,7 +432,7 @@ function animateIn() {
   markReveal(app.querySelector(".back"), "fade");
   const page = app.querySelector(".page");
   if (page) {
-    const GROUPS = ".grid, .roadmap, .boxes, .journey, .swatches, .contact-list, .canvas, .schema, .ops, .chips, .toc, .lab, .gallery";
+    const GROUPS = ".grid, .roadmap, .boxes, .journey, .swatches, .contact-list, .canvas, .schema, .ops, .chips, .toc, .lab, .gallery, .film-frames";
     for (const child of page.children) {
       if (child.classList.contains("clouds")) continue;
       if (child.classList.contains("page-title")) { markReveal(child, "down"); continue; }

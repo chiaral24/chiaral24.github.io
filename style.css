@@ -1003,3 +1003,161 @@ th { font-weight: 600; border-bottom: 1.5px solid var(--line); }
   .theme-lab .cover-title { font-size: 20px; max-width: 60%; }
   .pt-label { font-size: 11px; }
 }
+
+/* Percorsi da 3 o 6 passi: tre colonne */
+.journey.n3, .journey.n6 { grid-template-columns: repeat(3, 1fr); }
+@media (max-width: 760px) { .journey.n3, .journey.n6 { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 520px) { .journey.n3, .journey.n6 { grid-template-columns: 1fr; } }
+
+/* ======================================================================
+   Tema "cinema" (Universal Pictures): arancio da insegna, una pellicola
+   come roadmap, interruttore As-Is / To-Be
+   ====================================================================== */
+.theme-cinema {
+  --accent: #c2410c;
+  --accent-soft: #eab196;
+  --lav-line: #f0c3ab;
+  --lav-bg: #fdf3ec;
+  --sun-line: #e6d3a3;
+  --sun-bg: #faf5e8;
+  --hover-tint: rgba(194, 65, 12, .06);
+  --film: #1d1b19;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .theme-cinema { --accent: #de6a32; --accent-soft: #6e3a22; --lav-line: #6b3a24; --lav-bg: #24170f; --sun-line: #5c5730; --sun-bg: #1f1e15; --hover-tint: rgba(222, 106, 50, .09); --film: #0c0b0a; }
+}
+:root[data-theme="dark"] .theme-cinema { --accent: #de6a32; --accent-soft: #6e3a22; --lav-line: #6b3a24; --lav-bg: #24170f; --sun-line: #5c5730; --sun-bg: #1f1e15; --hover-tint: rgba(222, 106, 50, .09); --film: #0c0b0a; }
+
+.theme-cinema .question strong { text-decoration-color: var(--accent); }
+.theme-cinema .closing { border-color: var(--lav-line); background: var(--lav-bg); }
+.theme-cinema .lead::after, .theme-cinema .closing::before { content: none; }
+
+/* Copertina: l'insegna di un cinema con le lampadine */
+.theme-cinema .cover {
+  background: radial-gradient(ellipse at 50% 120%, rgba(222, 106, 50, .35), transparent 60%), #1d1b19;
+  color: #fbe9d4;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 26px 30px;
+}
+.theme-cinema .cover::before {
+  clip-path: none;
+  inset: 10px;
+  background:
+    radial-gradient(circle, #ffd27a 0 2.2px, transparent 2.8px) 0 0 / 16px 16px repeat-x,
+    radial-gradient(circle, #ffd27a 0 2.2px, transparent 2.8px) 0 100% / 16px 16px repeat-x,
+    radial-gradient(circle, #ffd27a 0 2.2px, transparent 2.8px) 0 0 / 16px 16px repeat-y,
+    radial-gradient(circle, #ffd27a 0 2.2px, transparent 2.8px) 100% 0 / 16px 16px repeat-y;
+  filter: drop-shadow(0 0 3px rgba(255, 190, 90, .8));
+}
+.theme-cinema .cover::after { clip-path: none; background: none; }
+.theme-cinema .cover-title { font: 500 22px/1.15 var(--display); text-transform: uppercase; letter-spacing: .04em; max-width: 85%; }
+.theme-cinema .cover-sub { color: #ffb27a; font-weight: 500; letter-spacing: .14em; margin-top: 10px; }
+.theme-cinema .cover.big .cover-title { font-size: clamp(24px, 5vw, 40px); }
+.card.theme-cinema:hover .cover::before { animation: marquee 1s steps(2) infinite; transform: none; }
+@keyframes marquee { 50% { filter: drop-shadow(0 0 1px rgba(255, 190, 90, .3)); opacity: .55; } }
+.card.theme-cinema:hover .cover::after { transform: none; }
+
+/* La pellicola */
+.filmstrip {
+  margin: 0 -24px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  border-radius: 2px;
+}
+.film-frames {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(6, minmax(128px, 1fr));
+  gap: 10px;
+  padding: 32px 16px;
+  min-width: 860px;
+  background: var(--film);
+}
+/* Perforazioni sopra e sotto */
+.film-frames::before, .film-frames::after {
+  content: "";
+  position: absolute;
+  left: 6px;
+  right: 6px;
+  height: 11px;
+  background: repeating-linear-gradient(90deg, transparent 0 9px, #f9f8f4 9px 20px, transparent 20px 29px);
+  opacity: .85;
+}
+.film-frames::before { top: 10px; }
+.film-frames::after { bottom: 10px; }
+.film-frame {
+  scroll-snap-align: start;
+  background: #f9f8f4;
+  color: #1a1a1a;
+  border-radius: 4px;
+  padding: 12px;
+  aspect-ratio: 4 / 5;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  text-decoration: none;
+  position: relative;
+  overflow: hidden;
+  transition: transform .3s, box-shadow .3s;
+}
+.film-frame::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 50% 30%, rgba(255, 210, 122, .45), transparent 65%);
+  opacity: 0;
+  transition: opacity .3s;
+  pointer-events: none;
+}
+.film-frame:hover { transform: translateY(-4px) scale(1.02); box-shadow: 0 0 0 2px var(--accent), 0 10px 26px rgba(0, 0, 0, .4); }
+.film-frame:hover::after { opacity: 1; }
+.film-scene { font: 600 11px ui-monospace, SFMono-Regular, Menlo, monospace; letter-spacing: .08em; color: #c2410c; }
+.film-icon { font-size: 26px; color: #c2410c; margin: auto 0 4px; }
+.film-title { font: 500 16px/1.2 var(--display); }
+.film-type { font-size: 12px; color: #6b6b6b; }
+
+/* Diagrammi larghi e interruttore As-Is / To-Be */
+.diagram-scroll { overflow-x: auto; background: #fff; }
+.diagram-scroll a { display: block; }
+.diagram-scroll img { max-width: none; height: auto; display: block; }
+.diagram figcaption { display: flex; flex-direction: column; gap: 2px; }
+.scroll-hint { font-size: 12px; color: var(--muted); }
+
+.toggle { margin: 0; }
+.toggle input { position: absolute; opacity: 0; pointer-events: none; }
+.toggle-bar { display: inline-flex; border: 1.5px solid var(--line); margin-bottom: 12px; }
+.toggle-bar label { padding: 7px 20px; font: 500 13px var(--body); cursor: pointer; transition: background .2s, color .2s; user-select: none; }
+.toggle-bar label + label { border-left: 1.5px solid var(--line); }
+.toggle-bar label:hover { background: var(--hover-tint); }
+.toggle-panel { display: none; animation: tl-in .35s ease; }
+.toggle input:nth-of-type(1):checked ~ .toggle-panels .toggle-panel:nth-child(1),
+.toggle input:nth-of-type(2):checked ~ .toggle-panels .toggle-panel:nth-child(2),
+.toggle input:nth-of-type(3):checked ~ .toggle-panels .toggle-panel:nth-child(3) { display: block; }
+.toggle input:nth-of-type(1):checked ~ .toggle-bar label:nth-child(1),
+.toggle input:nth-of-type(2):checked ~ .toggle-bar label:nth-child(2),
+.toggle input:nth-of-type(3):checked ~ .toggle-bar label:nth-child(3) { background: var(--accent); color: #fff; }
+.toggle input:focus-visible ~ .toggle-bar { outline: 2px solid var(--accent); outline-offset: 2px; }
+.toggle + .boxes, .toggle + .block-h, .diagram + .block-h, .toggle + .table-wrap { margin-top: 18px; }
+
+/* Riquadri con i colori standard dei livelli ArchiMate */
+.tint-arch-motivation { background: #ececff; border-color: #b9b9f0; }
+.tint-arch-business { background: #fffbe0; border-color: #e8de8a; }
+.tint-arch-application { background: #e6fbfb; border-color: #93dede; }
+.tint-arch-technology { background: #edf6e6; border-color: #b4d69f; }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .tint-arch-motivation { background: #1d1d33; border-color: #45457a; }
+  :root:not([data-theme="light"]) .tint-arch-business { background: #26240f; border-color: #6b6328; }
+  :root:not([data-theme="light"]) .tint-arch-application { background: #0f2424; border-color: #2f6565; }
+  :root:not([data-theme="light"]) .tint-arch-technology { background: #16210f; border-color: #42602f; }
+}
+:root[data-theme="dark"] .tint-arch-motivation { background: #1d1d33; border-color: #45457a; }
+:root[data-theme="dark"] .tint-arch-business { background: #26240f; border-color: #6b6328; }
+:root[data-theme="dark"] .tint-arch-application { background: #0f2424; border-color: #2f6565; }
+:root[data-theme="dark"] .tint-arch-technology { background: #16210f; border-color: #42602f; }
+
+@media (max-width: 600px) {
+  .filmstrip { margin: 0 -16px; }
+  .theme-cinema .cover-title { font-size: 17px; }
+}
