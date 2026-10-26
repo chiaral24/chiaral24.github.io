@@ -19,6 +19,12 @@ const back = (href = "#/", label = "Back to Home") => `<a class="back" href="${h
 const illustration = (src = ILLUSTRATION) =>
   `<img class="illustration" src="${src}" alt="" onerror="this.remove()">`;
 
+// Pulsante per scaricare il CV (il PDF esportato da Canva, senza dati privati)
+const cvButton = (extra = "") =>
+  PROFILE.cv
+    ? `<a class="btn btn-cv ${extra}" href="${esc(PROFILE.cv)}" download target="_blank" rel="noopener"><span aria-hidden="true">↓</span> Download CV</a>`
+    : "";
+
 function home() {
   return `
     <section class="home">
@@ -30,6 +36,7 @@ function home() {
         <a class="btn" href="#/projects">Projects</a>
         <a class="btn" href="#/contact">Contact</a>
       </nav>
+      ${cvButton()}
     </section>`;
 }
 
@@ -529,6 +536,7 @@ function contact() {
         </ul>
         ${illustration(ILLUSTRATION_CONTACT)}
       </div>
+      ${cvButton("contact-cv")}
     </section>`;
 }
 
@@ -550,6 +558,7 @@ function animateIn() {
     markReveal(home.querySelector(".illustration"), "scale");
     home.querySelectorAll(".name, .tagline").forEach((el) => markReveal(el, "fade"));
     home.querySelectorAll(".nav .btn").forEach((el) => markReveal(el, "up"));
+    markReveal(home.querySelector(".btn-cv"), "up");
   }
   markReveal(app.querySelector(".back"), "fade");
   const page = app.querySelector(".page");

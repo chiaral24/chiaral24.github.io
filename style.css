@@ -1717,3 +1717,9 @@ body.theme-glass { isolation: isolate; }
   .theme-memo .cover-title { font-size: 24px; }
   .cover-stamp { font-size: 13px; }
 }
+
+/* Pulsante Download CV */
+.btn-cv { display: inline-flex; align-items: center; gap: 8px; background: var(--fg); color: var(--bg); border-color: var(--fg); }
+.btn-cv:hover { background: var(--fg); color: var(--bg); opacity: .88; }
+.home .btn-cv { margin-top: 18px; }
+.contact-cv { margin-top: 32px; }
