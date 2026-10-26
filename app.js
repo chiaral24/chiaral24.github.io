@@ -36,7 +36,6 @@ function home() {
         <a class="btn" href="#/projects">Projects</a>
         <a class="btn" href="#/contact">Contact</a>
       </nav>
-      ${cvButton()}
     </section>`;
 }
 
@@ -57,6 +56,9 @@ const cover = (p, big = false) =>
 
 const themeClass = (p) => (p.theme ? ` theme-${p.theme}` : "");
 
+// Individuale, di gruppo o personale, ricavato dal tipo di progetto
+const who = (p) => (/personal/i.test(p.kind) ? "Personal" : /individual/i.test(p.kind) ? "Individual" : /group/i.test(p.kind) ? "Group" : p.kind);
+
 function card(p) {
   const thumb = p.cover
     ? cover(p)
@@ -67,9 +69,14 @@ function card(p) {
     <a class="card${themeClass(p)}" href="#/projects/${esc(p.slug)}">
       <div class="thumb">${thumb}</div>
       <div class="body">
-        <span class="meta">${esc([p.kind, p.year].filter(Boolean).join(" · "))}</span>
+        <div class="card-labels">
+          ${p.area ? `<span class="label-area">${esc(p.area)}</span>` : ""}
+          <span class="label-who">${esc(who(p))}</span>
+          ${p.year ? `<span class="label-year">${esc(p.year)}</span>` : ""}
+        </div>
         <h3>${esc(p.title)}</h3>
         <p>${esc(p.summary)}</p>
+        ${p.result ? `<p class="card-result"><span aria-hidden="true">→</span> ${esc(p.result)}</p>` : ""}
         <div class="tags">${p.tags.map((t) => `<span class="tag">${esc(t)}</span>`).join("")}</div>
       </div>
     </a>`;
@@ -558,7 +565,6 @@ function animateIn() {
     markReveal(home.querySelector(".illustration"), "scale");
     home.querySelectorAll(".name, .tagline").forEach((el) => markReveal(el, "fade"));
     home.querySelectorAll(".nav .btn").forEach((el) => markReveal(el, "up"));
-    markReveal(home.querySelector(".btn-cv"), "up");
   }
   markReveal(app.querySelector(".back"), "fade");
   const page = app.querySelector(".page");
