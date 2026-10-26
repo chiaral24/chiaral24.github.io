@@ -44,12 +44,20 @@ function about() {
     </section>`;
 }
 
+// Copertina disegnata in CSS (al posto di un'immagine), personalizzata dal tema del progetto
+const cover = (p, big = false) =>
+  `<div class="cover${big ? " big" : ""}" aria-hidden="true"><span class="cover-title">${esc(p.cover.title)}</span>${p.cover.sub ? `<span class="cover-sub">${esc(p.cover.sub)}</span>` : ""}</div>`;
+
+const themeClass = (p) => (p.theme ? ` theme-${p.theme}` : "");
+
 function card(p) {
-  const thumb = p.image
+  const thumb = p.cover
+    ? cover(p)
+    : p.image
     ? `<img src="${esc(p.image)}" alt="" loading="lazy">`
     : `<span class="star" aria-hidden="true">★</span>`;
   return `
-    <a class="card" href="#/projects/${esc(p.slug)}">
+    <a class="card${themeClass(p)}" href="#/projects/${esc(p.slug)}">
       <div class="thumb">${thumb}</div>
       <div class="body">
         <span class="meta">${esc([p.kind, p.year].filter(Boolean).join(" · "))}</span>
@@ -79,6 +87,40 @@ function clouds(n = 6) {
   const tops = [4, 14, 27, 39, 52, 64, 77, 90];
   return `<div class="clouds" aria-hidden="true">${tops.slice(0, n).map((y, i) =>
     `<img class="deco ${i % 2 ? "right" : "left"}" src="assets/deco/cloud-${(i % 2) + 1}.png" alt="" style="top:${y}%;width:${i % 3 ? 90 : 64}px">`).join("")}</div>`;
+}
+
+// Righe diagonali ai lati, riprese dalla copertina della relazione di CatchNTrade
+function stripes(n = 4) {
+  const tops = [6, 30, 55, 80];
+  return `<div class="clouds" aria-hidden="true">${tops.slice(0, n).map((y, i) =>
+    `<span class="deco stripe ${i % 2 ? "right" : "left"}" style="top:${y}%"></span>`).join("")}</div>`;
+}
+
+const decor = (p, n) => (p.decor === "stripes" ? stripes(Math.min(n, 4)) : clouds(n));
+
+// Evidenziazione minima per SQL e Java: commenti, stringhe, parole chiave, numeri
+const SQL_KW = /\b(CREATE|TABLE|PRIMARY|KEY|FOREIGN|REFERENCES|INSERT|INTO|VALUES|SELECT|FROM|WHERE|JOIN|ON|GROUP|BY|UPDATE|SET|DELETE|AS|COUNT|AVG|NOT|NULL|INT|VARCHAR|TEXT|DATE|DATETIME|BOOLEAN|DECIMAL|TRUE|FALSE|CURRENT_DATE|CURRENT_TIMESTAMP|AND|private|static|void|public|try|catch|new|return|throw|String|byte|for|if)\b/g;
+function highlight(code) {
+  return code.split("\n").map((line) => {
+    const cut = line.search(/--|\/\//);
+    const body = cut >= 0 ? line.slice(0, cut) : line;
+    const comment = cut >= 0 ? `<span class="c-com">${esc(line.slice(cut))}</span>` : "";
+    const parts = body.split(/('[^']*'|"[^"]*")/);
+    return parts.map((s, i) => i % 2
+      ? `<span class="c-str">${esc(s)}</span>`
+      : esc(s).replace(SQL_KW, '<span class="c-kw">$1</span>').replace(/\b(\d+(?:\.\d+)?)\b/g, '<span class="c-num">$1</span>')
+    ).join("") + comment;
+  }).join("\n");
+}
+
+// Colonne dello schema: "Nome TIPO", con * per la chiave primaria e >Tabella per la chiave esterna
+function schemaCol(c) {
+  const m = c.match(/^(\S+)\s+(\S+?)(\*)?(?:>(\S+))?$/);
+  if (!m) return `<li>${esc(c)}</li>`;
+  const [, name, type, pk, fk] = m;
+  return `<li class="${pk ? "pk" : ""}${fk ? " fk" : ""}">
+    <span class="col-name">${pk ? '<span class="key" title="Primary key">PK</span>' : ""}${fk ? `<span class="key fk-key" title="References ${esc(fk)}">FK</span>` : ""}${esc(name)}</span>
+    <span class="col-type">${esc(type)}${fk ? ` → ${esc(fk)}` : ""}</span></li>`;
 }
 
 function cardBlock(it) {
@@ -129,8 +171,29 @@ const BLOCKS = {
   },
   swatches: (b) => `<div class="swatches">${b.items.map((s) => `
     <div class="swatch"><span class="chip" style="background:${esc(s.hex)}"></span><strong>${esc(s.name)}</strong><span class="meta">${esc(s.hex)}</span></div>`).join("")}</div>`,
-  img: (b) => `<figure class="figure${b.narrow ? " narrow" : ""}"><img src="${esc(b.src)}" alt="${esc(b.alt || "")}" loading="lazy">
-    ${b.caption || b.sub ? `<figcaption>${b.caption ? `<strong>${esc(b.caption)}</strong>` : ""}${b.sub ? `<span>${esc(b.sub)}</span>` : ""}</figcaption>` : ""}</figure>`,
+  img: (b) => {
+    const img = `<img src="${esc(b.src)}" alt="${esc(b.alt || "")}" loading="lazy">`;
+    return `<figure class="figure${b.narrow ? " narrow" : ""}${b.zoom ? " zoom" : ""}">
+    ${b.zoom ? `<a href="${esc(b.src)}" target="_blank" rel="noopener" title="Open full size">${img}<span class="zoom-hint">Open full size ↗</span></a>` : img}
+    ${b.caption || b.sub ? `<figcaption>${b.caption ? `<strong>${esc(b.caption)}</strong>` : ""}${b.sub ? `<span>${esc(b.sub)}</span>` : ""}</figcaption>` : ""}</figure>`;
+  },
+  chips: (b) => `<div class="chips">${b.items.map((c) => `<span class="chip-tag">${esc(c)}</span>`).join("")}</div>`,
+  schema: (b) => `<div class="schema">${b.tables.map((tb) => `
+    <div class="schema-table${tb.kind === "rel" ? " rel" : ""}">
+      <div class="schema-head"><span>${esc(tb.name)}</span>${tb.kind === "rel" ? '<span class="meta">relationship</span>' : ""}</div>
+      <ul>${tb.cols.map(schemaCol).join("")}</ul>
+    </div>`).join("")}</div>
+    ${b.legend !== false ? '<p class="schema-legend"><span class="key">PK</span> primary key <span class="key fk-key">FK</span> foreign key</p>' : ""}`,
+  code: (b) => `<figure class="code">${b.title ? `<figcaption><span class="dots"><i></i><i></i><i></i></span>${esc(b.title)}</figcaption>` : ""}<pre><code>${highlight(b.text)}</code></pre></figure>`,
+  ops: (b) => `<div class="ops">${b.items.map((o) => `
+    <details class="op">
+      <summary><span class="op-id">${esc(o.id)}</span><span class="op-name">${esc(o.name)}</span><span class="op-type type-${esc(o.type.toLowerCase())}">${esc(o.type)}</span><span class="op-freq">${esc(o.freq)}/day</span></summary>
+      <div class="op-body"><p>${md(o.text)}</p>${o.sql ? `<pre><code>${highlight(o.sql)}</code></pre>` : ""}</div>
+    </details>`).join("")}</div>`,
+  terminal: (b) => `<figure class="terminal">
+    <figcaption><span class="dots"><i></i><i></i><i></i></span>${esc(b.title || "Terminal")}</figcaption>
+    <pre>${b.lines.map((l, i) => `<span class="tl${l.startsWith("$") ? " cmd" : ""}${l.startsWith("====") ? " head" : ""}" style="--i:${i}">${esc(l) || " "}</span>`).join("")}<span class="tl cursor" style="--i:${b.lines.length}">▌</span></pre>
+  </figure>`,
   mindmap: (b) => `<div class="mindmap">
     <div class="mind-center">${esc(b.center)}</div>
     <div class="boxes cols-2">${b.items.map(cardBlock).join("")}</div></div>`,
@@ -143,7 +206,13 @@ function project(slug) {
   if (!p) return projects();
   const roadmap = p.sections
     ? `<div class="block-h"><h3>${esc(p.sectionsTitle || "Project documentation")}</h3>${p.sectionsSub ? `<p>${esc(p.sectionsSub)}</p>` : ""}</div>
-       <div class="roadmap">${p.sections.map((s) => `
+       <div class="roadmap${p.roadmapStyle === "cards" ? " deck" : ""}">${p.sections.map((s, i) => p.roadmapStyle === "cards" ? `
+         <a class="road-card tcg" href="#/projects/${esc(p.slug)}/${esc(s.slug)}">
+           <span class="tcg-top"><span>No. ${String(i + 1).padStart(2, "0")}</span><span class="tcg-rarity">${"★".repeat(s.rarity || 1)}</span></span>
+           <span class="tcg-art" aria-hidden="true"><span class="road-icon">${esc(s.icon || "★")}</span></span>
+           <span class="tcg-name">${esc(s.title)}</span>
+           ${s.type ? `<span class="tcg-type">${esc(s.type)}</span>` : ""}
+         </a>` : `
          <a class="road-card" href="#/projects/${esc(p.slug)}/${esc(s.slug)}">
            <span class="road-icon" aria-hidden="true">${esc(s.icon || "★")}</span>
            <span>${esc(s.title)}</span>
@@ -154,13 +223,14 @@ function project(slug) {
     : "";
   return `
     ${back("#/projects", "All projects")}
-    <article class="page detail">
-      ${p.sections ? clouds(4) : ""}
+    <article class="page detail${themeClass(p)}">
+      ${p.sections ? decor(p, 4) : ""}
       <span class="meta">${esc([p.kind, p.year].filter(Boolean).join(" · "))}</span>
       <h2 class="page-title" style="margin-top:6px">${esc(p.title)}</h2>
       ${p.question ? `<p class="question">${md(p.question)}</p>` : ""}
-      ${p.image && !p.gallery ? `<div class="hero"><img src="${esc(p.image)}" alt="${esc(p.title)}"></div>` : `<div style="height:12px"></div>`}
+      ${p.cover ? cover(p, true) : p.image && !p.gallery ? `<div class="hero"><img src="${esc(p.image)}" alt="${esc(p.title)}"></div>` : `<div style="height:12px"></div>`}
       ${p.description.map((d) => `<p>${md(d)}</p>`).join("")}
+      ${p.team ? `<p class="team"><span class="meta">Team</span>${esc(p.team.join(" · "))}</p>` : ""}
       <div class="tags">${p.tags.map((t) => `<span class="tag">${esc(t)}</span>`).join("")}</div>
       ${p.links.length ? `<div class="links">${p.links.map((l) => `<a class="btn" href="${esc(l.href)}" target="_blank" rel="noopener">${esc(l.label)} ↗</a>`).join("")}</div>` : ""}
       ${roadmap}
@@ -180,8 +250,8 @@ function section(slug, sectionSlug) {
     : "<span></span>";
   return `
     ${back(`#/projects/${p.slug}`, p.sectionsTitle || p.title)}
-    <article class="page doc">
-      ${clouds(8)}
+    <article class="page doc${themeClass(p)}">
+      ${decor(p, 8)}
       <span class="meta">${esc(p.title)} · ${i + 1}/${p.sections.length}</span>
       <h2 class="page-title center-title">${esc(s.pageTitle || s.title)}</h2>
       ${s.blocks.map((b) => (BLOCKS[b.t] ? BLOCKS[b.t](b) : "")).join("")}
@@ -229,7 +299,7 @@ function animateIn() {
   markReveal(app.querySelector(".back"), "fade");
   const page = app.querySelector(".page");
   if (page) {
-    const GROUPS = ".grid, .roadmap, .boxes, .journey, .swatches, .contact-list, .canvas";
+    const GROUPS = ".grid, .roadmap, .boxes, .journey, .swatches, .contact-list, .canvas, .schema, .ops, .chips";
     for (const child of page.children) {
       if (child.classList.contains("clouds")) continue;
       if (child.classList.contains("page-title")) { markReveal(child, "down"); continue; }
@@ -284,6 +354,8 @@ function render() {
   animateIn();
   const p = slug && PROJECTS.find((x) => x.slug === slug);
   const s = p && sub && p.sections && p.sections.find((x) => x.slug === sub);
+  // Il tema del progetto vale per tutta la pagina, anche per il link "indietro"
+  document.body.className = p && p.theme && page === "projects" ? `theme-${p.theme}` : "";
   document.title = s ? `${s.title} · ${p.title}` : p ? `${p.title} · ${PROFILE.fullName}` : `${PROFILE.fullName} · Portfolio`;
 }
 

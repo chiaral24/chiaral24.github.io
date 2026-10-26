@@ -397,6 +397,456 @@ const PROJECTS = [
     ],
   },
   {
+    slug: "catch-n-trade",
+    title: "Catch ‘n’ Trade",
+    kind: "University · Group project",
+    year: "2025",
+    theme: "cnt",
+    decor: "stripes",
+    roadmapStyle: "cards",
+    cover: { title: "“Catch ‘n’ Trade”", sub: "Data & Process Modelling" },
+    summary: "A trading card marketplace designed end to end: ER model, relational schema, SQL, BPMN and a working Java + SQLite platform.",
+    question: "Where do collectors **buy, sell and show off** their cards?",
+    description: [
+      "**CatchNTrade** is a platform that connects buyers and sellers of collectible trading cards (Pokémon and Yu-Gi-Oh). Users can list cards for sale, place orders, build collections and wishlists, chat, leave reviews and earn badges, while operators run discount events and moderate the community.",
+      "Developed for the course **Introduction to Database — Data and Process Modelling**, the project goes through every step of database design: from the **conceptual ER model** to the **relational schema**, the **SQL implementation**, the **BPMN model** of the order process, and finally a **Java console application** backed by a local **SQLite** database.",
+    ],
+    team: ["Anna Ponzo", "Chiara Maddalena Luongo", "Andrea Adofo Asiedu"],
+    tags: ["ER modelling", "Relational design", "SQL", "SQLite", "BPMN", "Java"],
+    image: "",
+    links: [],
+    sectionsTitle: "The Deck",
+    sectionsSub: "Nine cards, one for every step of the design process",
+    sections: [
+      {
+        slug: "application-idea",
+        icon: "✦",
+        type: "Concept",
+        rarity: 1,
+        title: "Application Idea",
+        blocks: [
+          { t: "lead", title: "A safe place to trade collectible cards", text: "CatchNTrade is a Java-based console application for managing a trading card platform. It connects buyers and sellers of collectible cards in a secure, feature-rich environment for **trading, collecting and managing** cards. All data lives in a local **SQLite** database, so the platform is easy to set up and fully portable." },
+          { t: "h", text: "Three kinds of users" },
+          {
+            t: "cards", cols: 3, items: [
+              { title: "Buyers", icon: "♥", tint: "lav", text: "Browse offers, purchase cards, manage a wishlist, view their collection and review orders, sellers and shipments." },
+              { title: "Sellers", icon: "⇄", tint: "sun", text: "Create, view and delete offers, manage their sold cards and join discount events." },
+              { title: "Operators", icon: "⚙", tint: "ink", text: "Administrators who run discount events, send notifications, award badges, block users and handle reports." },
+            ],
+          },
+          { t: "h", text: "What the platform does" },
+          {
+            t: "cards", cols: 2, items: [
+              { title: "Trading Card Marketplace", tint: "plain", text: "The full lifecycle of an offer: creation, purchase and removal, with card condition (Excellent, Good, Used, Bad) and language (ITA, ENG, JPN)." },
+              { title: "Social & Gamification", tint: "plain", bullet: "→", lines: ["**Wishlist** to save interesting offers", "**Badges** awarded for achievements", "**Reviews** that shape seller ratings and trust"] },
+              { title: "Events & Promotions", tint: "plain", text: "Operators create discount events that sellers can link to their offers, enabling dynamic pricing." },
+              { title: "Support & Moderation", tint: "plain", text: "Users report issues; operators review them and can block problematic users to keep trading safe." },
+            ],
+          },
+          { t: "closing", title: "In summary", text: "A local, console-based trading card platform that combines **marketplace functionality, user management, gamification and administrative tools** to create a safe and engaging environment for collectors." },
+        ],
+      },
+      {
+        slug: "er-model",
+        icon: "◆",
+        type: "Conceptual design",
+        rarity: 3,
+        title: "Entity Relationship Model",
+        pageTitle: "Entity Relationship Model",
+        blocks: [
+          { t: "p", text: "The conceptual schema of the platform: **15 entities** connected by **17 relationships**, with a generalisation of **User** into **Buyer** and **Seller**.", center: true },
+          { t: "img", src: "assets/projects/catchntrade/er-model.png", alt: "Entity Relationship diagram of CatchNTrade", caption: "ER diagram", sub: "Entities in blue, relationships in yellow, with cardinalities on every link", zoom: true },
+          { t: "h", text: "Entities" },
+          { t: "chips", items: ["Card", "SetOfCard", "Offer", "Order", "Review", "User", "Buyer", "Seller", "Wishlist", "Collection", "Events", "Message", "Report", "Notification", "Badge"] },
+          { t: "h", text: "Relationships" },
+          { t: "chips", items: ["Contain", "Has", "Create", "MadeOf", "Place", "On", "Write", "Make", "PutIn", "ComposedOf", "Own", "Discount", "Participate", "Channel", "File", "Gets", "Earn"] },
+          { t: "h", text: "Reading the model" },
+          {
+            t: "cards", cols: 3, items: [
+              { title: "The trading core", tint: "lav", text: "A **Card** belongs to a **SetOfCard** and can have many **Offers**. An **Order** is made of offers and is placed by a **Buyer**." },
+              { title: "The social layer", tint: "sun", text: "Buyers **write** reviews **on** orders, users **own** collections, **make** wishlists and talk through **Channels** of messages." },
+              { title: "The operator tools", tint: "ink", text: "Users **file** reports, **get** notifications and **earn** badges; sellers **participate** in discount **Events**." },
+            ],
+          },
+        ],
+      },
+      {
+        slug: "external-constraints",
+        icon: "■",
+        type: "Business rules",
+        rarity: 2,
+        title: "External Constraints",
+        blocks: [
+          { t: "p", text: "Rules that the ER diagram alone cannot express, later enforced by the application and the database.", center: true },
+          {
+            t: "cards", cols: 2, items: [
+              { title: "Card", tint: "lav", bullet: "•", lines: ["**CardType** is either Pokémon or Yu-Gi-Oh.", "**SubType** depends on CardType: Pokémon → Pokémon, Trainer, Artifact, Element; Yu-Gi-Oh → Monster, Spell, Trap."] },
+              { title: "Offer", tint: "sun", bullet: "•", lines: ["**IsActive** is a Boolean.", "**ConditionCode** ∈ {Excellent, Good, Used, Bad}.", "**LanguageCode** ∈ {ITA, ENG, JPN}."] },
+              { title: "Order", tint: "sun", bullet: "•", lines: ["**OrderStatus** ∈ {Cancelled, Ongoing, Completed}.", "An order can include offers from **only one seller** at a time."] },
+              { title: "Review", tint: "lav", bullet: "•", lines: ["**ReviewType** ∈ {Card-R, Seller-R, Shipment-R}.", "**Rating** is an integer from 1 to 5."] },
+              { title: "Seller (sub-entity)", tint: "ink", bullet: "•", lines: ["**OverallRating** is the average of the ratings of the seller's reviews.", "With no reviews, OverallRating is **0**."] },
+              { title: "Events", tint: "plain", bullet: "•", lines: ["**Value** is a percentage (the discount rate)."] },
+              { title: "Report & Notification", tint: "plain", bullet: "•", lines: ["**TypeOfIssue** ∈ {User, Order, General}.", "**TypeOfNotification** ∈ {Account, Order, Message}."] },
+              { title: "Message", tint: "plain", bullet: "•", lines: ["**IsRead** is a Boolean."] },
+            ],
+          },
+        ],
+      },
+      {
+        slug: "data-dictionary",
+        icon: "▤",
+        type: "Documentation",
+        rarity: 1,
+        title: "Data Dictionary",
+        blocks: [
+          { t: "h", text: "Entities" },
+          {
+            t: "table",
+            head: ["Entity", "Description", "Identifier"],
+            rows: [
+              ["Card", "All the cards registered in the application", "CardID"],
+              ["SetOfCard", "A group of cards from the same generation", "SetID"],
+              ["Offer", "A card a seller has put on sale", "OfferID"],
+              ["Event", "Discount events the seller can participate in", "EventID"],
+              ["Collection", "Cards a user showcases, bought or on sale", "CollectionID"],
+              ["Wishlist", "Offers a buyer wishes to buy in the future", "WishlistID"],
+              ["Message", "The interactions in a chat between users", "MessageID"],
+              ["Order", "The data of each user's purchase", "OrderID"],
+              ["Review", "Reviews written by buyers on their orders", "ReviewID"],
+              ["User", "A person registered to the application", "UserID"],
+              ["Seller", "Sub-entity of User whose main goal is to sell", "UserID"],
+              ["Buyer", "Sub-entity of User whose main goal is to buy", "UserID"],
+              ["Report", "Issues reported by users", "ReportID"],
+              ["Notification", "Preset notifications sent to users", "NotificationID"],
+              ["Badge", "Preset badges rewarding achievements", "BadgeID"],
+            ],
+          },
+          { t: "h", text: "Relationships" },
+          {
+            t: "table",
+            head: ["Relationship", "Description", "Components"],
+            rows: [
+              ["Contain", "A set contains one or more cards", "SetOfCard, Card"],
+              ["Has", "A card can have one or more offers", "Card, Offer"],
+              ["Create", "A seller creates an offer", "Seller, Offer"],
+              ["Discount", "An event puts discounts on cards", "Event, Card"],
+              ["ComposedOf", "A collection is composed of cards", "Collection, Card"],
+              ["PutIn", "A card is put in a wishlist", "Card, Wishlist"],
+              ["MadeOf", "An order is made of offers", "Order, Offer"],
+              ["On", "A review is made on an order", "Review, Order"],
+              ["Participate", "A seller participates in an event", "Seller, Event"],
+              ["Own", "A user owns a collection", "User, Collection"],
+              ["Make", "A buyer makes a wishlist", "Buyer, Wishlist"],
+              ["Place", "A buyer places an order", "Buyer, Order"],
+              ["Write", "A buyer writes a review", "Buyer, Review"],
+              ["File", "A user files a report", "User, Report"],
+              ["Gets", "A user gets a notification", "User, Notification"],
+              ["Earn", "A user earns a badge", "User, Badge"],
+              ["Channel", "Buyer and seller message through a channel (attribute: ChatName)", "Seller, Buyer, Message"],
+            ],
+          },
+          { t: "p", text: "Every attribute, with its domain, is listed in the **Relational Schema** card.", center: true },
+        ],
+      },
+      {
+        slug: "volumes-operations",
+        icon: "▲",
+        type: "Load analysis",
+        rarity: 2,
+        title: "Volumes & Operations",
+        blocks: [
+          { t: "p", text: "Before restructuring the schema we estimated how much data the platform would hold after one year and how often each operation would run.", center: true },
+          {
+            t: "stats", items: [
+              { value: "6.47 GB", label: "estimated storage after one year" },
+              { value: "8.9 M", label: "messages, the largest table" },
+              { value: "13", label: "core operations, ~17,000 per day" },
+            ],
+          },
+          { t: "h", text: "Table of volumes", sub: "Storage projections, including junction tables for M:N relationships" },
+          {
+            t: "table",
+            head: ["Type", "Name", "Current records", "Monthly growth", "Est. records (1 year)", "Avg. size (KB)", "Storage (GB/year)"],
+            rows: [
+              ["E", "User", "50,000", "8%", "126,000", "0.8", "0.10"],
+              ["E", "Buyer", "40,000", "8%", "101,000", "0.2", "0.02"],
+              ["E", "Seller", "10,000", "10%", "31,400", "1.2", "0.04"],
+              ["E", "Card", "500,000", "5%", "900,000", "0.5", "0.45"],
+              ["E", "Set", "5,000", "2%", "6,300", "0.3", "0.002"],
+              ["E", "Offer", "200,000", "15%", "1,400,000", "0.4", "0.56"],
+              ["E", "Order", "150,000", "12%", "585,000", "1.0", "0.59"],
+              ["E", "Review", "300,000", "8%", "756,000", "0.6", "0.45"],
+              ["E", "Message", "1,000,000", "20%", "8,900,000", "0.3", "2.67"],
+              ["E", "Notification", "750,000", "15%", "4,500,000", "0.2", "0.90"],
+              ["E", "Wishlist", "100,000", "7%", "225,000", "0.1", "0.02"],
+              ["E", "Collection", "80,000", "5%", "144,000", "0.3", "0.04"],
+              ["E", "Events", "1,000", "25%", "14,600", "0.4", "0.006"],
+              ["", "Entities subtotal", "", "", "", "", "5.84 GB"],
+              ["R", "Own (Seller-Offer)", "200,000", "15%", "1,400,000", "0.05", "0.07"],
+              ["R", "Contain (Order-Offer)", "450,000", "12%", "1,755,000", "0.1", "0.18"],
+              ["R", "Put-In (Wishlist-Card)", "1,200,000", "10%", "3,770,000", "0.05", "0.19"],
+              ["R", "ComposedOf (Collection-Card)", "800,000", "8%", "2,020,000", "0.05", "0.10"],
+              ["R", "Participate (User-Events)", "50,000", "20%", "446,000", "0.05", "0.02"],
+              ["R", "Make (Buyer-Order)", "150,000", "12%", "585,000", "0.05", "0.03"],
+              ["R", "Write (User-Review)", "300,000", "8%", "756,000", "0.05", "0.04"],
+              ["", "Relationships subtotal", "", "", "", "", "0.63 GB"],
+              ["", "Total", "", "", "", "", "6.47 GB"],
+            ],
+            note: "E = entity, R = relationship",
+          },
+          { t: "h", text: "Table of operations", sub: "Daily frequency of each operation, aligned with the ER constraints" },
+          {
+            t: "bars", items: [
+              { label: "Send Message", value: 5000 },
+              { label: "Send Notification", value: 3000 },
+              { label: "Add to Wishlist", value: 2500 },
+              { label: "Submit Review", value: 1500 },
+              { label: "Create Listing", value: 1200 },
+              { label: "Update Collection", value: 1000 },
+              { label: "Update Rating", value: 900 },
+              { label: "Place Order", value: 800 },
+              { label: "Order Status", value: 600 },
+              { label: "Register User", value: 350 },
+              { label: "Flag Activity", value: 200 },
+              { label: "Discount Event", value: 100 },
+              { label: "Sales Report", value: 50 },
+            ],
+          },
+          { t: "p", text: "Every operation, with its constraints and SQL, is in the **SQL Implementation** card.", center: true },
+        ],
+      },
+      {
+        slug: "relational-schema",
+        icon: "⬡",
+        type: "Logical design",
+        rarity: 3,
+        title: "Relational Schema",
+        pageTitle: "Restructuring & Relational Schema",
+        blocks: [
+          { t: "lead", title: "From concepts to tables", text: "The conceptual schema was restructured before translation: the **ISA generalisation** of User into Buyer and Seller became two (1:1) relationships, composite attributes such as **Address** were split into Street, City and CAP, and **Condition** became the ConditionCode and LanguageCode attributes of Offer." },
+          { t: "img", src: "assets/projects/catchntrade/er-restructured.png", alt: "Restructured ER diagram of CatchNTrade", caption: "Restructured conceptual schema", sub: "ISA-SU and ISA-BU replace the generalisation of User", zoom: true },
+          { t: "h", text: "Direct translation", sub: "The final schema as implemented in SQLite: 30 tables" },
+          { t: "h", text: "Users", small: true },
+          {
+            t: "schema", legend: false, tables: [
+              { name: "User", cols: ["UserID INT*", "Username VARCHAR", "PasswordHash VARCHAR", "RegistrationDate DATE", "Email VARCHAR", "Street VARCHAR", "City VARCHAR", "CAP VARCHAR"] },
+              { name: "Buyer", cols: ["UserID INT*>User", "PreferredPayoutMethod VARCHAR"] },
+              { name: "Seller", cols: ["UserID INT*>User", "Rating DECIMAL", "TotalSales INT", "PayoutInformation VARCHAR"] },
+            ],
+          },
+          { t: "h", text: "Cards, sets and offers", small: true },
+          {
+            t: "schema", legend: false, tables: [
+              { name: "SetOfCard", cols: ["SetID INT*", "SetName VARCHAR", "SetCode VARCHAR", "ReleaseDate DATE", "SetLogoUrl VARCHAR"] },
+              { name: "Card", cols: ["CardID INT*", "CardName VARCHAR", "CardImageUrl VARCHAR", "CardNumber VARCHAR", "Rarity VARCHAR", "SetID INT>SetOfCard", "CardType VARCHAR", "SubType VARCHAR"] },
+              { name: "Offer", cols: ["OfferID INT*", "IsActive BOOLEAN", "ListingDate DATE", "Condition VARCHAR", "Language VARCHAR", "CardID INT>Card"] },
+              { name: "CreateOffer", kind: "rel", cols: ["UserID INT*>User", "OfferID INT*>Offer"] },
+            ],
+          },
+          { t: "h", text: "Orders and reviews", small: true },
+          {
+            t: "schema", legend: false, tables: [
+              { name: "OrderTable", cols: ["OrderID INT*", "OrderDate DATE", "OrderStatus VARCHAR", "ShippingAddress VARCHAR", "BillingAddress VARCHAR"] },
+              { name: "Place", kind: "rel", cols: ["OrderID INT*>OrderTable", "UserID INT*>Buyer"] },
+              { name: "MadeOf", kind: "rel", cols: ["OrderID INT*>OrderTable", "OfferID INT*>Offer"] },
+              { name: "Review", cols: ["ReviewID INT*", "ReviewType VARCHAR", "Rating DECIMAL", "ReviewDate DATE", "Comment TEXT"] },
+              { name: "OnReview", kind: "rel", cols: ["ReviewID INT*>Review", "OrderID INT*>OrderTable"] },
+              { name: "WriteReview", kind: "rel", cols: ["ReviewID INT*>Review", "UserID INT*>Buyer"] },
+            ],
+          },
+          { t: "h", text: "Messages, reports, notifications and badges", small: true },
+          {
+            t: "schema", legend: false, tables: [
+              { name: "Message", cols: ["MessageID INT*", "ChannelID INT", "IsRead BOOLEAN", "MessageText TEXT", "SentAt DATETIME", "UserID INT>User"] },
+              { name: "Channel", kind: "rel", cols: ["UserID INT*>User", "MessageID INT*>Message"] },
+              { name: "Report", cols: ["ReportID INT*", "TypeOfIssue VARCHAR", "IssueDescription TEXT"] },
+              { name: "File", kind: "rel", cols: ["FileID INT*", "UserID INT>User", "ReportID INT>Report"] },
+              { name: "Notification", cols: ["NotificationID INT*", "NotificationContent TEXT", "NotificationType VARCHAR"] },
+              { name: "GetNotification", kind: "rel", cols: ["NotificationID INT*>Notification", "UserID INT*>User"] },
+              { name: "Badge", cols: ["BadgeID INT*", "BadgeName VARCHAR", "BadgeDescription TEXT"] },
+              { name: "Earned", kind: "rel", cols: ["BadgeID INT*>Badge", "UserID INT*>User"] },
+            ],
+          },
+          { t: "h", text: "Collections, events and wishlists", small: true },
+          {
+            t: "schema", tables: [
+              { name: "Collection", cols: ["CollectionID INT*", "NameOfCollection VARCHAR"] },
+              { name: "Owns", kind: "rel", cols: ["CollectionID INT*>Collection", "UserID INT*>User"] },
+              { name: "ComposedOf", kind: "rel", cols: ["CollectionID INT*>Collection", "CardID INT*>Card"] },
+              { name: "Event", cols: ["EventID INT*", "DiscountDescription VARCHAR", "Value DECIMAL", "DateStart DATE", "DateEnd DATE"] },
+              { name: "Participates", kind: "rel", cols: ["EventID INT*>Event", "UserID INT*>Seller"] },
+              { name: "Discount", kind: "rel", cols: ["EventID INT*>Event", "CardID INT*>Card"] },
+              { name: "Wishlist", cols: ["WishlistID INT*", "DateAdded DATE"] },
+              { name: "Make", kind: "rel", cols: ["BuyerID INT*>Buyer", "WishlistID INT*>Wishlist"] },
+              { name: "PutIn", kind: "rel", cols: ["WishlistID INT*>Wishlist", "CardID INT*>Card"] },
+            ],
+          },
+        ],
+      },
+      {
+        slug: "sql",
+        icon: "◈",
+        type: "Physical design",
+        rarity: 2,
+        title: "SQL Implementation",
+        blocks: [
+          { t: "p", text: "The schema was written in SQL with primary and foreign key constraints, populated with sample data and completed with one query for each operation of the operations table.", center: true },
+          {
+            t: "code", title: "schema.sql — an excerpt", text:
+`CREATE TABLE Card (
+    CardID INT PRIMARY KEY,
+    CardName VARCHAR(255) NOT NULL,
+    CardImageUrl VARCHAR(255),
+    CardNumber VARCHAR(50),
+    Rarity VARCHAR(50),
+    SetID INT,
+    CardType VARCHAR(50),
+    SubType VARCHAR(50),
+    FOREIGN KEY (SetID) REFERENCES SetOfCard(SetID)
+);
+
+-- M:N relationship between orders and offers
+CREATE TABLE MadeOf (
+    OrderID INT,
+    OfferID INT,
+    PRIMARY KEY (OrderID, OfferID),
+    FOREIGN KEY (OrderID) REFERENCES OrderTable(OrderID),
+    FOREIGN KEY (OfferID) REFERENCES Offer(OfferID)
+);`,
+          },
+          { t: "h", text: "Operations", sub: "Open an operation to see its constraints and SQL" },
+          {
+            t: "ops", items: [
+              { id: "OP-101", name: "Register User", type: "Create", freq: "350", text: "Creates a new user; validates that email and username are unique.", sql: "INSERT INTO User (UserID, Username, PasswordHash, RegistrationDate, Email, Street, City, CAP)\nVALUES (?, ?, ?, CURRENT_DATE, ?, ?, ?, ?);" },
+              { id: "OP-102", name: "Create Card Listing", type: "Create", freq: "1,200", text: "A seller creates an offer; validates **ConditionCode** (Excellent/Good/Used/Bad) and **LanguageCode** (ITA/ENG/JPN).", sql: "INSERT INTO Offer (OfferID, IsActive, ListingDate, Condition, Language, City, CAP, CardID)\nVALUES (?, TRUE, CURRENT_DATE, ?, ?, ?, ?, ?);" },
+              { id: "OP-103", name: "Place Order", type: "Create", freq: "800", text: "Creates an order; enforces the single-seller constraint for all offers and validates **OrderStatus**.", sql: "INSERT INTO OrderTable (OrderID, OrderDate, OrderStatus, ShippingAddress, BillingAddress)\nVALUES (?, CURRENT_DATE, 'Ongoing', ?, ?);" },
+              { id: "OP-104", name: "Add to Wishlist", type: "Create", freq: "2,500", text: "Links a card to a wishlist and records **DateAdded**.", sql: "INSERT INTO PutIn (WishlistID, CardID)\nVALUES (?, ?);\nUPDATE Wishlist SET DateAdded = CURRENT_DATE WHERE WishlistID = ?;" },
+              { id: "OP-105", name: "Submit Review", type: "Create", freq: "1,500", text: "Creates a review; validates **Rating** (1–5) and **ReviewType** (Card-R/Seller-R/Shipment-R).", sql: "INSERT INTO Review (ReviewID, ReviewType, Rating, ReviewDate, Comment)\nVALUES (?, ?, ?, CURRENT_DATE, ?);" },
+              { id: "OP-106", name: "Update Seller Rating", type: "Update", freq: "900", text: "Recalculates **OverallRating** as the average of the linked reviews; 0 if there are none.", sql: "UPDATE Seller\nSET Rating = (\n    SELECT AVG(Rating)\n    FROM Review r\n    JOIN WriteReview wr ON r.ReviewID = wr.ReviewID\n    WHERE wr.UserID = Seller.UserID\n)\nWHERE UserID = ?;" },
+              { id: "OP-107", name: "Send Message", type: "Create", freq: "5,000", text: "Creates a message with **IsRead = false**.", sql: "INSERT INTO Message (MessageID, ChannelID, IsRead, MessageText, SentAt, UserID)\nVALUES (?, ?, FALSE, ?, CURRENT_TIMESTAMP, ?);" },
+              { id: "OP-108", name: "Create Discount Event", type: "Create", freq: "100", text: "Creates a discount event; validates **Value** as a percentage (e.g. 15%).", sql: "INSERT INTO Event (EventID, DiscountDescription, Value, DateStart, DateEnd)\nVALUES (?, ?, ?, ?, ?);" },
+              { id: "OP-109", name: "Process Order Status Change", type: "Update", freq: "600", text: "Updates **OrderStatus** (Cancelled/Ongoing/Completed); reserved cards are released when an order is cancelled.", sql: "UPDATE OrderTable SET OrderStatus = ? WHERE OrderID = ?;" },
+              { id: "OP-110", name: "Generate Sales Report", type: "Read", freq: "50 (batch)", text: "Aggregates sales per seller.", sql: "SELECT Seller.UserID, COUNT(Offer.OfferID) AS TotalSales\nFROM Seller\nJOIN CreateOffer ON Seller.UserID = CreateOffer.UserID\nJOIN Offer ON CreateOffer.OfferID = Offer.OfferID\nGROUP BY Seller.UserID;" },
+              { id: "OP-111", name: "Flag Suspicious Activity", type: "Create", freq: "200", text: "Creates a report; validates **TypeOfIssue** (User/Order/General).", sql: "INSERT INTO Report (ReportID, TypeOfIssue, IssueDescription)\nVALUES (?, ?, ?);" },
+              { id: "OP-112", name: "Send Notification", type: "Create", freq: "3,000", text: "Creates a notification; validates **TypeOfNotification** (Account/Order/Message).", sql: "INSERT INTO Notification (NotificationID, NotificationContent, NotificationType)\nVALUES (?, ?, ?);" },
+              { id: "OP-113", name: "Update Card Collection", type: "Update", freq: "1,000", text: "Renames a collection and adds or removes its cards.", sql: "UPDATE Collection SET NameOfCollection = ? WHERE CollectionID = ?;\nINSERT INTO ComposedOf (CollectionID, CardID) VALUES (?, ?);\nDELETE FROM ComposedOf WHERE CollectionID = ? AND CardID = ?;" },
+            ],
+          },
+        ],
+      },
+      {
+        slug: "bpmn",
+        icon: "●",
+        type: "Process modelling",
+        rarity: 3,
+        title: "BPMN Process",
+        pageTitle: "Customer Order & Fulfillment",
+        blocks: [
+          { t: "lead", title: "The life of an order", text: "The BPMN model describes the complete lifecycle of a trading card order: the customer selects and places an order, the platform validates it and asks the seller to confirm, the seller ships it, and the customer receives it and optionally leaves feedback. The goal is a **smooth, transparent transaction** for the buyer while letting sellers manage their sales effectively." },
+          { t: "h", text: "Three pools" },
+          {
+            t: "cards", cols: 3, center: true, items: [
+              { title: "Customer (Buyer)", icon: "♥", tint: "lav", text: "Browses, orders, receives and reviews." },
+              { title: "System (Platform)", icon: "⚙", tint: "ink", text: "Validates, processes payments, tracks status and updates ratings." },
+              { title: "Seller", icon: "⇄", tint: "sun", text: "Confirms or declines, prepares and ships." },
+            ],
+          },
+          { t: "h", text: "Model overview" },
+          { t: "img", src: "assets/projects/catchntrade/bpmn-part-1.jpg", alt: "BPMN model, first part", caption: "First part", sub: "From the order to the seller's confirmation and shipment", zoom: true },
+          { t: "img", src: "assets/projects/catchntrade/bpmn-part-2.jpg", alt: "BPMN model, second part", caption: "Second part", sub: "Delivery, review and seller payout", zoom: true },
+          { t: "h", text: "Simplified process" },
+          {
+            t: "steps", items: [
+              { title: "Segment 1", text: "Customer places the order" },
+              { title: "Segment 2", text: "System processes payment and requests seller confirmation" },
+              { title: "Segment 3", text: "Seller confirms or declines" },
+              { title: "Segment 4", text: "System proceeds to shipment, or cancels and refunds" },
+              { title: "Segment 5", text: "Seller prepares, packages and ships the order" },
+              { title: "Segment 6", text: "System tracks delivery and prompts for a review" },
+              { title: "Segment 7", text: "Customer receives the order and leaves a review" },
+              { title: "Segment 8", text: "System updates the seller's rating" },
+            ],
+          },
+          { t: "h", text: "Key decisions" },
+          {
+            t: "cards", cols: 3, items: [
+              { title: "Payment successful?", sub: "Exclusive gateway · System", tint: "lav", text: "**No:** the customer is notified and the order is cancelled. **Yes:** the status changes and the seller is asked to confirm." },
+              { title: "Can fulfil the order?", sub: "Exclusive gateway · Seller", tint: "sun", text: "**No:** the seller declines and the system refunds the customer. **Yes:** the seller confirms and prepares the shipment." },
+              { title: "Satisfied with the order?", sub: "Exclusive gateway · Customer", tint: "ink", text: "**Yes:** positive review. **No:** negative review and, if needed, a dispute that creates a report." },
+            ],
+          },
+          { t: "closing", title: "Delivery and feedback in parallel", text: "After shipment a **parallel gateway** splits the flow: one path tracks the delivery and pays the seller, the other waits **7 days** and reminds the customer to leave a review." },
+        ],
+      },
+      {
+        slug: "platform",
+        icon: "★",
+        type: "Application",
+        rarity: 4,
+        title: "The Java Platform",
+        blocks: [
+          { t: "p", text: "The design comes to life in a **Java console application** that talks to the SQLite database through JDBC. Every operation of the model is a menu entry.", center: true },
+          {
+            t: "terminal", title: "CatchNTrade — Java console", lines: [
+              "$ java -cp \".:sqlite-jdbc-3.50.2.0.jar\" Main",
+              "",
+              "==== CatchNTrade Menu ====",
+              "",
+              "Welcome to CatchNTrade! Please select an option from the menu below:",
+              "1. Register User",
+              "2. User log in",
+              "3. See CatchNTrade Card Collection",
+              "4. Operator Access",
+              "0. Exit",
+              "Select an option: ",
+            ],
+          },
+          {
+            t: "stats", items: [
+              { value: "~4,000", label: "lines of Java" },
+              { value: "30", label: "SQLite tables" },
+              { value: "60+", label: "Java methods across three roles" },
+            ],
+          },
+          { t: "h", text: "Features by role" },
+          {
+            t: "cards", cols: 3, items: [
+              { title: "Buyer", icon: "♥", tint: "lav", bullet: "→", lines: ["Make orders from available offers", "Collections and wishlist", "Order, Seller and Shipment reviews", "Private chats with sellers"] },
+              { title: "Seller", icon: "⇄", tint: "sun", bullet: "→", lines: ["Create offers with condition and language", "Track and update order status", "Link offers to discount events", "Automatic average rating"] },
+              { title: "Operator", icon: "⚙", tint: "ink", bullet: "→", lines: ["Discount events and notifications", "Create and award badges", "Block users, handle reports", "Add new cards and sets"] },
+            ],
+          },
+          { t: "h", text: "Under the hood" },
+          {
+            t: "cards", cols: 2, items: [
+              { title: "Security", tint: "plain", bullet: "•", lines: ["Passwords hashed with **SHA-256**", "**Prepared statements** against SQL injection", "Input validation on every field", "Foreign keys keep the data consistent"] },
+              { title: "Data", tint: "plain", bullet: "•", lines: ["The database is **created automatically** on first run", "Purchased cards are added to the buyer's collection", "Seller ratings recalculated after each review", "Every change saved immediately"] },
+            ],
+          },
+          {
+            t: "code", title: "Main.java — password hashing", text:
+`private static String hashPassword(String password) {
+    try {
+        MessageDigest md = MessageDigest.getInstance("SHA-256");
+        byte[] hash = md.digest(password.getBytes());
+        StringBuilder hexString = new StringBuilder();
+        for (byte b : hash) {
+            String hex = Integer.toHexString(0xff & b);
+            if (hex.length() == 1) hexString.append('0');
+            hexString.append(hex);
+        }
+        return hexString.toString();
+    } catch (NoSuchAlgorithmException e) {
+        throw new RuntimeException("SHA-256 not supported", e);
+    }
+}`,
+          },
+          { t: "closing", title: "From model to product", text: "One project, every layer: **requirements, conceptual and logical design, SQL, process modelling and a working application** — built as a team of three." },
+        ],
+      },
+    ],
+  },
+  {
     slug: "pixel-library",
     title: "Pixel Library",
     kind: "Personal",
