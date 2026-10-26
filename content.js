@@ -401,6 +401,375 @@ const PROJECTS = [
     ],
   },
   {
+    slug: "roll-call-system",
+    title: "Roll Call System",
+    kind: "University · Group project",
+    area: "Software Engineering",
+    year: "2026",
+    theme: "register",
+    decor: "none",
+    roadmapStyle: "register",
+    registerTitle: "Application Engineering · Summer Semester 2026",
+    cover: { title: "Roll Call System", sub: "Attendance without calling names", stamp: "147 969" },
+    result: "All 10 functional requirements delivered in a working Spring Boot prototype with three anti-cheating checks.",
+    summary: "A digital attendance system for UniBZ: the lecturer projects a 6-digit code, students check in from their phones, and three independent checks keep it honest.",
+    question: "What if the lecturer never had to call a single name again — **and nobody could sign in for an absent friend?**",
+    description: [
+      "The **Roll Call System** replaces the manual roll call at the Free University of Bozen-Bolzano. The lecturer starts a lecture and a **6-digit code valid for 5 minutes** appears on the projector, with a QR code. Students log in with their Microsoft account, enter or scan the code, and their presence is recorded. **Network, GPS and QR checks** make sure that only students who are really in the room can register.",
+      "The project follows the whole software engineering life cycle: a **Lastenheft** and a **Pflichtenheft**, four **UML diagrams**, a **Spring Boot** prototype with two design patterns, unit tests, a refactoring and a project-management review. **My part:** requirements engineering (Lastenheft and Pflichtenheft), the UML design and the assembly of the final report.",
+    ],
+    team: ["Antonio Lastella", "Chiara Luongo", "Paolo Giordano"],
+    tags: ["Requirements engineering", "UML", "Java 21", "Spring Boot", "PostgreSQL", "Design patterns", "JUnit"],
+    image: "",
+    links: [],
+    sectionsTitle: "Attendance Register",
+    sectionsSub: "Nine entries, from the problem to the lessons learned — all present",
+    sections: [
+      {
+        slug: "the-problem",
+        type: "Current state and stakeholders",
+        title: "The Problem",
+        blocks: [
+          { t: "lead", title: "Calling names, by hand", text: "At UniBZ the lecturer opens a list of enrolled students, **calls every name aloud** and marks who is present. It works — but it costs time, makes mistakes and leaves no data behind." },
+          {
+            t: "stats", items: [
+              { value: "30–60", label: "names called at the start of each lecture" },
+              { value: "5–10 min", label: "of lecture time lost every session" },
+              { value: "2–4 h", label: "of teaching lost per course over 24 lectures" },
+            ],
+          },
+          {
+            t: "cards", cols: 2, items: [
+              { title: "Time loss", icon: "◷", tint: "lav", text: "Minutes of every lecture go to the roll call instead of teaching." },
+              { title: "Error proneness", icon: "✎", tint: "lav", text: "Names are missed, marks land in the wrong row, handwriting is misread later." },
+              { title: "No digital trace", icon: "▤", tint: "sun", text: "No history, no statistics, no audit trail — not even the average attendance of a course." },
+              { title: "Fraud", icon: "!", tint: "sun", text: "Students can answer for absent friends with almost no risk of being caught." },
+            ],
+          },
+          { t: "h", text: "Who cares about attendance", sub: "Stakeholder analysis" },
+          {
+            t: "table", head: ["Stakeholder", "Interest"], rows: [
+              ["Lecturers", "A simple, reliable way to track attendance without manual work, and an overview of trends"],
+              ["Students", "A fast way to register presence, without queues, and access to their own records"],
+              ["University administration", "Accurate, auditable attendance data"],
+              ["Development team", "A working prototype documented with engineering rigour"],
+            ],
+          },
+          { t: "quote", text: "Shift the responsibility of registration from the lecturer to the students.", sub: "The core idea of the target concept (Soll-Konzept)" },
+          {
+            t: "steps", items: [
+              { title: "Lecturer", text: "Start the lecture", action: "One click generates a unique 6-digit code, shown on the projector with a QR code." },
+              { title: "Student", text: "Enter the code", action: "Within 5 minutes, after a Microsoft login, by typing it or scanning the QR." },
+              { title: "System", text: "Verify and record", action: "Campus network, GPS within 100 m and QR scan are checked, then the check-in is saved." },
+              { title: "Lecturer", text: "Read the data", action: "Interactive statistics and a CSV export replace manual spreadsheets." },
+            ],
+          },
+        ],
+      },
+      {
+        slug: "requirements",
+        type: "Lastenheft · what the system must do",
+        title: "Requirements",
+        blocks: [
+          { t: "p", text: "The **Lastenheft** describes the system from the point of view of the client: requirements are written “as generally as possible and as restrictively as necessary”, and each one gets an ID and a **MoSCoW** priority for traceability.", center: true },
+          {
+            t: "table", head: ["ID", "Priority", "Functional requirement"], rows: [
+              ["R1", "Must", "The lecturer generates a time-limited attendance code for a lecture session."],
+              ["R2", "Must", "The code is visible only in the classroom: projected, never sent digitally."],
+              ["R3", "Must", "Students have 5 minutes to enter the code; after that, check-in is blocked."],
+              ["R4", "Must", "Check-in requires the campus network and/or GPS within 100 m of the classroom."],
+              ["R5", "Must", "After the timeout, every further check-in attempt for that lecture is rejected."],
+              ["R6", "Should", "Statistics per course in charts and tables, with CSV export."],
+              ["R7", "Must", "A student can only see their own attendance data."],
+              ["R8", "Should", "Students leaving early can check out; presence stays valid without it."],
+              ["R9", "Should", "Recurring 2 × 45-minute blocks: the procedure can be repeated."],
+              ["R10", "Must", "Three independent anti-cheating layers (Swiss Cheese Model)."],
+            ],
+          },
+          { t: "h", text: "Quality attributes", sub: "Non-functional requirements, each with a way to measure it" },
+          {
+            t: "cards", cols: 3, items: [
+              { title: "Security", sub: "False positives < 1%", tint: "plain", text: "A student who is not in the room cannot register." },
+              { title: "Privacy", sub: "403 on cross-account access", tint: "plain", text: "Students only ever see their own records." },
+              { title: "Performance", sub: "< 5 seconds", tint: "plain", text: "Code validation and verification complete within seconds." },
+              { title: "Usability", sub: "Smartphone viewport", tint: "plain", text: "A responsive interface that works on a phone." },
+              { title: "Reliability", sub: "PostgreSQL + Flyway", tint: "plain", text: "Attendance data must never be lost." },
+              { title: "Availability", sub: "> 99% from 8:00 to 20:00", tint: "plain", text: "The system is up during teaching hours." },
+            ],
+          },
+          { t: "h", text: "Fifteen user stories", sub: "A selection — “As a … I want … so that …”" },
+          {
+            t: "cards", cols: 2, items: [
+              { title: "US1 · Must", tint: "lav", text: "As a **lecturer**, I want to generate an attendance code so that students can register without me calling roll." },
+              { title: "US2 · Must", tint: "lav", text: "As a **student**, I want to enter a 6-digit code on a web interface so that I can register my presence in seconds." },
+              { title: "US10 · Must", tint: "sun", text: "As a **system**, I want to prevent a student from checking into two overlapping lectures so that double-counting is impossible." },
+              { title: "US15 · Must", tint: "sun", text: "As a **lecturer**, I want to see at-risk students (attendance < 75%) at a glance so that I can intervene before the exam." },
+            ],
+          },
+          { t: "h", text: "Accepted risks" },
+          {
+            t: "cards", cols: 2, items: [
+              { title: "GPS indoors", icon: "⌖", tint: "plain", text: "Inside buildings GPS can be off by **10–50 m**. GPS checks presence on campus; the code, visible only on the classroom screen, gives room-level precision." },
+              { title: "Weak network", icon: "≋", tint: "plain", text: "GPS is an independent fallback, and the QR code can be read offline and validated once the connection is back." },
+            ],
+          },
+        ],
+      },
+      {
+        slug: "specification",
+        type: "Pflichtenheft · how it is built",
+        title: "Technical Specification",
+        blocks: [
+          { t: "p", text: "The **Pflichtenheft** answers the Lastenheft: every requirement R1–R10 is mapped to a concrete implementation. The system is a **monolithic web application** — one deployable unit, simple to debug and shared by the whole team in a single Java codebase.", center: true },
+          {
+            t: "layers", items: [
+              { name: "Presentation", icon: "▭", tech: ["Thymeleaf", "Bootstrap 5", "Chart.js"] },
+              { name: "Controllers", icon: "⇄", tech: ["Spring MVC", "7 controllers", "CSRF"] },
+              { name: "Services", icon: "⚙", tech: ["Business logic", "Singleton", "Strategy"] },
+              { name: "Data access", icon: "⛁", tech: ["Spring Data JPA", "5 repositories"] },
+              { name: "Domain model", icon: "◇", tech: ["JPA entities", "Lombok", "Flyway"] },
+            ],
+          },
+          { t: "h", text: "Technology stack", sub: "Each choice justified against the course objectives" },
+          {
+            t: "table", head: ["Layer", "Technology", "Why"], rows: [
+              ["Language", "Java 21", "Latest LTS; the course focuses on the Java ecosystem"],
+              ["Framework", "Spring Boot 3.3", "Dependency injection, security, data access and scheduling in one"],
+              ["Database", "PostgreSQL 16", "A production-grade database, realistic for a university"],
+              ["Migrations", "Flyway", "Versioned SQL scripts with full traceability"],
+              ["Auth", "Spring Security + Microsoft OIDC", "Standard OAuth2 / OpenID Connect login"],
+              ["Charts", "Chart.js", "Interactive charts rendered in the browser"],
+              ["Testing", "JUnit 5 + Mockito", "The standard Java testing stack"],
+            ],
+          },
+          { t: "h", text: "Data model", sub: "Five JPA entities, five PostgreSQL tables" },
+          {
+            t: "schema", tables: [
+              { name: "User", cols: ["id BIGSERIAL*", "firstName VARCHAR", "lastName VARCHAR", "email VARCHAR", "role ENUM", "oauthId VARCHAR"] },
+              { name: "Course", cols: ["id BIGSERIAL*", "name VARCHAR", "code VARCHAR", "semester VARCHAR", "lecturer_id BIGINT>User"] },
+              { name: "Lecture", cols: ["id BIGSERIAL*", "startTime TIMESTAMP", "endTime TIMESTAMP", "attendanceCode VARCHAR", "codeExpiresAt TIMESTAMP", "status ENUM", "course_id BIGINT>Course", "classroom_id BIGINT>Classroom"] },
+              { name: "Attendance", cols: ["id BIGSERIAL*", "checkInTime TIMESTAMP", "checkOutTime TIMESTAMP", "verificationMethod ENUM", "autoCheckOut BOOLEAN", "student_id BIGINT>User", "lecture_id BIGINT>Lecture"] },
+              { name: "Classroom", cols: ["id BIGSERIAL*", "name VARCHAR", "building VARCHAR", "latitude DOUBLE", "longitude DOUBLE", "ipRange VARCHAR"] },
+            ],
+          },
+          { t: "p", text: "A lecture moves through four states — **Created → Active → Expired → Completed** — and the pair (student, lecture) is unique, so nobody can check in twice." },
+        ],
+      },
+      {
+        slug: "uml-design",
+        type: "Use case, activity, class, sequence",
+        title: "UML Design",
+        blocks: [
+          { t: "p", text: "“To realise large construction projects, all participants must speak a common language.” Four UML diagrams, drawn with **PlantUML**, turned the requirements into a blueprint before any code was written.", center: true },
+          { t: "img", src: "assets/projects/rollcall/use-case.png", alt: "Use case diagram of the Roll Call System", caption: "Use case diagram", sub: "Lecturer, student and an automated system actor; check-in includes the location check", narrow: true, zoom: true },
+          {
+            t: "table", head: ["Use case", "Actor", "In short"], rows: [
+              ["UC-01 Start Lecture", "Lecturer", "Creates the session, starts it, gets a 6-digit code on the projector for 5 minutes"],
+              ["UC-02 Check In", "Student", "Enters or scans the code; the system validates it and records the attendance"],
+              ["UC-03 Verify Location", "System", "Network, GPS and QR strategies — all must pass"],
+              ["UC-04 View Statistics", "Lecturer", "KPI cards, a line chart, a filterable table and CSV export"],
+              ["UC-05 View Personal History", "Student", "A chronological list of their own check-ins only"],
+            ],
+          },
+          { t: "img", src: "assets/projects/rollcall/activity.png", alt: "Activity diagram of the check-in flow", caption: "Activity diagram", sub: "The check-in flow in swim lanes — lecturer, system, student — with the timeout path and every verification", tall: true, zoom: true },
+          { t: "img", src: "assets/projects/rollcall/sequence.png", alt: "Sequence diagram of the check-in", caption: "Sequence diagram", sub: "Messages from the controller to the database, with alt and opt fragments", zoom: true },
+          { t: "img", src: "assets/projects/rollcall/class-diagram.png", alt: "Class diagram of the Roll Call System", caption: "Class diagram", sub: "Entities, enums, the «Singleton» code service and the «Strategy» verification family", zoom: true },
+          { t: "closing", title: "From diagram to code", text: "Upfront UML design **accelerated the implementation**: the class diagram became the direct blueprint for the JPA entities and their relationships." },
+        ],
+      },
+      {
+        slug: "swiss-cheese",
+        type: "Three anti-cheating layers",
+        title: "Swiss Cheese Model",
+        blocks: [
+          { t: "lead", title: "Every layer has holes — together they don't line up", text: "James Reason's **Swiss Cheese Model**: no single check is perfect, but three independent ones, all required (**AND** logic), make a fraudulent check-in prohibitively difficult." },
+          {
+            t: "cards", cols: 3, items: [
+              { title: "Network IP", sub: "LAYER 1", icon: "≋", tint: "lav", text: "The client IP must fall inside the classroom's **CIDR range** — on campus, that means eduroam." },
+              { title: "GPS", sub: "LAYER 2", icon: "⌖", tint: "lav", text: "The **Haversine** distance to the classroom building must be under **100 metres**." },
+              { title: "QR code", sub: "LAYER 3", icon: "▣", tint: "lav", text: "Scanning the projected QR proves **visual access** to the classroom screen." },
+            ],
+          },
+          { t: "h", text: "The Strategy pattern", sub: "Each check is an interchangeable strategy — a Bluetooth beacon could be added without touching the others" },
+          {
+            t: "code", title: "LocationVerificationStrategy.java + GPSVerification.java (excerpt)", text:
+`public interface LocationVerificationStrategy {
+    record VerificationResult(boolean passed,
+            VerificationMethod method, String message) {}
+    record ClientContext(String clientIp,
+            Double latitude, Double longitude, String entryMethod) {}
+
+    VerificationResult verify(ClientContext ctx, Lecture lecture);
+}
+
+@Component
+public class GPSVerification implements LocationVerificationStrategy {
+    private static final double MAX_DISTANCE_METERS = 100.0;
+
+    @Override
+    public VerificationResult verify(ClientContext ctx, Lecture lecture) {
+        if (ctx.latitude() == null || ctx.longitude() == null)
+            return new VerificationResult(false, VerificationMethod.GPS,
+                "GPS verification failed: location access denied");
+        double distance = haversineDistance(
+            ctx.latitude(), ctx.longitude(),
+            lecture.getClassroom().getLatitude(),
+            lecture.getClassroom().getLongitude());
+        if (distance > MAX_DISTANCE_METERS)
+            return new VerificationResult(false, VerificationMethod.GPS,
+                "GPS verification failed: you are " +
+                String.format("%.0f", distance) + "m from the classroom");
+        return new VerificationResult(true, VerificationMethod.GPS,
+            "GPS verified: " + String.format("%.0f", distance) + "m");
+    }
+}`,
+          },
+          { t: "p", text: "A **VerificationOrchestrator** receives **all strategies** through Spring's dependency injection and runs them in turn: the first failure stops the loop and the student gets a specific error message." },
+          { t: "h", text: "The Singleton pattern", sub: "One code generator, so two active lectures can never share a code" },
+          {
+            t: "code", title: "AttendanceCodeService.java", text:
+`@Service
+public class AttendanceCodeService {
+    private final SecureRandom secureRandom = new SecureRandom();
+    private final LectureRepository lectureRepository;
+
+    public String generateCode() {
+        String code;
+        do {
+            int number = 100000 + secureRandom.nextInt(900000);
+            code = String.valueOf(number);
+        } while (lectureRepository
+                .findByAttendanceCodeAndStatus(code, LectureStatus.ACTIVE)
+                .isPresent());
+        return code;
+    }
+}`,
+          },
+        ],
+      },
+      {
+        slug: "lecturer-side",
+        type: "From a new lecture to the statistics",
+        title: "Lecturer Side",
+        blocks: [
+          { t: "browser", url: "localhost:8080 / login", src: "assets/projects/rollcall/login.jpg", alt: "Roll Call System login page", caption: "One button, no password", sub: "Authentication is delegated entirely to Microsoft via OpenID Connect" },
+          {
+            t: "gallery", cols: 2, items: [
+              { src: "assets/projects/rollcall/dashboard.jpg", caption: "Lecturer dashboard", sub: "Quick links to lectures and statistics" },
+              { src: "assets/projects/rollcall/lectures.jpg", caption: "My lectures", sub: "Colour-coded status: created, active, expired, completed" },
+              { src: "assets/projects/rollcall/new-lecture.jpg", caption: "New lecture", sub: "Only the lecturer's own courses, a classroom and the time slot" },
+              { src: "assets/projects/rollcall/lecture-detail.jpg", caption: "Lecture detail", sub: "Actions change with the state: start, expire now, restart, projector" },
+            ],
+          },
+          { t: "browser", url: "localhost:8080 / lecturer / lectures / 6 / projector", src: "assets/projects/rollcall/projector.jpg", alt: "Projector view with the attendance code and QR code", caption: "The projector view", sub: "Dark background, giant monospace digits and a countdown that turns from green to yellow to red" },
+          { t: "browser", url: "localhost:8080 / lecturer / statistics", src: "assets/projects/rollcall/statistics.jpg", alt: "Attendance statistics dashboard", caption: "Attendance statistics", sub: "Four KPIs, attendance per lecture, a searchable table with an “at risk < 75%” filter and CSV export (test data)" },
+        ],
+      },
+      {
+        slug: "student-side",
+        type: "Check-in, check-out, history",
+        title: "Student Side",
+        blocks: [
+          { t: "p", text: "For students the whole interaction is **one input and one button**. Hidden fields carry the GPS coordinates and whether the code was typed or scanned.", center: true },
+          {
+            t: "gallery", cols: 2, items: [
+              { src: "assets/projects/rollcall/checkin.jpg", caption: "Check-in", sub: "Type the 6-digit code or scan the QR; the GPS status shows below" },
+              { src: "assets/projects/rollcall/checkin-success.jpg", caption: "Checked in", sub: "A green message with the course and the time — or a red one with the exact reason" },
+              { src: "assets/projects/rollcall/my-attendance.jpg", caption: "My attendance", sub: "Open check-ins with a check-out button; auto check-out after one hour" },
+              { src: "assets/projects/rollcall/history.jpg", caption: "Attendance history", sub: "Dates, courses, times and verification method — and nobody else's data" },
+            ],
+          },
+          { t: "h", text: "Privacy by construction" },
+          {
+            t: "cards", cols: 2, items: [
+              { title: "No student ID from the request", icon: "⚿", tint: "lav", text: "Student pages always use the ID of the **logged-in user**, never a parameter that could be changed." },
+              { title: "Two layers of control", icon: "⛨", tint: "lav", text: "Queries are filtered by owner, and the service layer answers **HTTP 403** on any mismatch." },
+            ],
+          },
+        ],
+      },
+      {
+        slug: "testing-refactoring",
+        type: "V-Model tests and a code smell removed",
+        title: "Testing & Refactoring",
+        blocks: [
+          { t: "p", text: "Testing follows the **V-Model**: unit tests check the module design, integration tests the architecture, acceptance tests the requirements.", center: true },
+          {
+            t: "table", head: ["Unit test class", "What is verified"], rows: [
+              ["AttendanceCodeServiceTest", "6-digit format, numeric range 100000–999999, uniqueness across calls"],
+              ["GPSVerificationTest", "Pass within 100 m, fail outside with the distance message, fail without coordinates"],
+              ["NetworkVerificationTest", "Pass on localhost (dev mode), pass without a configured IP range, fail without a client IP"],
+              ["QRCodeVerificationTest", "Pass when the code was scanned, fail when it was typed"],
+            ],
+            note: "JUnit 5 + Mockito; acceptance tested with a 7-step manual demo script.",
+          },
+          { t: "terminal", title: "Terminal — gradle test", lines: ["$ ./gradlew test", "", "BUILD SUCCESSFUL in 1s", "4 actionable tasks: 4 up-to-date"] },
+          { t: "h", text: "Refactoring: one lookup instead of four", sub: "A duplicated-code smell found during development" },
+          {
+            t: "code", title: "Before — repeated in four controllers", text:
+`String email = principal.getAttribute("email");
+Long lecturerId = userRepository.findByEmail(email)
+        .map(u -> u.getId()).orElseThrow();`,
+          },
+          {
+            t: "code", title: "After — CustomOidcUser carries the ID from login", text:
+`Long userId = principal.getUserId();`,
+          },
+          { t: "closing", title: "DRY", text: "Four duplicated database queries were replaced by **a single lookup at authentication time**, reducing the coupling between the controllers and the user repository." },
+        ],
+      },
+      {
+        slug: "project-management",
+        type: "Hybrid method, roles, lessons learned",
+        title: "Project Management",
+        blocks: [
+          {
+            t: "cards", cols: 2, items: [
+              { title: "Plan-driven", tint: "lav", bullet: "•", lines: ["Lastenheft and Pflichtenheft written upfront", "UML diagrams planned before implementation", "Test cases planned in advance", "A traceability matrix: requirement → test → class"] },
+              { title: "Agile", tint: "sun", bullet: "•", lines: ["Seven incremental phases, each a working increment", "Continuous refactoring", "Early integration testing", "Adapting to discoveries (OIDC instead of plain OAuth2)"] },
+            ],
+          },
+          { t: "h", text: "Seven increments in about twelve weeks" },
+          {
+            t: "table", head: ["Phase", "Weeks", "Deliverable"], rows: [
+              ["1", "1–2", "Project scaffold, JPA entities, Flyway schema, seed data"],
+              ["2", "3", "Microsoft SSO, role-based access, login page"],
+              ["3", "4", "Lecture management, code generation, projector view"],
+              ["4", "5", "Check-in and check-out, overlap prevention, auto check-out"],
+              ["5", "6", "Strategy pattern: network, GPS and QR verification"],
+              ["6", "7", "Statistics dashboard, CSV export, student history"],
+              ["7", "8–9", "Tests, UML diagrams, documentation"],
+            ],
+          },
+          { t: "h", text: "A team of three", sub: "The brief planned five or six people — fewer people, only three communication channels" },
+          {
+            t: "cards", cols: 3, items: [
+              { title: "Antonio Lastella", sub: "PROJECT LEAD", tint: "plain", text: "Backend and frontend development, security configuration, statistics dashboard, GitLab." },
+              { title: "Chiara Luongo", sub: "REQUIREMENTS · UML · DOCS", tint: "lav", text: "Lastenheft and Pflichtenheft, integration of the course theory, PlantUML diagrams and the final report." },
+              { title: "Paolo Giordano", sub: "QUALITY ASSURANCE", tint: "plain", text: "Unit tests, integration test design, demo-script validation and code review." },
+            ],
+          },
+          { t: "h", text: "The iron triangle" },
+          {
+            t: "cards", cols: 3, items: [
+              { title: "Resources", icon: "◔", tint: "plain", text: "3 students × 3 months, only open-source tools." },
+              { title: "Time", icon: "◷", tint: "plain", text: "About 12 weeks, delivered for the first exam session." },
+              { title: "Scope", icon: "◇", tint: "plain", text: "All 10 functional requirements in a working prototype." },
+            ],
+          },
+          { t: "h", text: "Lessons learned" },
+          {
+            t: "cards", cols: 2, items: [
+              { title: "What worked", tint: "lav", bullet: "✓", lines: ["Upfront UML sped up the implementation", "Flyway made the schema fully reconstructible", "The Strategy pattern kept anti-cheating extensible", "Thymeleaf + Bootstrap gave a clean UI with little JavaScript"] },
+              { title: "What we would do differently", tint: "sun", bullet: "→", lines: ["Research OIDC upfront instead of finding it while debugging", "Bluetooth beacons for room-level accuracy instead of GPS", "Plan the Microsoft tenant configuration earlier"] },
+            ],
+          },
+          { t: "closing", title: "Present", text: "A complete engineering cycle — **requirements, specification, UML, implementation, testing and management** — documented end to end and traceable from every requirement to the class that implements it." },
+        ],
+      },
+    ],
+  },
+  {
     slug: "catch-n-trade",
     title: "Catch ‘n’ Trade",
     kind: "University · Group project",

@@ -302,7 +302,7 @@ const BLOCKS = {
     <div class="swatch"><span class="chip" style="background:${esc(s.hex)}"></span><strong>${esc(s.name)}</strong><span class="meta">${esc(s.hex)}</span></div>`).join("")}</div>`,
   img: (b) => {
     const img = `<img src="${esc(b.src)}" alt="${esc(b.alt || "")}" loading="lazy">`;
-    return `<figure class="figure${b.narrow ? " narrow" : ""}${b.zoom ? " zoom" : ""}">
+    return `<figure class="figure${b.narrow ? " narrow" : ""}${b.tall ? " tall" : ""}${b.zoom ? " zoom" : ""}">
     ${b.zoom ? `<a href="${esc(b.src)}" target="_blank" rel="noopener" title="Open full size">${img}<span class="zoom-hint">Open full size ↗</span></a>` : img}
     ${b.caption || b.sub ? `<figcaption>${b.caption ? `<strong>${esc(b.caption)}</strong>` : ""}${b.sub ? `<span>${esc(b.sub)}</span>` : ""}</figcaption>` : ""}</figure>`;
   },
@@ -433,7 +433,12 @@ function project(slug) {
            <span class="statement-title">${esc(s.title)}${s.type ? `<small>${esc(s.type)}</small>` : ""}</span>
            <span class="toc-dots" aria-hidden="true"></span>
            <span class="statement-figure">${esc(s.figure || "")}</span>
-         </a>`).join("")}${p.statementTotal ? `<div class="statement-total"><span>${esc(p.statementTotal.label)}</span><span>${esc(p.statementTotal.value)}</span></div>` : ""}</div>` : p.roadmapStyle === "boarding" ? `<div class="passes">${p.sections.map((s, i) => `
+         </a>`).join("")}${p.statementTotal ? `<div class="statement-total"><span>${esc(p.statementTotal.label)}</span><span>${esc(p.statementTotal.value)}</span></div>` : ""}</div>` : p.roadmapStyle === "register" ? `<div class="register"><div class="register-head"><span>Attendance register</span><span>${esc(p.registerTitle || "")}</span></div><div class="register-cols" aria-hidden="true"><span>No.</span><span>Entry</span><span>Present</span></div>${p.sections.map((s, i) => `
+         <a class="register-row" href="#/projects/${esc(p.slug)}/${esc(s.slug)}">
+           <span class="register-n">${String(i + 1).padStart(2, "0")}</span>
+           <span class="register-title">${esc(s.title)}${s.type ? `<small>${esc(s.type)}</small>` : ""}</span>
+           <span class="register-check" aria-hidden="true"><span>✓</span></span>
+         </a>`).join("")}</div>` : p.roadmapStyle === "boarding" ? `<div class="passes">${p.sections.map((s, i) => `
          <a class="pass" href="#/projects/${esc(p.slug)}/${esc(s.slug)}">
            <span class="pass-main">
              <span class="pass-head"><span>Boarding pass</span><span>Flight TN${String(i + 1).padStart(2, "0")}</span></span>
@@ -521,7 +526,7 @@ function section(slug, sectionSlug) {
     ${back(`#/projects/${p.slug}`, p.sectionsTitle || p.title)}
     <article class="page doc${themeClass(p)}">
       ${decor(p, 8)}
-      <span class="meta">${p.roadmapStyle === "toc" ? `Chapter ${roman(i + 1)} · ${esc(p.title)}` : p.roadmapStyle === "lab" ? `EXP ${String(i + 1).padStart(2, "0")} · ${esc(s.task || p.title)}` : p.roadmapStyle === "film" ? `Scene ${String(i + 1).padStart(2, "0")} · ${esc(p.title)}` : p.roadmapStyle === "articles" ? `Article ${i + 1} · ${esc(p.title)}` : p.roadmapStyle === "board" ? `${esc(p.ticketPrefix || "T")}-${i + 1} · ${esc(s.kind || "Story")} · ${esc(p.title)}` : p.roadmapStyle === "statement" ? `Note ${i + 1} · ${esc(p.title)}` : p.roadmapStyle === "boarding" ? `Flight TN${String(i + 1).padStart(2, "0")} · ${esc(i ? p.sections[i - 1].code : "DEP")} → ${esc(s.code)}` : `${esc(p.title)} · ${i + 1}/${p.sections.length}`}</span>
+      <span class="meta">${p.roadmapStyle === "toc" ? `Chapter ${roman(i + 1)} · ${esc(p.title)}` : p.roadmapStyle === "lab" ? `EXP ${String(i + 1).padStart(2, "0")} · ${esc(s.task || p.title)}` : p.roadmapStyle === "film" ? `Scene ${String(i + 1).padStart(2, "0")} · ${esc(p.title)}` : p.roadmapStyle === "articles" ? `Article ${i + 1} · ${esc(p.title)}` : p.roadmapStyle === "board" ? `${esc(p.ticketPrefix || "T")}-${i + 1} · ${esc(s.kind || "Story")} · ${esc(p.title)}` : p.roadmapStyle === "register" ? `Entry ${String(i + 1).padStart(2, "0")} · ${esc(p.title)}` : p.roadmapStyle === "statement" ? `Note ${i + 1} · ${esc(p.title)}` : p.roadmapStyle === "boarding" ? `Flight TN${String(i + 1).padStart(2, "0")} · ${esc(i ? p.sections[i - 1].code : "DEP")} → ${esc(s.code)}` : `${esc(p.title)} · ${i + 1}/${p.sections.length}`}</span>
       <h2 class="page-title center-title">${esc(s.pageTitle || s.title)}</h2>
       ${s.blocks.map((b) => (BLOCKS[b.t] ? BLOCKS[b.t](b) : "")).join("")}
       <nav class="pager">${link(prev, "prev")}${link(next, "next")}</nav>

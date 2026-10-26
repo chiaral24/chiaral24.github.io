@@ -1731,3 +1731,93 @@ body.theme-glass { isolation: isolate; }
 .card-labels .label-year::before { content: ""; width: 3px; height: 3px; border-radius: 50%; background: currentColor; }
 .card .card-result { color: var(--fg); font-size: 13.5px; font-weight: 500; border-left: 2px solid var(--accent); padding-left: 10px; }
 .card .card-result span { color: var(--muted); }
+
+/* ======================================================================
+   Tema "register" (Roll Call System): la vista del proiettore con il
+   codice a 6 cifre, il verde del check-in, la roadmap come registro presenze
+   ====================================================================== */
+.theme-register {
+  --accent: #1d7a46;
+  --accent-soft: #c9e6d4;
+  --lav-line: #bfdcc9;
+  --lav-bg: #f0f8f2;
+  --sun-line: #ecd6a6;
+  --sun-bg: #fdf7e8;
+  --hover-tint: rgba(29, 122, 70, .06);
+  --projector: #1b1e33;
+  --code: #6ee59a;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .theme-register { --accent: #5fd08a; --accent-soft: #24452f; --lav-line: #2c4a36; --lav-bg: #142019; --sun-line: #4d4224; --sun-bg: #1f1b10; --hover-tint: rgba(95, 208, 138, .08); }
+}
+:root[data-theme="dark"] .theme-register { --accent: #5fd08a; --accent-soft: #24452f; --lav-line: #2c4a36; --lav-bg: #142019; --sun-line: #4d4224; --sun-bg: #1f1b10; --hover-tint: rgba(95, 208, 138, .08); }
+
+.theme-register .question strong { text-decoration-color: var(--accent); }
+.theme-register .closing { border-color: var(--lav-line); background: var(--lav-bg); }
+.theme-register .lead::after, .theme-register .closing::before { content: none; }
+.theme-register .stat-value { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; color: var(--accent); }
+
+/* Copertina: lo schermo del proiettore, con il conto alla rovescia in basso */
+.theme-register .cover { background: var(--projector); color: #fff; justify-content: flex-start; }
+.theme-register .cover::before {
+  clip-path: none;
+  inset: auto 0 0 0;
+  height: 5px;
+  background: linear-gradient(90deg, #6ee59a 0 60%, #f2c94c 60% 82%, #eb5757 82%);
+  transform-origin: left;
+  transition: transform 2.4s linear;
+}
+.card.theme-register:hover .cover::before { transform: scaleX(.12); }
+.theme-register .cover::after { content: none; }
+.theme-register .cover-title { font: 700 24px ui-monospace, SFMono-Regular, Menlo, monospace; letter-spacing: .02em; }
+.theme-register .cover-sub { color: #9aa0c8; font: 500 11px ui-monospace, SFMono-Regular, Menlo, monospace; text-transform: none; letter-spacing: .04em; }
+.theme-register .cover-stamp {
+  right: auto;
+  left: 20px;
+  bottom: 22%;
+  border: 0;
+  border-radius: 8px;
+  padding: 6px 14px;
+  background: #24284a;
+  color: var(--code);
+  font-size: 30px;
+  letter-spacing: .28em;
+  transform: none;
+  opacity: 1;
+  mix-blend-mode: normal;
+}
+.card.theme-register:hover .cover-stamp { transform: none; }
+.theme-register .cover.big { border: 0; border-radius: 14px; }
+.theme-register .cover.big .cover-title { font-size: clamp(28px, 6vw, 44px); }
+.theme-register .cover.big .cover-stamp { left: 30px; font-size: clamp(30px, 6vw, 48px); }
+
+/* Registro presenze */
+.register { border: 1.5px solid var(--line); background: var(--card); max-width: 780px; margin: 0 auto; }
+.register-head { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; padding: 12px 18px; border-bottom: 1.5px solid var(--line); font: 600 11px ui-monospace, SFMono-Regular, Menlo, monospace; text-transform: uppercase; letter-spacing: .08em; }
+.register-head span:last-child { color: var(--muted); }
+.register-cols, .register-row { display: grid; grid-template-columns: 54px 1fr 86px; align-items: center; }
+.register-cols { padding: 6px 0; border-bottom: 1px solid var(--plain-line); font: 600 10px ui-monospace, SFMono-Regular, Menlo, monospace; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.register-cols span, .register-row > span { padding: 0 14px; }
+.register-cols span:last-child { text-align: center; }
+.register-row { text-decoration: none; border-bottom: 1px solid var(--plain-line); min-height: 58px; transition: background .25s; }
+.register-row:last-child { border-bottom: 0; }
+.register-row:hover { background: var(--hover-tint); }
+.register-n { font: 600 13px ui-monospace, SFMono-Regular, Menlo, monospace; color: var(--muted); align-self: stretch; display: flex; align-items: center; border-right: 1px solid var(--plain-line); }
+.register-title { display: flex; flex-direction: column; padding-top: 10px !important; padding-bottom: 10px !important; font: 500 17px var(--display); }
+.register-title small { font: 400 12px var(--body); color: var(--muted); }
+.register-check { align-self: stretch; display: flex; align-items: center; justify-content: center; border-left: 1px solid var(--plain-line); }
+.register-check span {
+  width: 26px; height: 26px; border-radius: 50%;
+  display: grid; place-items: center;
+  border: 1.5px solid var(--accent);
+  color: var(--accent);
+  font-size: 14px;
+  transition: background .3s, color .3s, transform .35s cubic-bezier(.2, .7, .2, 1.6);
+}
+.register-row:hover .register-check span { background: var(--accent); color: var(--bg); transform: scale(1.15); }
+@media (max-width: 560px) {
+  .register-cols, .register-row { grid-template-columns: 40px 1fr 72px; }
+  .register-cols span, .register-row > span { padding: 0 10px; }
+}
+/* Diagrammi molto alti: altezza limitata, il dettaglio si apre a piena grandezza */
+.figure.tall img { width: auto; max-width: 100%; max-height: 72vh; margin: 0 auto; display: block; }
