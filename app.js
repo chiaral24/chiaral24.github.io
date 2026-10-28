@@ -34,9 +34,9 @@ function home() {
       <nav class="nav">
         <a class="btn" href="#/about">About</a>
         <a class="btn" href="#/projects">Projects</a>
+        <a class="btn" href="#/experience">Experience</a>
         <a class="btn" href="#/contact">Contact</a>
       </nav>
-      ${typeof EXPERIENCE !== "undefined" && EXPERIENCE.length ? `<a class="home-link" href="#/about/experience">Experience <span aria-hidden="true">→</span></a>` : ""}
     </section>`;
 }
 
@@ -61,7 +61,7 @@ const experienceBlock = () => typeof EXPERIENCE !== "undefined" && EXPERIENCE.le
 
 // Competenze raggruppate, ognuna con i link ai progetti in cui è stata usata
 const skillsBlock = () => PROFILE.skills ? `
-  <div class="skills">
+  <div class="skills" id="skills">
     <div class="block-h"><h3>Skills</h3><p>Each one links to the projects where I used it</p></div>
     <div class="skill-groups">${PROFILE.skills.map((g) => `
       <div class="skill-group">
@@ -82,6 +82,17 @@ function about() {
       <div style="height:16px"></div>
       ${PROFILE.about.map((p) => `<p>${esc(p)}</p>`).join("")}
       ${PROFILE.photo ? `<div class="portrait"><img src="${esc(PROFILE.photo)}" alt="${esc(PROFILE.photoAlt || PROFILE.fullName)}"></div>` : ""}
+      <p class="about-more"><a href="#/experience">Experience &amp; skills <span aria-hidden="true">→</span></a></p>
+    </section>`;
+}
+
+// Pagina Experience & Skills: le esperienze (timeline) e le competenze
+function experience() {
+  return `
+    ${back()}
+    <section class="page">
+      <h2 class="page-title">Experience &amp; Skills</h2>
+      <p class="page-sub">Where I have worked so far, and the skills behind my projects.</p>
       ${experienceBlock()}
       ${skillsBlock()}
     </section>`;
@@ -650,7 +661,6 @@ function animateIn() {
     markReveal(home.querySelector(".illustration"), "scale");
     home.querySelectorAll(".name, .tagline").forEach((el) => markReveal(el, "fade"));
     home.querySelectorAll(".nav .btn").forEach((el) => markReveal(el, "up"));
-    markReveal(home.querySelector(".home-link"), "fade");
   }
   markReveal(app.querySelector(".back"), "fade");
   const page = app.querySelector(".page");
@@ -704,9 +714,12 @@ function animateIn() {
 }
 
 function render() {
+  // Vecchio indirizzo della timeline (era nell'About): reindirizza alla nuova pagina
+  if (location.hash === "#/about/experience") { location.replace("#/experience"); return; }
   const [, page, slug, sub] = (location.hash.replace(/^#/, "") || "/").split("/");
   const view =
     page === "about" ? about() :
+    page === "experience" ? experience() :
     page === "projects" ? (sub ? section(slug, sub) : slug ? project(slug) : projects()) :
     page === "contact" ? contact() :
     home();
@@ -715,7 +728,7 @@ function render() {
   // Se un'illustrazione manca, la togliamo (al posto di un onerror inline, bloccato dalla CSP)
   app.querySelectorAll("img.illustration").forEach((img) => img.addEventListener("error", () => img.remove(), { once: true }));
   window.scrollTo(0, 0);
-  if (page === "about" && slug) {
+  if (page === "experience" && slug) {
     const target = document.getElementById(slug);
     if (target) {
       // Scorrimento morbido solo quando la pagina è già caricata (clic dalla home)

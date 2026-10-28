@@ -2051,8 +2051,10 @@ body.theme-glass { isolation: isolate; }
   .tl-card, .tl-card:hover { transition: none; transform: none; }
 }
 
-/* Piccolo collegamento all'esperienza dalla home */
-.home-link { margin-top: 22px; font-size: 14px; color: var(--muted); text-decoration: none; border-bottom: 1px solid currentColor; padding-bottom: 1px; transition: color .2s; }
-.home-link:hover, .home-link:focus-visible { color: var(--fg); }
-.home-link span { display: inline-block; transition: transform .2s; }
-.home-link:hover span { transform: translateX(3px); }
+/* Rimando dall'About alla pagina Experience & Skills */
+.about-more { margin-top: 28px; }
+.about-more a { font-size: 15px; color: var(--accent); text-decoration: none; border-bottom: 1px solid currentColor; padding-bottom: 1px; }
+.about-more a span { display: inline-block; transition: transform .2s; }
+.about-more a:hover span { transform: translateX(3px); }
+/* Nella pagina Experience & Skills la timeline parte subito sotto il sottotitolo */
+.page-sub + .experience { margin-top: 36px; }
