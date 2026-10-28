@@ -2026,3 +2026,33 @@ body.theme-glass { isolation: isolate; }
 .skill-links { display: flex; flex-wrap: wrap; gap: 6px; }
 .skill-links a { font-size: 12px; padding: 1px 9px; border-radius: 999px; background: var(--tag); color: var(--fg); text-decoration: none; transition: background .2s, color .2s; }
 .skill-links a:hover, .skill-links a:focus-visible { background: var(--fg); color: var(--bg); }
+
+/* Experience: timeline verticale nella pagina About */
+.experience { margin-top: 56px; scroll-margin-top: 84px; }
+.timeline { list-style: none; margin: 0; padding: 0 0 0 30px; position: relative; display: flex; flex-direction: column; gap: 18px; }
+.timeline::before { content: ""; position: absolute; left: 8px; top: 10px; bottom: 10px; width: 1.5px; background: var(--line); opacity: .35; }
+.tl-item { position: relative; }
+.tl-dot { position: absolute; left: -30px; top: 20px; width: 17px; height: 17px; border-radius: 50%; border: 1.5px solid var(--line); background: var(--bg); }
+.tl-item:first-child .tl-dot { background: var(--accent); border-color: var(--accent); }
+.tl-card { border: 1.5px solid var(--line); background: var(--card); padding: 18px 22px; transition: transform .25s, box-shadow .25s; }
+.tl-card:hover { transform: translateX(4px); box-shadow: -4px 4px 0 var(--accent); }
+.tl-head { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; font: 600 11px ui-monospace, SFMono-Regular, Menlo, monospace; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.tl-dates { color: var(--accent); }
+.tl-role { font: 500 19px var(--display); margin: 8px 0 2px; }
+.tl-company { margin: 0 0 10px; font-weight: 600; font-size: 14px; }
+.tl-text { margin: 0; color: var(--muted); font-size: 15px; line-height: 1.6; }
+@media (max-width: 560px) {
+  .timeline { padding-left: 24px; }
+  .timeline::before { left: 6px; }
+  .tl-dot { left: -24px; width: 13px; height: 13px; }
+  .tl-card { padding: 16px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .tl-card, .tl-card:hover { transition: none; transform: none; }
+}
+
+/* Piccolo collegamento all'esperienza dalla home */
+.home-link { margin-top: 22px; font-size: 14px; color: var(--muted); text-decoration: none; border-bottom: 1px solid currentColor; padding-bottom: 1px; transition: color .2s; }
+.home-link:hover, .home-link:focus-visible { color: var(--fg); }
+.home-link span { display: inline-block; transition: transform .2s; }
+.home-link:hover span { transform: translateX(3px); }

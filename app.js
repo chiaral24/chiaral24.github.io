@@ -36,8 +36,28 @@ function home() {
         <a class="btn" href="#/projects">Projects</a>
         <a class="btn" href="#/contact">Contact</a>
       </nav>
+      ${typeof EXPERIENCE !== "undefined" && EXPERIENCE.length ? `<a class="home-link" href="#/about/experience">Experience <span aria-hidden="true">→</span></a>` : ""}
     </section>`;
 }
+
+// Esperienze come timeline verticale (dati in EXPERIENCE, già dalla più recente)
+const experienceBlock = () => typeof EXPERIENCE !== "undefined" && EXPERIENCE.length ? `
+  <div class="experience" id="experience">
+    <div class="block-h"><h3>Experience</h3><p>Internships, from the most recent</p></div>
+    <ol class="timeline">${EXPERIENCE.map((e) => `
+      <li class="tl-item">
+        <span class="tl-dot" aria-hidden="true"></span>
+        <div class="tl-card">
+          <div class="tl-head">
+            <span class="tl-dates">${esc(e.dates)}</span>
+            <span class="tl-place">${esc(e.location)}</span>
+          </div>
+          <h4 class="tl-role">${esc(e.role)}</h4>
+          <p class="tl-company">${esc(e.company)}</p>
+          <p class="tl-text">${esc(e.text)}</p>
+        </div>
+      </li>`).join("")}</ol>
+  </div>` : "";
 
 // Competenze raggruppate, ognuna con i link ai progetti in cui è stata usata
 const skillsBlock = () => PROFILE.skills ? `
@@ -62,6 +82,7 @@ function about() {
       <div style="height:16px"></div>
       ${PROFILE.about.map((p) => `<p>${esc(p)}</p>`).join("")}
       ${PROFILE.photo ? `<div class="portrait"><img src="${esc(PROFILE.photo)}" alt="${esc(PROFILE.photoAlt || PROFILE.fullName)}"></div>` : ""}
+      ${experienceBlock()}
       ${skillsBlock()}
     </section>`;
 }
@@ -629,6 +650,7 @@ function animateIn() {
     markReveal(home.querySelector(".illustration"), "scale");
     home.querySelectorAll(".name, .tagline").forEach((el) => markReveal(el, "fade"));
     home.querySelectorAll(".nav .btn").forEach((el) => markReveal(el, "up"));
+    markReveal(home.querySelector(".home-link"), "fade");
   }
   markReveal(app.querySelector(".back"), "fade");
   const page = app.querySelector(".page");
@@ -641,6 +663,11 @@ function animateIn() {
       if (child.classList.contains("mindmap")) {
         markReveal(child.querySelector(".mind-center"), "scale");
         child.querySelectorAll(".boxes > *").forEach((el) => markReveal(el, "up"));
+        continue;
+      }
+      if (child.classList.contains("experience")) {
+        markReveal(child.querySelector(".block-h"), "up");
+        child.querySelectorAll(".tl-item").forEach((el) => markReveal(el, "left"));
         continue;
       }
       if (child.classList.contains("contact-layout")) {
@@ -688,6 +715,20 @@ function render() {
   // Se un'illustrazione manca, la togliamo (al posto di un onerror inline, bloccato dalla CSP)
   app.querySelectorAll("img.illustration").forEach((img) => img.addEventListener("error", () => img.remove(), { once: true }));
   window.scrollTo(0, 0);
+  if (page === "about" && slug) {
+    const target = document.getElementById(slug);
+    if (target) {
+      // Scorrimento morbido solo quando la pagina è già caricata (clic dalla home)
+      const smooth = document.readyState === "complete" && !reduceMotion;
+      target.scrollIntoView({ behavior: smooth ? "smooth" : "auto", block: "start" });
+      // La foto e i font possono caricarsi dopo e spingere giù la sezione: si riallinea
+      const realign = () => target.scrollIntoView({ block: "start" });
+      app.querySelectorAll("img").forEach((img) => {
+        if (!img.complete) img.addEventListener("load", realign, { once: true });
+      });
+      if (document.readyState !== "complete") window.addEventListener("load", realign, { once: true });
+    }
+  }
   animateIn();
   const p = slug && PROJECTS.find((x) => x.slug === slug);
   const s = p && sub && p.sections && p.sections.find((x) => x.slug === sub);

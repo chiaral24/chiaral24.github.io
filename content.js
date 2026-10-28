@@ -80,6 +80,24 @@ const PROFILE = {
   ],
 };
 
+// Esperienze lavorative, dalla più recente alla più vecchia (l'ordine dell'array è quello della timeline)
+const EXPERIENCE = [
+  {
+    role: "Cybersecurity Specialist Intern",
+    company: "Alperia S.p.A.",
+    location: "Bolzano",
+    dates: "Aug – Oct 2026",
+    text: "For three months I worked between the Digital, PMO & Innovation and the Infrastructure teams of Alperia. I prepared technical sheets on NIS2 requirements and how they apply to company processes, built a process map from the team's cybersecurity playbook and joined meetings with colleagues and vendors to evaluate vulnerability management software. It showed me how a regulation turns into everyday processes, and how many people a single decision involves.",
+  },
+  {
+    role: "Cybersecurity and Vendor Technologies Intern",
+    company: "ICOS S.p.A.",
+    location: "Bolzano",
+    dates: "Jul – Oct 2025",
+    text: "My first internship. Through the Sophos Academy I earned three certifications (Sales Fundamentals, Central Endpoint Engineering, Firewall Engineering) and practised presenting security solutions in simulated customer meetings. I also completed the Cisco course “Networking Devices and Initial Configuration” and studied Safetica, a Data Loss Prevention technology.",
+  },
+];
+
 const PROJECTS = [
   {
     slug: "clarity-in-the-cloud",
