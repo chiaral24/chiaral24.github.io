@@ -74,7 +74,7 @@ const PROFILE = {
   ],
   contacts: [
     { type: "email", label: "Email", value: "chiaraluongo24@gmail.com", href: "mailto:chiaraluongo24@gmail.com" },
-    { type: "linkedin", label: "LinkedIn", value: "Chiara Maddalena Luongo", href: "www.linkedin.com/in/chiara-maddalena-luongo" },
+    { type: "linkedin", label: "LinkedIn", value: "Chiara Maddalena Luongo", href: "https://www.linkedin.com/in/chiara-maddalena-luongo" },
     { type: "github", label: "GitHub", value: "@chiaral24", href: "https://github.com/chiaral24" },
     { type: "instagram", label: "Instagram", value: "@chiara_luongo2404", href: "https://instagram.com/chiara_luongo2404" },
   ],

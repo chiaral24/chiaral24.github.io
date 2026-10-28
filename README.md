@@ -2,7 +2,7 @@
 
 Business Informatics student at the Free University of Bozen-Bolzano. This repository holds my personal portfolio: university and personal projects, each documented step by step with its own visual theme.
 
-**🌐 Live site: [chiaral24.github.io](https://chiaral24.github.io)** · [LinkedIn](https://www.linkedin.com/in/chiara-maddalena-luongo-4a4300284) · [Download CV](https://chiaral24.github.io/assets/cv/Chiara-Maddalena-Luongo-CV.pdf)
+**🌐 Live site: [chiaral24.github.io](https://chiaral24.github.io)** · [LinkedIn](https://www.linkedin.com/in/chiara-maddalena-luongo) · [Download CV](https://chiaral24.github.io/assets/cv/Chiara-Maddalena-Luongo-CV.pdf)
 
 [![Preview of the projects page](docs/preview.jpg)](https://chiaral24.github.io/#/projects)
 
